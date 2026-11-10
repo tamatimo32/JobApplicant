@@ -221,8 +221,7 @@ def wrap_runs(runs: list[tuple[str, str]], size: float,
         out: list[tuple[str, str]] = []
         for w, font in line:
             if out and out[-1][1] == font:
-                joiner = "" if out[-1][0].endswith(":") else " "
-                out[-1] = (out[-1][0] + joiner + w, font)
+                out[-1] = (out[-1][0] + " " + w, font)
             else:
                 out.append((w, font))
         merged.append(out)
@@ -281,6 +280,11 @@ def draw_header(c: canvas.Canvas, d: dict) -> list[str]:
                 px, PAGE_H - py - ph, pw, ph, mask="auto")
 
     put(c, TEXT_X, NAME_BASE, d["name"].upper(), "Aptos-Bold", NAME_SIZE, C_TEXT)
+    title_w = tw(d["title"], "Aptos-Bold", TITLE_SIZE)
+    if TEXT_X + title_w > 575.0:
+        raise LayoutOverflow(
+            f'the title runs {TEXT_X + title_w - 575.0:.1f} pt past the right margin '
+            f'(needs to end before x=575, ends at {TEXT_X + title_w:.1f}). Shorten it.')
     put(c, TEXT_X, TITLE_BASE, d["title"], "Aptos-Bold", TITLE_SIZE, C_PRIMARY)
 
     lines = wrap(d["summary"], "Aptos", SUMMARY_SIZE, SUMMARY_MAX_W)
@@ -408,6 +412,10 @@ def draw_sidebar(c: canvas.Canvas, blocks: list[dict]) -> float:
             y -= lead
         elif kind == "skills":
             # authored one line per entry — never re-wrapped
+            unknown = set(block) - {"heading", "type", "lines"}
+            if unknown:
+                raise LayoutOverflow(
+                    f"skills block has keys that would be dropped: {sorted(unknown)}")
             for line in block["lines"]:
                 rows.append((y, PANEL_BODY_X, [(line, "Aptos")], 9.0))
                 y += lead

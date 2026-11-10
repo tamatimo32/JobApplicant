@@ -226,6 +226,15 @@ def build(d: dict, out_path: str) -> None:
     # The reference "right aligns" the date by padding it with ~174 spaces.
     # Reproduce the visual result with an explicit x instead.
     draw(c, DATE_X, DATE_BASE, d["date"].strip(), DATE_SIZE, french=False)
+    # The date sits to the right of the addressee on the same baseline block.
+    # A long addressee used to overprint it, silently: fail instead.
+    addr_w = tw(french_spacing(d["addressee"]) if d.get("typography") == "fr"
+                else d["addressee"], ADDRESSEE_SIZE)
+    if BODY_X + addr_w > DATE_X - 12.0:
+        raise LayoutOverflow(
+            f'the addressee runs into the date: it ends at x={BODY_X + addr_w:.1f}, '
+            f'past the limit x={DATE_X - 12.0:.1f} (DATE_X minus a 12 pt gutter). '
+            f'Shorten it.')
     draw(c, BODY_X, ADDRESSEE_BASE, d["addressee"], ADDRESSEE_SIZE,
          french=d.get("typography") == "fr")
     draw(c, BODY_X, SUBJECT_BASE, d["subject"], SUBJECT_SIZE,

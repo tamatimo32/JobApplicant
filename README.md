@@ -274,7 +274,15 @@ Rules of thumb taken from the user's own guidance note
 The renderer draws top-down and raises `LayoutOverflow` at two points:
 
 1. the summary needs more than 4 lines;
-2. the experience column runs past y = 780 pt, or the sidebar past 786 pt.
+2. the experience column runs past y = 780 pt, or the sidebar past 786 pt;
+3. the title runs past x = 575 (check with `tw(title, "Aptos-Bold", 11)` first,
+   it is cheaper than a failed render);
+4. a `skills` block contains a key other than `heading` / `type` / `lines`
+   (anything else, a `note` for instance, would be silently dropped);
+5. the letter addressee would overprint the date, i.e. it ends past
+   `DATE_X - 12` = 464 pt. Keep the addressee short ("To the Hiring Team, ABB
+   Electrification Distribution Solutions.") and let the subject line carry
+   the posting reference.
 
 Fixes, in order of preference:
 
@@ -367,6 +375,14 @@ identical text and identical first baseline. Current state:
 
 If you change a constant and these get worse, you broke something.
 
+**A known-clean tree still exits 1 on `--fail` for the CV.** The CV master mixes
+12.25 pt and 14.5 pt leading, so a handful of sidebar spans sit 1–5 pt apart and
+pymupdf also splits some adjacent spans, which the comparator reports as
+`[missing]`. Baseline is: **max deviation 5.17 pt, 30 spans over tolerance,
+10 missing** — verify you did not *worsen* those three numbers rather than
+expecting a zero exit. A run that says `no structural differences` and those
+figures is green. The letter harness (`--fail`, exit 0) has no such caveat.
+
 ---
 
 ## Typography
@@ -409,6 +425,9 @@ scale them beyond 13.8 pt.
       `Title — Employer` separator may contain one.
 - [ ] The letter does not name previous employers; it says "mes expériences
       précédentes" or similar.
+- [ ] The `skills` sidebar blocks carry only `heading` / `type` / `lines`;
+      a `note` key is rejected by the renderer (it used to vanish silently).
+- [ ] The title fits: it must end before x = 575, otherwise `LayoutOverflow`.
 - [ ] No AI tells: "passionné par", "fort de mon expérience", "je suis convaincu
       que", or three-item lists in every sentence.
 - [ ] The letter and the CV tell the same story with the same job titles.
