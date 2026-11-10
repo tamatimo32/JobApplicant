@@ -1,0 +1,180 @@
+{
+  "_readme": [
+    "MASTER EXPERIENCE DATA — sourced from the Google Drive spreadsheet",
+    "'All experience _ Chacra Thomas' (folder 1nI7MBzOW5I-5DxKmZG23v8WGq5hW5Ctf).",
+    "",
+    "This file is the single source of truth for every CV. It is deliberately in",
+    "ENGLISH and deliberately over-complete. When a new job description arrives:",
+    "  1. read the job description;",
+    "  2. pick the 4-6 most relevant roles and the 2-4 most relevant bullets each;",
+    "  3. TRANSLATE + ADAPT them into the language of the posting (see",
+    "     applications/<slug>/content.<lang>.json for the shape);",
+    "  4. never invent a bullet — everything must trace to a 'bullets' entry here",
+    "     or to a fact in 'profile'.",
+    "",
+    "Bullets marked \"verified\": false come straight from the raw spreadsheet and",
+    "are worded loosely — re-read them with the applicant before they go on a CV."
+  ],
+
+  "profile": {
+    "name": "Thomas Chacra",
+    "email": "thomaschacra@gmail.com",
+    "phone": "+32 485315276",
+    "location": "1000 Brussels, Belgium",
+    "driving_licence": "B",
+    "linkedin": "www.linkedin.com/in/thomas-chacra/",
+    "birth_note": null,
+    "nationality_note": null
+  },
+
+  "summary_angles": {
+    "consulting": "Environmental Bioengineer with consulting experience in data reconciliation, environmental performance indicators and automated reporting. Highly proficient in Excel, Power BI, Power Query; experienced with Python and SQL.",
+    "academic": "Environmental bioengineer (ULB) with research, teaching-assistant and data-analysis experience, able to translate scientific evidence into material for non-specialist audiences.",
+    "energy": "Environmental bioengineer specialising in low-carbon energy feasibility studies, building energy assessment and carbon accounting (GHG Protocol, ISO 14067)."
+  },
+
+  "education": [
+    {
+      "degree": "M.Sc. in Environmental Bioengineering",
+      "school": "Université libre de Bruxelles (ULB)",
+      "years": "2023 – 2024",
+      "thesis": "Lateral Root Development of an Arabidopsis Population Originating from a Sand Dune Environment: Molecular and eco-physiological characterization",
+      "supervisors": "Pr. Dr. Ir. Christian Hermans (director) / Dr. Silvana Porco (promotor)",
+      "lab": "Laboratory of Crop Production and Biostimulation (CPBL)",
+      "note": "Thesis is 48 pages; a usable proof of scientific writing + pedagogy."
+    },
+    {
+      "degree": "B.Sc. in Engineering Sciences",
+      "school": "Université libre de Bruxelles (ULB)",
+      "years": null,
+      "thesis": null
+    }
+  ],
+
+  "languages": [
+    {"language": "French", "level": "Bilingual"},
+    {"language": "English", "level": "Bilingual"},
+    {"language": "Dutch", "level": "In progress"}
+  ],
+
+  "skills": {
+    "it": ["Power BI", "Excel / Power Query", "SQL", "Python", "Power Automate"],
+    "sustainability": [
+      "GHG Protocol", "ISO 14067", "ISO 14001", "ISO 9001", "ISO 45001", "ISO 50001",
+      "CSRD", "ESRS", "EU Taxonomy", "B Corp", "climate risk assessment",
+      "ShiftingPact (ESG certification)", "double materiality matrix"
+    ],
+    "engineering": [
+      "geothermal / hydrothermal feasibility", "building energy assessment",
+      "CAPEX / ROI modelling", "Copernicus environmental data"
+    ],
+    "soft": ["Analytical mindset", "Results oriented", "Team player", "Rigour", "Autonomy"]
+  },
+
+  "experience": [
+    {
+      "employer": "Green Stems Products",
+      "title": "Sustainability Adviser",
+      "start": "2026-09",
+      "end": null,
+      "location": null,
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        {"en": "Engineered a dynamic Power BI product carbon-footprint tool following ISO 14067 for the company's products.", "verified": false},
+        {"en": "Managed the carbon project with the Kenyan team.", "verified": false},
+        {"en": "Applied ISO 14067 hypotheses to substantiate the estimates produced.", "verified": false},
+        {"en": "Structured environmental data to support performance assessment and identify improvement opportunities (from the master CV).", "verified": true}
+      ]
+    },
+    {
+      "employer": "BetterBusiness",
+      "title": "Data & Sustainability Analyst",
+      "title_alt": "ESG & Sustainability Analyst",
+      "start": "2025-12",
+      "end": "2026-05",
+      "location": "Brussels",
+      "context": "Environmental and sustainability consulting",
+      "bullets": [
+        {"en": "Worked on ESG data systems, sustainability reporting tools and environmental performance structuring, with a strong focus on data automation and KPI monitoring.", "verified": false},
+        {"en": "Built automated Excel and Power BI tools supporting ESG and environmental reporting workflows.", "verified": false},
+        {"en": "Developed sustainability KPI frameworks used for environmental and social performance monitoring.", "verified": false},
+        {"en": "Contributed to carbon-related calculations and sustainability disclosure tools.", "verified": false},
+        {"en": "Supported sustainability management system development (B Corp-related structure and reporting logic).", "verified": false},
+        {"en": "Participated in supplier sustainability assessment datasets and ESG benchmarking exercises.", "verified": false},
+        {"en": "Worked on data quality control, validation and structuring for environmental indicators.", "verified": false},
+        {"en": "Managed digitalisation initiatives for ESG frameworks and sustainability indicators.", "verified": false},
+        {"en": "Initiated self-training on ISO 9001, 14001 and 45001; took part in training-aided gap analyses.", "verified": false},
+        {"en": "Automated the analysis of ShiftingPact (ESG certification), making it 70 % faster through automation and data analysis.", "verified": false},
+        {"en": "Created a Power Automate system to digitalise the audit trail of client documents and file them in the right folders.", "verified": false},
+        {"en": "Performed financial analysis of the company and represented cash inflows and outflows, preparing it for slower business periods.", "verified": false},
+        {"en": "Calculated carbon footprints using the GHG Protocol and developed environmental performance indicators and monitoring KPIs (from the master CV).", "verified": true}
+      ]
+    },
+    {
+      "employer": "Vertiberry",
+      "title": "Research and Development Scientist",
+      "title_alt": "Plant Scientist & Environmental Data Analyst",
+      "start": "2024-09",
+      "end": "2025-09",
+      "location": "Brussels",
+      "context": "AgTech and innovative hydroponic production",
+      "bullets": [
+        {"en": "Supported hydroponics operational decision-making through data analysis, process optimisation and reporting automation.", "verified": false},
+        {"en": "Analysed environmental and biological performance data from hydroponic cultivation systems.", "verified": false},
+        {"en": "Evaluated relationships between lighting systems, energy consumption, environmental conditions and crop performance.", "verified": false},
+        {"en": "Conducted multifactorial analyses to optimise plant growth and resource efficiency.", "verified": false},
+        {"en": "Built automated reporting and monitoring tools to support operational decision-making.", "verified": false},
+        {"en": "Collaborated with engineers and agronomists on sustainability and resource-optimisation initiatives.", "verified": false},
+        {"en": "Analyzed environmental time-series data to identify trends and optimize crop productivity and energy efficiency (from the master CV).", "verified": true}
+      ]
+    },
+    {
+      "employer": "Deplasse et Associés",
+      "title": "Energy / Environmental Consultant",
+      "start": "2024-07",
+      "end": "2024-10",
+      "location": "Brussels",
+      "context": "Energy engineering and technical consultancy",
+      "bullets": [
+        {"en": "Supported technical studies on sustainable energy systems, environmental performance and climate resilience.", "verified": false},
+        {"en": "Performed a hydrothermal pre-feasibility study for a residential development (heat recovery from a nearby river).", "verified": false},
+        {"en": "Built Excel-based models to support energy and ROI calculations.", "verified": false},
+        {"en": "Performed building energy assessments (insulation, heating systems, windows).", "verified": false},
+        {"en": "Evaluated environmental and regulatory constraints linked to energy systems.", "verified": false},
+        {"en": "Contributed to climate risk assessments using environmental datasets (including Copernicus data).", "verified": false},
+        {"en": "Supported renewable and low-carbon energy evaluations in infrastructure contexts.", "verified": false},
+        {"en": "Aided CSRD preparation for clients and digitalised the CSRD double-materiality matrix.", "verified": false},
+        {"en": "Prepared presentation material for clients and answered their technical engineering questions.", "verified": false},
+        {"en": "Reported energy scoring through the Brussels 'facilitateur durable' scheme.", "verified": false},
+        {"en": "Ran CAPEX calculations on hydrothermal projects.", "verified": false},
+        {"en": "Researched the legal feasibility of energy investments and infrastructure.", "verified": false}
+      ]
+    },
+    {
+      "employer": "Vertiberry",
+      "title": "Botanist",
+      "start": "2021-11",
+      "end": "2022-05",
+      "location": "Brussels",
+      "context": "AgTech and innovative hydroponic production",
+      "bullets": [
+        {"en": "Conducted plant growth experiments and analysed results to assess performance under different environmental conditions.", "verified": false},
+        {"en": "Used Excel for data analysis.", "verified": false}
+      ]
+    },
+    {
+      "employer": "Kaspard (student job)",
+      "title": "AI Quality Assurance Assistant",
+      "start": "2024-03",
+      "end": "2024-08",
+      "location": null,
+      "context": "AI and computer-vision projects",
+      "include_by_default": false,
+      "bullets": [
+        {"en": "Supported AI and computer-vision projects through data validation, quality control and analytical review.", "verified": false},
+        {"en": "Evaluated AI-generated outputs and documented quality issues.", "verified": false},
+        {"en": "Performed data validation and consistency checks.", "verified": false}
+      ]
+    }
+  ]
+}

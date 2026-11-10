@@ -1,0 +1,25 @@
+{
+  "typography": "fr",
+
+  "name": "THOMAS CHACRA",
+  "tagline": "<one line, 11 pt>",
+  "place": "Bruxelles, Belgique",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "JJ/MM/AAAA",
+
+  "addressee": "À l'attention de <nom / service>, offre <référence> — <employeur>.",
+  "subject": "Objet : <intitulé exact du poste> — Thomas Chacra",
+  "salutation": "Madame, Monsieur,",
+
+  "paragraphs": [
+    "<hook — do NOT start with 'Je'>",
+    "<evidence: what you did, named frameworks>",
+    "<why this employer: their organs, their projects>",
+    "<logistics: languages, availability>",
+    "<warm close inviting a conversation>"
+  ],
+
+  "closing": "Cordialement,",
+  "signature": "Thomas Chacra"
+}

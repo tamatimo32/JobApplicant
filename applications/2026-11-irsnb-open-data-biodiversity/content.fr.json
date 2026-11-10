@@ -1,0 +1,152 @@
+{
+  "_source": {
+    "job": "Chargé(e) de données ouvertes à la Plateforme belge pour la Biodiversité (m/f/x), Institut royal des Sciences naturelles de Belgique (IRSNB), Bruxelles",
+    "url": "https://www.naturalsciences.be/fr/qui-sommes-nous-/jobs/jobs-overview/charge-de-donnees-ouvertes-a-la-plateforme-belge-pour-la-biodiversite-mfx",
+    "language": "fr",
+    "date": "2026-11-10",
+    "deadline": "2026-11-27",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Drive spreadsheet 'All experience _ Chacra Thomas'"
+    ],
+    "verification_status": "PENDING USER VERIFICATION: le poste exige 2 ans d'expérience en gestion de donnees sur la biodiversite, en mobilisation de donnees scientifiques ou en informatique de la biodiversite. Le parcours ne comporte pas de poste intitule ainsi. Les experiences mobilisees ici sont la recherche sur donnees biologiques (Vertiberry), la qualite et la validation de donnees (Kaspard), et le memoire en biologie vegetale. A confirmer par l'utilisateur."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Chargé de données ouvertes, Plateforme belge pour la Biodiversité (IRSNB)",
+  "title": "Bioingénieur | Données de biodiversité, qualité des données & science ouverte",
+  "summary": "Bioingénieur formé sur des jeux de données biologiques, du terrain au fichier publié. J'ai analysé des séries temporelles issues de cultures, contrôlé la qualité de données scientifiques et construit les outils qui les rendent lisibles. La science ouverte ne tient que si la métadonnée est solide, et c'est ce travail de rigueur que je veux mettre au service du nœud GBIF belge.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Aujourd'hui",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Structuré et documenté des données environnementales produits afin d'en permettre l'évaluation et l'identification de pistes d'amélioration.",
+        "Construit un outil Power BI de calcul d'empreinte carbone produit selon la norme ISO 14067, avec traçabilité des hypothèses retenues."
+      ]
+    },
+    {
+      "title": "Analyste ESG & Durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en environnement et durabilité, Bruxelles",
+      "bullets": [
+        "Structuré et contrôlé la qualité de jeux de données environnementales et sociales destinés à des programmes de reporting clients.",
+        "Construit des tableaux de bord Power BI et des outils Excel automatisés pour consolider, vérifier et publier ces indicateurs."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé des séries temporelles biologiques et environnementales issues de cultures hydroponiques, en reliant conditions de culture, consommation d'énergie et performance des plantes.",
+        "Conduit des analyses multifactorielles sur la croissance et l'efficacité d'usage des ressources, puis documenté les résultats pour des équipes d'ingénieurs et d'agronomes."
+      ]
+    },
+    {
+      "title": "Assistant qualité des données IA",
+      "employer": "Kaspard",
+      "dates": "Mars 2024 – Août 2024",
+      "context": "Projets d'IA et de vision par ordinateur, Bruxelles",
+      "bullets": [
+        "Contrôlé la qualité et la cohérence de jeux de données annotés, en documentant les cas litigieux et les règles de validation appliquées.",
+        "Évalué des sorties générées automatiquement et consigné les défauts dans un référentiel de suivi partagé avec l'équipe projet."
+      ]
+    },
+    {
+      "title": "Botaniste",
+      "employer": "Vertiberry",
+      "dates": "Nov. 2021 – Mai 2022",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Conduit des expérimentations de croissance végétale et analysé les résultats sous différentes conditions environnementales."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Données : nettoyage, validation, contrôle qualité, métadonnées, jeux de données biologiques.\nOutils : Python, SQL, Power Query, Excel, Power BI, Power Automate.\nAnalyse : séries temporelles, analyses multifactorielles, rédaction scientifique."
+      ]
+    },
+    {
+      "heading": "Science & données",
+      "type": "text",
+      "paras": [
+        "Mémoire de master sur la croissance racinaire d'Arabidopsis en milieu dunaire : caractérisation moléculaire et écophysiologique, ULB."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Rigueur et souci du détail",
+        "Communication scientifique",
+        "Travail en équipe"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}
