@@ -1,0 +1,52 @@
+{
+  "_source": {
+    "job": "<employer> — <exact job title> (<reference code if any>)",
+    "url": "<url of the posting>",
+    "language": "fr|en",
+    "date": "YYYY-MM-DD",
+    "sources": [
+      "data/experience_master.json",
+      "job_description.<lang>.txt (in this folder)"
+    ],
+    "verification_status": "PENDING USER VERIFICATION"
+  },
+
+  "name": "Thomas Chacra",
+  "subtitle": "<job title> — candidature <employer>",
+  "title": "<one line, <= 430 pt at 11 pt bold>",
+  "summary": "<exactly 4 lines at 10 pt over 416.5 pt; write as a single string>",
+
+  "contact": [
+    {"icon": "pin",      "text": "1000 Bruxelles, Belgique",              "x": 59.78},
+    {"icon": "phone",    "text": "+32 485315276",                          "x": 173.58},
+    {"icon": "mail",     "text": "thomaschacra@gmail.com",                 "x": 258.35, "link": true},
+    {"icon": "car",      "text": "Permis B",                               "x": 385.15},
+    {"icon": "linkedin", "text": "www.linkedin.com/in/thomas-chacra/",     "x": 449.95, "link": true, "size": 7.0}
+  ],
+
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+
+  "experience": [
+    {
+      "title": "<exact title>",
+      "employer": "<exact employer name>",
+      "dates": "<Mois AAAA – Mois AAAA>",
+      "context": "<one italic line>",
+      "bullets": ["<bullet>", "<bullet>"]
+    }
+  ],
+
+  "sidebar": [
+    {"heading": "Compétences clés", "type": "text",
+     "paras": ["Durabilité : …\nProjets : …\nPédagogie : …"]},
+    {"heading": "Informatique & Data", "type": "skills",
+     "lines": ["Power BI, Excel / Power Query,", "SQL, Python, Power Automate"]},
+    {"heading": "Soft skills", "type": "bullets",
+     "items": ["Esprit analytique", "Rigueur et autonomie", "Communication"]},
+    {"heading": "Formation", "type": "education",
+     "items": [{"lines": ["M.Sc. Bioingénieur en environnement", "Université libre de Bruxelles (ULB)"]},
+               {"lines": ["B.Sc. Sciences de l'ingénieur", "Université libre de Bruxelles (ULB)"]}]},
+    {"heading": "Langues", "type": "languages",
+     "items": [["Français", "Bilingue"], ["Anglais", "Bilingue"], ["Néerlandais", "En cours"]]}
+  ]
+}

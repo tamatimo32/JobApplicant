@@ -1,0 +1,151 @@
+{
+  "_note": "Regression fixture: the exact content of assets/reference/CV_Master_Format.pdf. Rendering this must reproduce the reference page. Used by tools/compare_to_reference.py — do not edit to 'improve' the wording.",
+  "name": "Thomas Chacra",
+  "subtitle": "Master-format reproduction fixture",
+  "title": "Environmental Bioengineer | Environmental Aspects and Performance Analyst",
+  "summary": "Environmental Bioengineer with consulting experience in data reconciliation, environmental performance indicators, and automated reporting. Highly proficient in Excel, Power BI, Power Query and experienced with Python, and SQL. Bilingual in French and English, I am ready to contribute to and grow within a global environmental services leader like Veolia.",
+  "contact": [
+    {
+      "icon": "pin",
+      "text": "1000 Brussels, Belgium",
+      "x": 59.78
+    },
+    {
+      "icon": "phone",
+      "text": "+32 485315276",
+      "x": 173.58
+    },
+    {
+      "icon": "mail",
+      "text": "thomaschacra@gmail.com",
+      "x": 258.35,
+      "link": true
+    },
+    {
+      "icon": "car",
+      "text": "License B",
+      "x": 385.15
+    },
+    {
+      "icon": "linkedin",
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "x": 449.95,
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Present",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Structure environmental data to support performance assessment and identify improvement opportunities.",
+        "Developed a dynamic carbon assessment tool (cradle to grave, ISO 14067) covering manufacturing emissions and international transportation from Kenya to potential clients."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Environmental and sustainability consulting, Brussels",
+      "bullets": [
+        "Calculated carbon footprints using the GHG Protocol and developed environmental performance indicators and monitoring KPIs.",
+        "Designed Power BI dashboards to consolidate sustainability and environmental data and support management decision-making.",
+        "Gained exposure to ISO 9001 audit practices and ISO 14001 and ISO 45001 management system requirements."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech and innovative hydroponic production, Brussels",
+      "bullets": [
+        "Analyzed environmental time-series data to identify trends and optimize crop productivity and energy efficiency.",
+        "Developed performance indicators and supported process optimization through structured data analysis."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – August 2024",
+      "context": "Energy engineering and technical consultancy, Brussels",
+      "bullets": [
+        "Contributed to technical and economic feasibility studies for low-carbon energy systems, including geothermal energy, hydrothermal systems, and biowaste recovery."
+      ]
+    },
+    {
+      "title": "Botaniste",
+      "employer": "Vertiberry",
+      "dates": "Nov. 2021 – May 2022",
+      "context": "AgTech and innovative hydroponic production, Brussels",
+      "bullets": [
+        "Conducted plant growth experiments and analyzed results to assess performance under different environmental conditions."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Relative Skills",
+      "type": "text",
+      "paras": [
+        "Compliance : Familiarity with ISO 14001, ISO 9001, ISO 50001, environmental assessments, and sustainability reporting.\nClimat & Carbone : Carbon footprint calculations, GHG Protocol, CSRD, ESRS, EU Taxonomy, and climate risk assessment, ISO 14067"
+      ]
+    },
+    {
+      "heading": "IT & Data Analytics",
+      "type": "skills",
+      "lines": [
+        "Power BI, Excel / Power Query ,",
+        "SQL, Python, Power Automate"
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Analytical Mindset",
+        "Results oriented",
+        "Team player"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. in Environmental Bioengineering",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. in Engineering Sciences",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [
+        [
+          "French",
+          "Bilingual"
+        ],
+        [
+          "English",
+          "Bilingual"
+        ],
+        [
+          "Dutch",
+          "In Progress"
+        ]
+      ]
+    }
+  ]
+}

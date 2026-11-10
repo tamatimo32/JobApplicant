@@ -1,0 +1,143 @@
+{
+  "_source": {
+    "job": "Consultant·e ESG, Pilier Environnement, ESGlogic, Ixelles (hybride)",
+    "url": "https://esglogic.eu/careers/consultant-esg-pilier-environnement",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. Le poste exige la maîtrise de SBTi, ISO 14064 et une expérience d'ACV. Ces trois éléments ne figurent nulle part dans les sources : ils ne sont donc pas affirmés dans ce CV. A confirmer : (1) toute expérience SBTi ou ISO 14064, même partielle ; (2) toute ACV, même de cursus ou de mémoire ; (3) outils ACV (SimaPro, OpenLCA, Ecoinvent)."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Consultant ESG, pilier Environnement, ESGlogic",
+  "title": "Bioingénieur | Bilan carbone, risques climatiques & conseil environnemental",
+  "summary": "Bioingénieur qui a fait de l'empreinte carbone son métier : GHG Protocol, ISO 14067, indicateurs environnementaux et risques climatiques, du calcul jusqu'à la décision du client. Je préfère un chiffre solide et une recommandation que le client applique à un rapport qui ne change rien. C'est cette exigence que je veux apporter au pilier E d'ESGlogic.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Aujourd'hui",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Conçu un outil dynamique de calcul d'empreinte carbone produit selon ISO 14067, avec des hypothèses explicites et traçables.",
+        "Structuré les données environnementales amont pour éclairer les leviers de réduction, sur l'ensemble du cycle de vie du produit."
+      ]
+    },
+    {
+      "title": "Analyste ESG & durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en durabilité, Bruxelles",
+      "bullets": [
+        "Calculé des empreintes carbone selon le GHG Protocol et construit les indicateurs de performance environnementale qui les accompagnent.",
+        "Structuré et fiabilisé des jeux de données ESG clients (contrôle qualité, validation) et automatisé une certification ESG, rendue 70 % plus rapide.",
+        "Conçu des outils Excel et Power BI servant de plateformes de reporting : collecte, calcul des indicateurs, restitution aux décideurs."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé des séries temporelles énergétiques et biologiques pour relier consommation, conditions de culture et rendement, et identifié les gisements d'efficacité.",
+        "Présenté ces résultats à des ingénieurs et des agronomes non spécialistes, en les traduisant en décisions opérationnelles."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Août 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Contribué à des analyses de risques climatiques à partir de jeux de données d'observation de la Terre (Copernicus), en croisant aléas physiques et contraintes réglementaires des projets.",
+        "Préparé des dossiers CSRD clients, dont la digitalisation de la matrice de double matérialité, et mené des études de faisabilité hydrothermale (CAPEX, retour sur investissement)."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Climat : GHG Protocol, ISO 14067, empreinte produit, indicateurs environnementaux, risques climatiques (Copernicus).\nReporting : CSRD, ESRS, analyse de double matérialité, B Corp, EcoVadis.\nConseil : cadrage, analyse chiffrée, recommandation, restitution aux dirigeants."
+      ]
+    },
+    {
+      "heading": "Outils",
+      "type": "skills",
+      "lines": [
+        "Excel / Power Query, Power BI,",
+        "Python, SQL, Power Automate"
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Vulgarisation technique",
+        "Rigueur sur la donnée",
+        "Autonomie et ownership"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}

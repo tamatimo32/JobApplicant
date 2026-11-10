@@ -1,0 +1,21 @@
+{
+  "typography": "fr",
+  "name": "THOMAS CHACRA",
+  "tagline": "Bioingénieur | Données de biodiversité, qualité des données & science ouverte",
+  "place": "Bruxelles, Belgique",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "10/11/2026",
+  "addressee": "À l'attention de M. Coupremanne, IRSNB.",
+  "subject": "Objet : Chargé de données ouvertes sur la biodiversité, candidature",
+  "salutation": "Monsieur,",
+  "paragraphs": [
+    "Une collection n'existe vraiment, pour la science, qu'à partir du moment où quelqu'un d'autre peut retrouver la donnée, comprendre d'où elle vient et la citer. Tout mon parcours s'est construit autour de ce moment précis : faire tenir debout un jeu de données, puis le rendre lisible à ceux qui n'ont pas vu le terrain. C'est pour cette raison que je vous adresse ma candidature au poste de chargé de données ouvertes de la Plateforme belge pour la Biodiversité.",
+    "Dans mes expériences précédentes, j'ai travaillé des données biologiques à plusieurs stades de leur vie. J'ai analysé des séries temporelles issues de cultures hydroponiques, en reliant conditions de culture, consommation d'énergie et croissance des plantes, pour des analyses multifactorielles qu'il fallait ensuite documenter auprès d'ingénieurs et d'agronomes. J'ai aussi contrôlé la qualité de jeux de données annotés et consigné les cas litigieux et les règles de validation appliquées, ce qui est le travail ingrat dont dépend toute publication. Ce que j'en retire, c'est une habitude : ne jamais avancer un chiffre sans pouvoir dire comment il a été obtenu.",
+    "Votre poste place ce réflexe à l'endroit exact où il compte, entre les détenteurs de collections, le nœud belge du GBIF et les infrastructures européennes. Publier les collections fédérales de l'IRSNB, du MRAC et du Jardin botanique de Meise au standard Darwin Core, avec une métadonnée assez complète pour qu'un chercheur retrouve l'origine d'un spécimen, n'est pas un travail annexe : c'est la condition pour que des décennies de terrain deviennent interrogeables. La dimension science-politique de la Plateforme m'intéresse d'autant plus que mon master en bioingénieur m'a formé à la fois à la mesure et à sa traduction en décisions.",
+    "Mes langues de travail sont le français et l'anglais, que je pratique couramment à l'écrit comme à l'oral, et j'apprends le néerlandais. Mon mémoire de master portait sur la croissance racinaire d'une population d'Arabidopsis issue d'un milieu dunaire, une recherche en biologie végétale qui m'a appris à décrire un protocole avec assez de précision pour qu'un autre puisse le reprendre.",
+    "Je serais heureux de vous exposer de vive voix comment j'aborderais la consolidation de l'inventaire des collections fédérales, et je vous remercie de l'attention portée à ma candidature."
+  ],
+  "closing": "Cordialement,",
+  "signature": "Thomas Chacra"
+}
