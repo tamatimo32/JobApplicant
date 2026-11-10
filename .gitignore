@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# generated PDFs (reproducible from applications/*/content.*.json)
+out/*.pdf
+!out/.gitkeep
+
+# scratch
+.work/
+*.tmp
