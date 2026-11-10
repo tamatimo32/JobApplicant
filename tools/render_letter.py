@@ -90,6 +90,38 @@ class LayoutOverflow(RuntimeError):
     pass
 
 
+class StyleViolation(RuntimeError):
+    pass
+
+
+EM_DASH = "\u2014"
+
+# Employers must not be named in the letter prose (STYLE.md §2).
+PREVIOUS_EMPLOYERS = ("Green Stems", "BetterBusiness", "Better Business",
+                      "Vertiberry", "Deplasse", "Kaspard")
+
+
+def check_style(d: dict) -> list[str]:
+    """Enforce STYLE.md §1 (no em dashes) and §2 (no employer names in prose)."""
+    offenders: list[str] = []
+    fields = ("tagline", "addressee", "subject", "salutation",
+              "paragraphs", "closing")
+    for field in fields:
+        value = d.get(field)
+        values = value if isinstance(value, list) else [value]
+        for v in values:
+            if not isinstance(v, str):
+                continue
+            if EM_DASH in v:
+                offenders.append(f"{field}: em dash -> {v[:70]!r}")
+            for employer in PREVIOUS_EMPLOYERS:
+                if employer.lower() in v.lower():
+                    offenders.append(
+                        f"{field}: names previous employer {employer!r} "
+                        f"(use 'mes expériences précédentes') -> {v[:60]!r}")
+    return offenders
+
+
 def register_fonts() -> None:
     pdfmetrics.registerFont(TTFont("Calibri-Light", str(FONTS / "Calibri-Light.ttf")))
 
@@ -166,6 +198,10 @@ def layout_paragraphs(paras: list[str]) -> list[Para]:
 
 
 def build(d: dict, out_path: str) -> None:
+    bad = check_style(d)
+    if bad:
+        raise StyleViolation(
+            "STYLE.md violation in this letter:\n  " + "\n  ".join(bad))
     register_fonts()
     c = canvas.Canvas(out_path, pagesize=(PAGE_W, PAGE_H))
     c.setTitle(f"Lettre de motivation — {d.get('signature', '')}".strip())

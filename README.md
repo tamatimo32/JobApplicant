@@ -9,6 +9,11 @@ No Word, no HTML, no cloud service. One Python file renders the PDF with
 ReportLab, so the output is byte-reproducible and the layout can be verified
 numerically against the reference.
 
+> **Before writing any text, read [`STYLE.md`](STYLE.md).** It holds the
+> applicant's standing rules: no em dashes, no naming previous employers in the
+> letter prose, keep the human register. Those rules override the examples
+> given further down in this file.
+
 ---
 
 ## TL;DR for an AI picking this up
@@ -103,6 +108,9 @@ See `content schema` below. Rules that matter:
 - **5 roles max, 1–3 bullets each.** The page has room for ~12 bullets total.
 - **Mirror the posting's vocabulary** where it is truthful (e.g. the ULB posting
   says "transition socio-écologique", "multi-acteurs", "parcours durabilité").
+- **No em dashes and no previous-employer names in letter prose.** See
+  `STYLE.md`. Check with
+  `grep -n '—' applications/<slug>/content.*.json applications/<slug>/letter.*.json`.
 - **The summary is exactly 4 lines** at 10 pt across 416.5 pt. The renderer
   enforces this.
 - **Verification status.** The user asked to review every CV. Leave
@@ -242,6 +250,8 @@ The reference (`ML_Master_Format.pdf`, for Clerens) and the earlier one
    move. It reframes the application as a natural consequence of who you are.
 2. **Paragraph 2 = the evidence.** Concrete, one breath: what you did, with
    named frameworks and tools. This is the only paragraph allowed to be dense.
+   Describe *where* generically ("dans mes expériences précédentes", "dans mon
+   poste actuel"): see `STYLE.md` §2. Employer names belong in the CV.
 3. **Paragraph 3 = why this employer.** Name their actual organs and projects
    (for ULB: reACT, SAGE, ARES, TRAN-F201), not generic praise.
 4. **Paragraph 4 = the logistics** (languages, availability, eligibility).
@@ -395,6 +405,12 @@ scale them beyond 13.8 pt.
       subject = the posting reference.
 - [ ] Text is selectable and the file is < 500 KB.
 - [ ] French letters: punctuation spacing present (` :`, ` ;`, `« … »`).
+- [ ] No em dash anywhere in the prose (`grep -n '—'`); only the CV's structural
+      `Title — Employer` separator may contain one.
+- [ ] The letter does not name previous employers; it says "mes expériences
+      précédentes" or similar.
+- [ ] No AI tells: "passionné par", "fort de mon expérience", "je suis convaincu
+      que", or three-item lists in every sentence.
 - [ ] The letter and the CV tell the same story with the same job titles.
 
 ---
