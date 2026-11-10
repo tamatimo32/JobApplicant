@@ -23,7 +23,6 @@ import sys
 from dataclasses import dataclass
 from typing import Sequence
 
-from PIL import Image
 from reportlab.lib.colors import Color, HexColor
 from reportlab.lib.utils import ImageReader
 from reportlab.pdfbase import pdfmetrics
@@ -32,7 +31,10 @@ from reportlab.pdfgen import canvas
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FONTS = ROOT / "assets" / "fonts"
-ICONS = ROOT / "assets" / "icons"
+# assets/icons/ holds the emoji bitmaps lifted from the master. They are kept
+# in the repo for reference only: this renderer never draws them (see STYLE.md
+# §4) and assert_no_icons() fails the render if any image besides the photo
+# reaches the page.
 
 PAGE_W, PAGE_H = 612.0, 792.0          # A4 portrait, points
 
@@ -42,6 +44,7 @@ PAGE_W, PAGE_H = 612.0, 792.0          # A4 portrait, points
 C_PRIMARY = HexColor("#156082")         # headings, dates, accent bar
 C_ACCENT = HexColor("#4EA72E")          # employer names
 C_LINK = HexColor("#467886")            # e-mail + LinkedIn
+C_MUTED = HexColor("#8C8C8C")           # contact-bar dot separators
 C_RULE = HexColor("#7F7F7F")            # rule under sidebar headings
 C_SIDEBAR_HEAD = HexColor("#595959")    # sidebar headings only
 C_TEXT = HexColor("#000000")
@@ -67,9 +70,12 @@ BAR = (36.9, 147.9, 539.1, 21.9)
 BAR_RADIUS = 3.3
 BAR_TEXT_BASE = 161.80
 BAR_TEXT_SIZE = 9.0
-BAR_ICON_TOP = 147.75                # emoji-cube top (content starts 154.1)
-BAR_ICON_H = 13.8                    # emoji cube height, measured
-BAR_ICON_GAP = 0.0                   # each item carries its own measured x
+# The contact bar ships as text only: no emoji bitmaps. The "icon" names in
+# the content JSON are still accepted (older content files carry them) and are
+# ignored, so nothing has to be rewritten when this flips back.
+BAR_BULLET = "\u00b7"                # separator between contact items
+BAR_LEFT_PAD = 8.0                  # panel edge to the first label
+BAR_GAP_BETWEEN = 3.2               # gap on each side of the dot
 LINK_UNDERLINE_DY = 2.0
 LINK_UNDERLINE_W = 0.45
 
@@ -251,6 +257,35 @@ def put(c: canvas.Canvas, x: float, baseline: float, text: str, font: str,
     c.drawString(x, PAGE_H - baseline, text)
 
 
+def assert_no_icons(pdf_path: str, w_dots: int = 4) -> None:
+    """The contact bar ships with no images.
+
+    Two things can regress here: an emoji bitmap sneaking back in (hence the
+    image count, `photo.jpg` being the only allowed one), and the reflowed row
+    overrunning the panel. Both are cheap to check on the finished PDF, which is
+    also the only place a stale content file's `x` values cannot hide.
+    """
+    try:
+        import pymupdf
+    except ImportError:  # pragma: no cover
+        print("  (pymupdf not installed: skipping the icon check)")
+        return
+    page = pymupdf.open(pdf_path)[0]
+    images = page.get_images()
+    if len(images) > 1:
+        raise LayoutOverflow(
+            f"{len(images)} images on the page; only the photo is allowed. "
+            "Did an emoji icon come back into the contact bar?")
+    bx, by, bw, bh = BAR
+    row_right = bx + bw
+    for w in page.get_text("words"):
+        x0, y0, x1 = w[0], w[1], w[2]
+        if by <= y0 <= by + bh and x1 > row_right:
+            raise LayoutOverflow(
+                f"contact-bar text {w[4]!r} ends at x={x1:.1f}, past the panel "
+                f"edge {row_right:.1f}.")
+
+
 def em_top_to_baseline(y_top: float, size: float) -> float:
     """Word puts the baseline 0.3 * size below the top of the em box."""
     return y_top + 0.3 * size
@@ -297,26 +332,66 @@ def draw_header(c: canvas.Canvas, d: dict) -> list[str]:
     return lines
 
 
-def draw_contact_bar(c: canvas.Canvas, d: dict) -> None:
-    bx, by, bw, bh = BAR
-    panel(c, by, bh, BAR_RADIUS)
+def layout_contact_bar(d: dict) -> list[tuple[str, float, float]]:
+    """Return [(text, x, size), ...] for the contact bar, ignoring any icon.
 
-    for item in d["contact"]:
-        tx = item["x"]                       # measured text origin
-        path = ICONS / f"{item['icon']}.png"
-        im = Image.open(path)
-        iw = BAR_ICON_H * im.width / im.height
-        ix = tx - iw - BAR_ICON_GAP
-        c.drawImage(ImageReader(str(path)), ix, PAGE_H - BAR_ICON_TOP - BAR_ICON_H,
-                    iw, BAR_ICON_H, mask="auto")
-        color = C_LINK if item.get("link") else C_TEXT
-        size = item.get("size", BAR_TEXT_SIZE)
-        baseline = BAR_TEXT_BASE + item.get("dy", 0.0)
-        put(c, tx, baseline, item["text"], "Aptos", size, color)
-        if item.get("link"):
-            width = tw(item["text"], "Aptos", size)
-            rule(c, tx, tx + width, baseline + LINK_UNDERLINE_DY,
-                 C_LINK, LINK_UNDERLINE_W)
+    The master separates items with a small dot, not an emoji. The row is laid
+    out from BAR's left padding rather than the per-item measured `x` values in
+    the content JSON, because those x values describe the *reference* text,
+    which starts after an emoji that no longer exists. Reusing them would leave
+    a 20 pt hole at the left and push every item roughly one emoji too far
+    right, past the panel on the right-hand side.
+
+    Items are separated by a dot with BAR_GAP_BETWEEN on each side. If the row
+    is still narrower than the panel, the slack is shared between the gaps; if
+    it is wider, the gaps collapse to BAR_GAP_BETWEEN and `LayoutOverflow`
+    fires, so an over-long email address is caught here and not in Word.
+    """
+    items = d["contact"]
+    sizes = [it.get("size", BAR_TEXT_SIZE) for it in items]
+    widths = [tw(it["text"], "Aptos", s) for it, s in zip(items, sizes)]
+    dot_w = tw(BAR_BULLET, "Aptos", BAR_TEXT_SIZE)
+
+    n_gaps = len(items) - 1
+    inner = BAR[2] - 2 * BAR_LEFT_PAD
+    natural = sum(widths) + n_gaps * (2 * BAR_GAP_BETWEEN + dot_w)
+    # each inter-item gap is:  text | gap | dot | gap | text
+    gap = BAR_GAP_BETWEEN
+    if n_gaps:
+        slack = inner - natural
+        gap = BAR_GAP_BETWEEN + max(0.0, slack) / (2 * n_gaps)
+        if natural > inner:
+            raise LayoutOverflow(
+                f"the contact bar is {natural - inner:.1f} pt too wide: "
+                f"{natural:.1f} pt of content in {inner:.1f} pt. Shorten a label "
+                f"(the email and the LinkedIn URL are the usual culprits).")
+
+    out, x = [], BAR[0] + BAR_LEFT_PAD
+    for i, (it, size, w) in enumerate(zip(items, sizes, widths)):
+        out.append((it["text"], x, size))
+        x += w + gap
+        if i < n_gaps:
+            out.append((BAR_BULLET, x, BAR_TEXT_SIZE))
+            x += dot_w + gap
+    return out
+
+
+def draw_contact_bar(c: canvas.Canvas, d: dict) -> None:
+    # The bar has its own geometry: BAR = (x, top, width, height). Do not reuse
+    # panel(), which is hard-wired to the sidebar's PANEL_X / PANEL_W and used
+    # to draw this backdrop under the last contact item only.
+    bx, by, bw, bh = BAR
+    c.setFillColor(TINT)
+    c.roundRect(bx, PAGE_H - by - bh, bw, bh, BAR_RADIUS, stroke=0, fill=1)
+
+    linked = {it["text"]: it.get("link", False) for it in d["contact"]}
+    for text, tx, size in layout_contact_bar(d):
+        is_dot = text == BAR_BULLET
+        color = C_LINK if linked.get(text) else (C_MUTED if is_dot else C_TEXT)
+        put(c, tx, BAR_TEXT_BASE, text, "Aptos", size, color)
+        if linked.get(text):
+            rule(c, tx, tx + tw(text, "Aptos", size),
+                 BAR_TEXT_BASE + LINK_UNDERLINE_DY, C_LINK, LINK_UNDERLINE_W)
 
 
 def draw_main_heading(c: canvas.Canvas, text: str) -> None:
@@ -496,6 +571,7 @@ def build(d: dict, out_path: str) -> None:
 
     c.showPage()
     c.save()
+    assert_no_icons(out_path)
 
 
 def main(argv: Sequence[str]) -> int:

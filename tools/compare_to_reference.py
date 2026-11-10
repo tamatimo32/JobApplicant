@@ -30,6 +30,14 @@ FIXTURE = ROOT / "tools" / "fixtures" / "master_content.json"
 
 TOL_X, TOL_Y = 2.0, 2.0
 
+# The contact bar is deliberately *not* at the reference x any more: the
+# reference positions each label after an emoji, and we ship no emoji (the row
+# is laid out from the panel edge with a dot separator). Comparing those five
+# labels on x would just encode "we are not the reference", forever. Their y
+# baseline is still checked.
+BAR_TEXT_Y = 161.80
+BAR_X_EXEMPT = True
+
 
 def spans(pdf: pathlib.Path) -> list[tuple[float, float, float, str]]:
     """(baseline_y, origin_x, size, text) for every non-blank text span."""
@@ -82,6 +90,8 @@ def main() -> int:
         r = min(cands, key=lambda r: abs(r[0] - y))
         pool.remove(r)
         dy, dx = abs(y - r[0]), abs(x - r[1])
+        if BAR_X_EXEMPT and abs(y - BAR_TEXT_Y) < 0.5:
+            dx = 0.0          # see BAR_TEXT_Y: x is intentional, y is not
         worst = max(worst, dy, dx)
         flag = ""
         if dy > TOL_Y or dx > TOL_X:

@@ -106,3 +106,27 @@ have been said by a person in a conversation, rewrite it.
 
 Layout fidelity, one page, `LayoutOverflow` instead of shrinking fonts,
 verification flags, French punctuation spacing. See `README.md`.
+
+---
+
+## 4. No emoji, no icon images
+
+The contact bar on the CV carries **text only**, separated by a middle dot
+(`·`). The emoji bitmaps that the original master used (pin, phone, mail, car,
+LinkedIn) are no longer drawn. Reasons: they are raster, they render
+inconsistently across viewers, and they date the document.
+
+`tools/render_cv.py` enforces this: `assert_no_icons()` fails the render if the
+page holds any image besides `assets/photo.jpg`. The `icon` key in a content
+file is ignored, so old files keep working.
+
+**The photo stays.** "No images" means no emoji; the applicant's portrait is
+part of the template.
+
+## 5. No tables in the letter
+
+The motivation letter is absolute-positioned text lines, not a table, and it
+must stay that way. If a line looks "misaligned" (a word hanging past the right
+margin), the cause is in the renderer, not the content: see the "Two traps"
+section of `README.md`. Never fix it by adding a table, a column, or manual
+spaces.

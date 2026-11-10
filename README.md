@@ -167,16 +167,18 @@ Always *look* at the PNG. The numbers can be perfect while something is ugly.
   "summary": "...",
 
 
-  // Each item: icon in {pin,phone,mail,car,linkedin}, text, x (left edge of the
-  // TEXT, measured from the master), optional link/href styling, optional size.
-  // Do not change the x values unless you re-measure the master.
+  // The contact bar ships as TEXT ONLY, no emoji. `icon` is optional legacy:
+  // older content files carry it and the renderer ignores it, so you do not
+  // have to strip it. `x` is likewise ignored -- the row is laid out
+  // automatically from the panel's left edge with a "·" separator, because the
+  // master's x values are "after an emoji we no longer draw". Keep the five
+  // items to roughly the master's lengths or the row will not fit.
   "contact": [
-    {"icon": "pin",   "text": "1000 Bruxelles, Belgique", "x": 59.78},
-    {"icon": "phone", "text": "+32 485315276",            "x": 173.58},
-    {"icon": "mail",  "text": "thomaschacra@gmail.com",   "x": 258.35, "link": true},
-    {"icon": "car",   "text": "Permis B",                 "x": 385.15},
-    {"icon": "linkedin", "text": "www.linkedin.com/in/thomas-chacra/",
-                         "x": 449.95, "link": true, "size": 7.0}
+    {"text": "1000 Bruxelles, Belgique"},
+    {"text": "+32 485315276"},
+    {"text": "thomaschacra@gmail.com", "link": true},
+    {"text": "Permis B"},
+    {"text": "www.linkedin.com/in/thomas-chacra/", "link": true, "size": 7.0}
   ],
 
   "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
@@ -268,6 +270,51 @@ Rules of thumb taken from the user's own guidance note
 - do not re-narrate the CV — reference it;
 - do not start the first sentence with "je";
 - start sentences with different words.
+
+## Two traps that produce "misaligned" text
+
+Both of these look like a formatting accident in Word. Neither is. Both are
+now guarded, and both guards are exercised by the suite below.
+
+### 1. Justification leaks into the next line (the letter)
+
+`render_letter.py` justifies every body line except a paragraph's last one.
+ReportLab's `setWordSpace()` emits a bare `Tw` operator, and per the PDF spec
+`Tw` is **unbounded**: it lives in the page graphics state and survives the
+`ET` that closes the text object. So the *first unjustified line drawn after a
+justified one* silently inherits that word spacing. In the ABB letter this made
+the last line of paragraph 2 render 32 pt wider than the measure, and
+"…familiar ground." hung past the right margin in Word and every viewer.
+
+The letter is **not** built as a table; it is absolutely positioned text lines.
+
+Guards:
+
+- `reset_spacing()` emits `0 Tc 0 Tw` at the start of every draw, and again
+  after each justified line. Do not add a code path that draws text without it.
+- `layout_paragraphs()` rejects a paragraph whose final line is wider than the
+  measure. `wrap()` deliberately allows `JUSTIFY_COMPRESSION` so a *justified*
+  line can be squeezed like Word does, but a last line is never justified, so
+  it gets no allowance. If the allowance is what squeezed the final word on,
+  the line really is too wide: reword the sentence.
+- `assert_inside_margins()` re-opens the finished PDF and fails if any body
+  word crosses `BODY_RIGHT`.
+
+### 2. Anything drawn after a resized image inherits its transform
+
+Also worth knowing, same class of bug: if you ever `drawImage` between text
+calls, remember ReportLab has already emitted a `cm` for it. Draw all images
+(only the photo, now) before the text, or wrap them.
+
+### 3. The contact-bar backdrop was the sidebar's (fixed)
+
+`draw_contact_bar()` used to call `panel()`, which is hard-wired to the
+sidebar's `PANEL_X` / `PANEL_W` (432.0 / 143.6). The bar therefore only ever
+had a pale rectangle under its last item. It now draws its own `roundRect` from
+`BAR = (x, top, width, height)`. Note `BAR` is a **box**, not `(x, y, w)`: the
+third element is a width.
+
+---
 
 ## Fitting the page
 
@@ -366,7 +413,9 @@ python3 tools/compare_letter_to_reference.py   # letter
 
 CV: renders `tools/fixtures/master_content.json` (the master CV's own content)
 and diffs every text baseline against the reference. Current state:
-**max deviation 5.2 pt on a 792 pt page, no structural differences**.
+**max deviation 5.17 pt on a 792 pt page, 30 spans over tolerance, 10 missing**.
+The contact-bar labels are compared on `y` only: their `x` deliberately no
+longer matches the reference, which positions each label after an emoji.
 
 Letter: renders `tools/fixtures/letter_content.json`, checks every header
 element glyph-accurately and each body paragraph for identical line count,
@@ -375,13 +424,14 @@ identical text and identical first baseline. Current state:
 
 If you change a constant and these get worse, you broke something.
 
-**A known-clean tree still exits 1 on `--fail` for the CV.** The CV master mixes
+**A clean tree still exits 1 on `--fail` for the CV.** The CV master mixes
 12.25 pt and 14.5 pt leading, so a handful of sidebar spans sit 1–5 pt apart and
 pymupdf also splits some adjacent spans, which the comparator reports as
 `[missing]`. Baseline is: **max deviation 5.17 pt, 30 spans over tolerance,
 10 missing** — verify you did not *worsen* those three numbers rather than
-expecting a zero exit. A run that says `no structural differences` and those
-figures is green. The letter harness (`--fail`, exit 0) has no such caveat.
+expecting a zero exit. A run with those figures is green.
+The letter harness (`--fail`, exit 0) has no such caveat and is the stricter of
+the two; treat any movement there as a real regression.
 
 ---
 
@@ -421,6 +471,12 @@ scale them beyond 13.8 pt.
       subject = the posting reference.
 - [ ] Text is selectable and the file is < 500 KB.
 - [ ] French letters: punctuation spacing present (` :`, ` ;`, `« … »`).
+- [ ] The contact bar carries no emoji: it is text plus a "·" separator, and
+      the page holds exactly one image (the photo). `assert_no_icons()` checks
+      both on the finished PDF.
+- [ ] No body line crosses x = 457. `assert_inside_margins()` checks the
+      finished letter, and `layout_paragraphs()` checks the last line of every
+      paragraph before drawing.
 - [ ] No em dash anywhere in the prose (`grep -n '—'`); only the CV's structural
       `Title — Employer` separator may contain one.
 - [ ] The letter does not name previous employers; it says "mes expériences

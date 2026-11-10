@@ -157,11 +157,28 @@ def wrap(text: str, size: float, max_w: float) -> list[str]:
     return lines
 
 
+def reset_spacing(c: canvas.Canvas) -> None:
+    """Clear character and word spacing in the page graphics state.
+
+    ReportLab's `setWordSpace` emits a bare `Tw` operator, which the PDF spec
+    says is *unbounded*: it lives in the page state and survives the `ET` that
+    ends the text object. So a justified line leaves a non-zero word space
+    behind, and the next `drawString` (an unjustified last line, the date, the
+    signature) silently inherits it. That is what pushed the last line of body
+    paragraph 2 past the right margin ("...familiar ground." widened by 32 pt).
+    Every draw path now clears it first.
+    """
+    # Canvas exposes no public setter for the *page* state (setWordSpace only
+    # exists on a text object), so emit the operators directly.
+    c._code.append("0 Tc 0 Tw")
+
+
 def draw(c: canvas.Canvas, x: float, baseline: float, text: str, size: float,
          right_align_to: float | None = None, justify_to: float | None = None,
          french: bool = True) -> None:
     """Draw one line. The reference letters are fully justified, so every line
     except the last of a paragraph is stretched to BODY_RIGHT."""
+    reset_spacing(c)
     if french:
         text = french_spacing(text)
     c.setFont("Calibri-Light", size)
@@ -183,9 +200,41 @@ def draw(c: canvas.Canvas, x: float, baseline: float, text: str, size: float,
             t.setWordSpace(extra)
             t.textOut(text)
             c.drawText(t)
+            reset_spacing(c)
             return
 
     c.drawString(x, y, text)
+
+
+def assert_inside_margins(pdf_path: str) -> None:
+    """Post-render check: no body line may cross BODY_RIGHT.
+
+    Catches both of the ways this has gone wrong: a non-zero word space leaking
+    in from a justified line, and a paragraph whose last line was allowed to
+    overhang because `wrap` used its compression allowance. Deliberately scoped
+    to the body band, because the header block (name, address, date) is
+    right-aligned to a different edge.
+    """
+    try:
+        import pymupdf
+    except ImportError:  # pragma: no cover
+        print("  (pymupdf not installed: skipping the margin check)")
+        return
+    doc = pymupdf.open(pdf_path)
+    page = doc[0]
+    lo, hi = PARA_FIRST_BASE - 20.0, BOTTOM_LIMIT
+    bad = []
+    for w in page.get_text("words"):
+        x0, y0, x1, _ = w[:4]
+        # y in pymupdf is measured from the top; baselines here are top-down too
+        if lo <= y0 <= hi and x0 >= BODY_X - 1.0 and x1 > BODY_RIGHT + 0.5:
+            bad.append((round(x1, 1), w[4]))
+    if bad:
+        raise LayoutOverflow(
+            "text crosses the right margin at x = "
+            f"{BODY_RIGHT:.1f} pt: {bad[:6]}. Two known causes: a word space "
+            "leaking out of a justified line (see reset_spacing), or a "
+            "paragraph whose last line was squeezed onto one line too many.")
 
 
 @dataclass
@@ -194,7 +243,27 @@ class Para:
 
 
 def layout_paragraphs(paras: list[str]) -> list[Para]:
-    return [Para(wrap(p, PARA_SIZE, BODY_W)) for p in paras]
+    """Wrap each paragraph, then check its last line.
+
+    `wrap` allows JUSTIFY_COMPRESSION so that a *justified* line may end a
+    fraction of a point past the measure, the way Word does it. The last line of
+    a paragraph is not justified, so it gets no such allowance: if the
+    compression allowance is what let the final word onto that line, the line
+    really is too wide and would overhang the right margin. ("...is familiar
+    ground." was 415.89 pt in a 412.6 pt measure, i.e. 3.3 pt into the margin.)
+    """
+    out = []
+    for p in paras:
+        lines = wrap(p, PARA_SIZE, BODY_W)
+        last = tw(lines[-1], PARA_SIZE)
+        if last > BODY_W + 0.01:
+            raise LayoutOverflow(
+                f"the last line of a paragraph is {last:.2f} pt wide, past the "
+                f"{BODY_W:.2f} pt measure by {last - BODY_W:.2f} pt, and a last "
+                f"line is never justified so it cannot be squeezed: {lines[-1]!r}. "
+                f"Reword the sentence to change where it breaks.")
+        out.append(Para(lines))
+    return out
 
 
 def build(d: dict, out_path: str) -> None:
@@ -270,6 +339,7 @@ def build(d: dict, out_path: str) -> None:
 
     c.showPage()
     c.save()
+    assert_inside_margins(out_path)
 
 
 def main(argv: Sequence[str]) -> int:
