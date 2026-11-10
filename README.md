@@ -2,7 +2,8 @@
 
 A tiny, deterministic pipeline that turns **a job description + the master
 experience data** into **a one-page PDF CV that matches Thomas Chacra's
-`CV_Master_Format` layout**.
+`CV_Master_Format` layout**, plus **a one-page motivation letter that matches
+`ML_Master_Format`**.
 
 No Word, no HTML, no cloud service. One Python file renders the PDF with
 ReportLab, so the output is byte-reproducible and the layout can be verified
@@ -22,11 +23,15 @@ cp -r applications/_TEMPLATE applications/<YYYY-MM>-<employer>-<role-slug>
 # 3. write applications/<slug>/content.<lang>.json   (see "Content schema")
 #    + paste the posting into  applications/<slug>/job_description.<lang>.txt
 
-# 4. render
-python3 tools/render_cv.py applications/<slug>/content.<lang>.json \
-        "out/Thomas_Chacra_CV_<Employer>_<Role>.pdf"
+# 4. write applications/<slug>/letter.<lang>.json   (see "Letter schema")
 
-# 5. look at the PDF, then hand the bullets to the user for verification
+# 5. render both
+python3 tools/render_cv.py     applications/<slug>/content.<lang>.json \
+        "out/Thomas_Chacra_CV_<Employer>_<Role>.pdf"
+python3 tools/render_letter.py applications/<slug>/letter.<lang>.json \
+        "out/Thomas_Chacra_Lettre_Motivation_<Employer>_<Role>.pdf"
+
+# 6. look at both PDFs, then hand the wording to the user for verification
 ```
 
 If `render_cv.py` raises `LayoutOverflow`, the content does not fit on one page.
@@ -38,21 +43,27 @@ If `render_cv.py` raises `LayoutOverflow`, the content does not fit on one page.
 
 ```
 assets/
-  reference/CV_Master_Format.pdf   the layout contract (uploaded by the user)
+  reference/CV_Master_Format.pdf   the CV layout contract (uploaded by the user)
+  reference/ML_Master_Format.pdf   the letter layout contract (uploaded by the user)
   photo.jpg                        portrait, cropped exactly as in the master
   icons/{pin,phone,mail,car,linkedin}.png
-  fonts/Aptos*.ttf                 body + heading substitute (see "Typography")
+  fonts/Aptos*.ttf                 CV body + heading substitute (see "Typography")
+  fonts/Calibri-Light.ttf          letter face (real Calibri Light, metric-exact)
 data/
   experience_master.json           ALL experience, in English, over-complete
 tools/
-  render_cv.py                     the renderer  (content JSON -> PDF)
+  render_cv.py                     CV renderer      (content JSON -> PDF)
+  render_letter.py                 letter renderer  (letter JSON  -> PDF)
   extract_assets.py                rebuilds assets/photo.jpg + assets/icons/*
-  compare_to_reference.py          regression test: fixture vs. the master PDF
+  compare_to_reference.py          CV regression test:     fixture vs. CV_Master_Format
+  compare_letter_to_reference.py   letter regression test: fixture vs. ML_Master_Format
   fixtures/master_content.json     the master CV's own content, for the test
+  fixtures/letter_content.json     the master letter's own text, for the test
 applications/
   _TEMPLATE/                       empty content file to copy
   2026-11-ulb-enseignement-durabilite/
-    content.fr.json                what was sent for the ULB application
+    content.fr.json                CV for the ULB application
+    letter.fr.json                 motivation letter for the same application
     job_description_fr.txt         the posting as it was at the time
   out/                             generated PDFs (git-ignored)
 ```
@@ -98,18 +109,30 @@ See `content schema` below. Rules that matter:
   `"_source.verification_status"` in place and, in the chat reply, list every
   bullet that is *not* a verbatim reuse of an already-approved line.
 
-### 4. Render and look at it
+### 4. Write the letter
+
+See "Letter schema". The letter is **justified** (as in the master) and the
+renderer reproduces Word's line breaking by allowing a small per-gap
+compression — that is what makes the line breaks land on the same words as
+`ML_Master_Format`. Do not remove `JUSTIFY_COMPRESSION`.
+
+When `"typography": "fr"`, French punctuation spacing is applied
+automatically: a narrow no-break space (U+202F) before `; : ! ?` and inside
+`« »`. That is correct French typography; keep it.
+
+### 5. Render and look at it
 
 ```bash
-python3 tools/render_cv.py applications/<slug>/content.fr.json out/<name>.pdf
-python3 -c "import pymupdf; pymupdf.open('out/<name>.pdf')[0].get_pixmap(dpi=150).save('/tmp/p.png')"
+python3 tools/render_cv.py     applications/<slug>/content.fr.json out/<cv>.pdf
+python3 tools/render_letter.py applications/<slug>/letter.fr.json  out/<ml>.pdf
+python3 -c "import pymupdf; pymupdf.open('out/<cv>.pdf')[0].get_pixmap(dpi=150).save('/tmp/p.png')"
 ```
 
 Always *look* at the PNG. The numbers can be perfect while something is ugly.
 
-### 5. Deliver
+### 6. Deliver
 
-- Keep the PDF in `out/`.
+- Keep both PDFs in `out/`.
 - Upload a copy to the user's Google Drive folder
   `1nI7MBzOW5I-5DxKmZG23v8WGq5hW5Ctf` (`google_drive` connector → `upload_file`).
 - Present the PDF in the chat.
@@ -183,6 +206,59 @@ Anything else raises.
 
 ---
 
+## Letter schema
+
+`applications/<slug>/letter.<lang>.json`
+
+```jsonc
+{
+  "typography": "fr",          // "fr" turns on French punctuation spacing; "en" = off
+
+  "name":    "THOMAS CHACRA",  // upper-case, 18 pt
+  "tagline": "one line",       // 11 pt, under the name
+  "place":   "Bruxelles, Belgique",
+  "phone":   "+32 485 31 52 76",
+  "email":   "thomaschacra@gmail.com",
+  "date":    "10/11/2026",
+
+  "addressee": "À l'attention de …, offre … — ULB.",   // 14 pt
+  "subject":   "Objet : … — Thomas Chacra",            // 11 pt
+  "salutation": "Madame, Monsieur,",                   // 12 pt
+
+  "paragraphs": ["…", "…"],    // 12 pt, justified, blank line between
+  "closing":   "Cordialement,",
+  "signature": "Thomas Chacra"
+}
+```
+
+### The house style these letters share
+
+The reference (`ML_Master_Format.pdf`, for Clerens) and the earlier one
+(`ML_FEAD.pdf`) are built on the same skeleton, and it works. Keep it:
+
+1. **Open with a hook, never with "Je".** The reference opens *"Most
+   bioengineers from my degree would love to bridge technical depth with EU
+   policy… I am one of those bioengineers."* The FEAD letter uses the same
+   move. It reframes the application as a natural consequence of who you are.
+2. **Paragraph 2 = the evidence.** Concrete, one breath: what you did, with
+   named frameworks and tools. This is the only paragraph allowed to be dense.
+3. **Paragraph 3 = why this employer.** Name their actual organs and projects
+   (for ULB: reACT, SAGE, ARES, TRAN-F201), not generic praise.
+4. **Paragraph 4 = the logistics** (languages, availability, eligibility).
+5. **Paragraph 5 = a warm close** that offers a conversation and invites
+   feedback even on rejection. Both reference letters do this; it reads as
+   confident rather than needy.
+6. 300–380 words. The master leaves a third of the page empty — resist filling
+   it. `render_letter.py` raises `LayoutOverflow` past y = 730 pt.
+
+Rules of thumb taken from the user's own guidance note
+("Contenu d'une bonne lettre de motivation - FR"):
+
+- one A4 page, clear paragraphs, short sentences;
+- do not re-narrate the CV — reference it;
+- do not start the first sentence with "je";
+- start sentences with different words.
+
 ## Fitting the page
 
 The renderer draws top-down and raises `LayoutOverflow` at two points:
@@ -245,16 +321,41 @@ Key measurements (page = 612 × 792 pt):
 Colours sampled at 900 dpi: primary `#156082`, employer green `#4EA72E`,
 link `#467886`, sidebar heading `#595959`, panel `#F1F5F9`.
 
-### Regression test
+### Letter measurements
+
+`ML_Master_Format.pdf` is also A4 (612 × 792 pt). Everything is **Calibri
+Light** — nothing is bold, including the addressee line.
+
+| Element | Value |
+| --- | --- |
+| Header left/right | name at x 26.40, y 37.80 (18 pt) · tagline y 53.04 (11 pt) |
+| Address block | right-aligned to x 583.50, baselines 33.12 / 48.48 / 61.92 (11 pt) |
+| Rules | two rectangles at y 77.4–77.9: 25.70→457.40 and 457.90→585.70 (0.5 pt) |
+| Body left edge | x 44.40 for every element |
+| Justified right edge | x 457.00 (measure = 412.60 pt) |
+| Date | x 476.02, y 105.74 (11 pt) |
+| Addressee / Subject | y 105.86 (14 pt) / y 120.14 (11 pt) |
+| Salutation | y 146.54 (12 pt) |
+| Body | 12 pt, leading 14.64, paragraph gap 26.64 |
+| Closing / signature | +26.64 / +26.67 after the last paragraph (12 pt) |
+
+### Regression tests
 
 ```bash
-python3 tools/compare_to_reference.py
+python3 tools/compare_to_reference.py          # CV
+python3 tools/compare_letter_to_reference.py   # letter
 ```
 
-It renders `tools/fixtures/master_content.json` (the master CV's own content)
-and diffs every text baseline against the reference PDF. Current state:
-**max deviation 5.2 pt on a 792 pt page, no structural differences**. If you
-change a constant and this gets worse, you broke something.
+CV: renders `tools/fixtures/master_content.json` (the master CV's own content)
+and diffs every text baseline against the reference. Current state:
+**max deviation 5.2 pt on a 792 pt page, no structural differences**.
+
+Letter: renders `tools/fixtures/letter_content.json`, checks every header
+element glyph-accurately and each body paragraph for identical line count,
+identical text and identical first baseline. Current state:
+**max deviation 0.24 pt; 33/33 lines break on the same words.**
+
+If you change a constant and these get worse, you broke something.
 
 ---
 
@@ -264,6 +365,7 @@ change a constant and this gets worse, you broke something.
 | --- | --- | --- | --- |
 | Body, job titles, dates, sidebar | **Aptos** | real `Aptos.ttf`, `Aptos-Bold.ttf`, `Aptos-Italic.ttf` | extracted from the master, identical metrics |
 | Section headings ("EXPÉRIENCE…") | **Seaford Bold** | `Aptos-Bold` (aliased as `Seaford-Bold`) | Seaford is a commercial Microsoft font, not redistributable |
+| Motivation letters | **Calibri Light** | real `Calibri-Light.ttf` | metric-exact: body line widths match the reference to < 0.1 pt |
 
 Seaford Bold was verified to be a near-perfect stand-in: cap height **8.02 pt
 vs 7.89 pt** at 12 pt, and **3.3 % narrower** over the heading string. Side by
@@ -289,8 +391,11 @@ scale them beyond 13.8 pt.
       the master does not use it either. Keep `'` as a straight apostrophe, as
       in the master.
 - [ ] Dates consistent (`Sept. 2026 – Aujourd'hui`, en dash with spaces).
-- [ ] PDF metadata: title = `CV — <name>`, subject = the posting reference.
+- [ ] PDF metadata: title = `CV — <name>` / `Lettre de motivation — <name>`,
+      subject = the posting reference.
 - [ ] Text is selectable and the file is < 500 KB.
+- [ ] French letters: punctuation spacing present (` :`, ` ;`, `« … »`).
+- [ ] The letter and the CV tell the same story with the same job titles.
 
 ---
 
