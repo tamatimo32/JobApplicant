@@ -1,0 +1,163 @@
+{
+  "_source": {
+    "job": "ABB, Global Procurement Sustainability Specialist (JR00050454), Baden, Aargau, Switzerland",
+    "url": "https://careers.abb/dach/de/job/ABB1GLOBALJR00050454EXTERNALDEDACH/Global-Procurement-Sustainability-Specialist",
+    "language": "en",
+    "date": "2026-11-10",
+    "sources": [
+      "Google Drive spreadsheet 'All experience _ Chacra Thomas', re-read 2026-11-10, unchanged",
+      "data/experience_master.json",
+      "job_description_en.txt (in this folder)"
+    ],
+    "verification_status": "PENDING USER VERIFICATION: confirm the bullets marked in the chat reply"
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Global Procurement Sustainability Specialist, application to ABB JR00050454",
+  "title": "Environmental Bioengineer | Sustainability Reporting, Supplier ESG & Carbon Data",
+  "summary": "Environmental bioengineer working where sustainability data meets the supply chain: carbon accounting, supplier ESG assessment and the reporting that turns both into decisions. I build the measurement first, then the dashboard that keeps it honest. Fluent in English and French and used to category stakeholders, I want to bring that discipline to ABB's supply base.",
+  "contact": [
+    {
+      "icon": "pin",
+      "text": "Brussels, Belgium",
+      "x": 59.78
+    },
+    {
+      "icon": "phone",
+      "text": "+32 485 31 52 76",
+      "x": 173.58
+    },
+    {
+      "icon": "mail",
+      "text": "thomaschacra@gmail.com",
+      "x": 258.35,
+      "link": true
+    },
+    {
+      "icon": "car",
+      "text": "Licence B",
+      "x": 385.15
+    },
+    {
+      "icon": "linkedin",
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "x": 449.95,
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Present",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Built a cradle-to-grave product carbon model to ISO 14067, covering manufacturing and international freight.",
+        "Structured supplier environmental data to surface improvement levers, and lead the carbon workstream with a team in Kenya."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Environmental and sustainability consulting, Brussels",
+      "bullets": [
+        "Worked on supplier sustainability assessment datasets and ESG benchmarking as part of client disclosure programmes.",
+        "Built sustainability KPI frameworks and Power BI dashboards consolidating environmental and social performance.",
+        "Automated an ESG certification workflow, cutting analysis time by 70 %, and digitalised the client audit trail."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech and innovative hydroponic production, Brussels",
+      "bullets": [
+        "Analysed environmental time-series data to link energy consumption to production and identify efficiency gains.",
+        "Built automated reporting tools that fed operational decisions, with engineers and agronomists."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – Aug. 2024",
+      "context": "Energy engineering and technical consultancy, Brussels",
+      "bullets": [
+        "Produced technical and economic feasibility studies for low-carbon systems: geothermal, hydrothermal, biowaste."
+      ]
+    },
+    {
+      "title": "Botanist",
+      "employer": "Vertiberry",
+      "dates": "Nov. 2021 – May 2022",
+      "context": "AgTech and innovative hydroponic production, Brussels",
+      "bullets": [
+        "Ran plant growth trials and analysed results across differing environmental conditions."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Key skills",
+      "type": "text",
+      "paras": [
+        "Supply chain: Scope 3 screening, ISO 14067, GHG Protocol, supplier ESG assessment, responsible sourcing.\nReporting: CSRD, ESRS, EU Taxonomy, KPI frameworks, management dashboards.\nSystems: ISO 14001, 9001, 45001, B Corp, ShiftingPact, materiality analysis."
+      ]
+    },
+    {
+      "heading": "IT & Data Analytics",
+      "type": "skills",
+      "lines": [
+        "Power BI, Excel / Power Query,",
+        "PowerPoint, SQL, Python,",
+        "Power Automate"
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Analytical mindset",
+        "Stakeholder communication",
+        "Rigour and autonomy"
+      ]
+    },
+    {
+      "heading": "Education",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. in Environmental Bioengineering",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. in Engineering Sciences",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [
+        [
+          "French",
+          "Bilingual"
+        ],
+        [
+          "English",
+          "Bilingual"
+        ],
+        [
+          "Dutch",
+          "In progress"
+        ]
+      ]
+    }
+  ]
+}

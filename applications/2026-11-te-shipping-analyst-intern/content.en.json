@@ -1,0 +1,151 @@
+{
+  "_source": {
+    "job": "Shipping Analyst Intern, Transport & Environment (T&E), Bruxelles, équipe Trends & Analysis",
+    "url": "https://jobs.transportenvironment.org/o/shipping-analyst-intern",
+    "language": "en",
+    "date": "2026-11-10",
+    "deadline": "2026-11-29",
+    "sources": [
+      "job_description_en.txt (in this folder)",
+      "data/experience_master.json"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. Bullets say Python only where it is safe: Python is listed as a skill in the master data, but the master does not attribute Python to any specific project, so no bullet claims it as the tool used. To confirm with the user: (1) real depth of Python use, (2) whether energy/transport modelling was ever done, (3) which projects actually used Python. Nothing here claims shipping expertise."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Shipping Analyst Intern, Transport & Environment",
+  "title": "Bioengineer | Python, large datasets & energy modelling for transport policy",
+  "summary": "Bioengineer who does number crunching for a living: Python, SQL and Power Query on operational datasets that were never tidy, then the chart that makes the finding obvious. I have analysed energy and environmental time series and I check the quality of every figure I publish. Shipping is where that combination matters most right now.",
+  "contact": [
+    {
+      "text": "Brussels, Belgium"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Licence B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Present",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Built a dynamic Power BI model that turns supplier and freight data into a product carbon footprint to ISO 14067, with every assumption explicit and traceable.",
+        "Structured the upstream environmental data behind it, including international freight, so that the largest emission drivers could be compared and ranked."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Environmental and sustainability consulting, Brussels",
+      "bullets": [
+        "Cleaned, validated and consolidated large client ESG datasets, documenting data-quality rules and flagging every input that failed them.",
+        "Automated an ESG certification analysis with Power Query and Excel macros, cutting processing time by 70 %, and built the Power BI dashboards presented to clients."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech and innovative hydroponic production, Brussels",
+      "bullets": [
+        "Analysed energy and environmental time series from hydroponic cultivation to quantify how lighting drove consumption and yield, and identified where efficiency gains were available.",
+        "Built automated reporting and monitoring tools, and delivered the results to engineers and agronomists so the analysis turned into operating decisions."
+      ]
+    },
+    {
+      "title": "AI Quality Assurance Assistant",
+      "employer": "Kaspard",
+      "dates": "Mar. 2024 – Aug. 2024",
+      "context": "AI and computer-vision projects, Brussels",
+      "bullets": [
+        "Ran data validation and consistency checks across large annotated datasets, and evaluated model outputs against documented quality rules."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – Aug. 2024",
+      "context": "Energy engineering consultancy, Brussels",
+      "bullets": [
+        "Worked with environmental datasets, including Copernicus Earth-observation data, in climate risk assessments for client projects.",
+        "Built Excel models for energy demand and return on investment, and translated the outputs into client-facing figures."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Key skills",
+      "type": "text",
+      "paras": [
+        "Data: Python, SQL, Power Query, Excel / Google Sheets, cleaning and validation of large datasets.\nAnalysis: time-series and multifactorial analysis, energy and environmental data, Copernicus.\nOutput: Power BI, data visualisation, charts and briefings for non-specialist audiences."
+      ]
+    },
+    {
+      "heading": "Policy & climate",
+      "type": "text",
+      "paras": [
+        "CSRD, ESRS, GHG Protocol, ISO 14067, building energy assessment, climate risk. Comfortable in the EU policy language these feed into."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Critical reading of sources",
+        "Clear writing and charts",
+        "Autonomous, deadline-driven"
+      ]
+    },
+    {
+      "heading": "Education",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. in Environmental Bioengineering",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. in Engineering Sciences",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [
+        [
+          "English",
+          "Bilingual"
+        ],
+        [
+          "French",
+          "Bilingual"
+        ],
+        [
+          "Dutch",
+          "In progress"
+        ]
+      ]
+    }
+  ]
+}

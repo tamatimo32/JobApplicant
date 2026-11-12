@@ -1,0 +1,163 @@
+{
+  "_source": {
+    "job": "ULB — Chargé·e de projet « Enseignement et durabilité » (2026/129CDD)",
+    "url": "https://efficy.ulb.ac.be/public/guest?page=Publ.htm&app=ulbRH&code=OtbKFUSUg0eZamoiworU",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": [
+      "Google Drive — 'All experience _ Chacra Thomas' (spreadsheet, 6 roles)",
+      "Google Drive — CV_Master_Format.pdf (layout reference)",
+      "Google Drive — MasterThesis_Chacra_Thomas.pdf"
+    ],
+    "verification_status": "PENDING USER VERIFICATION — confirm each bullet before sending"
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Chargé de projet Enseignement et durabilité — candidature ULB 2026/129CDD",
+  "title": "Bioingénieur en environnement | Transition socio-écologique & coordination de projets",
+  "summary": "Bioingénieur en environnement diplômé de l'ULB, où j'ai aussi enseigné et fait de la recherche. Mon parcours combine l'analyse technique — carbone, énergie, données ESG — et la traduction de ces enjeux vers des publics non spécialistes. Bilingue français-anglais, je souhaite mettre cette double culture scientifique et pédagogique au service du reACT.",
+  "contact": [
+    {
+      "icon": "pin",
+      "text": "1000 Bruxelles, Belgique",
+      "x": 59.78
+    },
+    {
+      "icon": "phone",
+      "text": "+32 485315276",
+      "x": 173.58
+    },
+    {
+      "icon": "mail",
+      "text": "thomaschacra@gmail.com",
+      "x": 258.35,
+      "link": true
+    },
+    {
+      "icon": "car",
+      "text": "Permis B",
+      "x": 385.15
+    },
+    {
+      "icon": "linkedin",
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "x": 449.95,
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Aujourd'hui",
+      "context": "Packaging compostable et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Structure les données environnementales pour évaluer la performance et identifier des leviers d'amélioration.",
+        "Développe un outil d'évaluation carbone (ISO 14067) couvrant fabrication et transport international, et pilote le projet avec l'équipe kényane."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en environnement et durabilité, Bruxelles",
+      "bullets": [
+        "Calcule les empreintes carbone (GHG Protocol) et construit les indicateurs de performance environnementale et les KPI de suivi.",
+        "Conçoit des tableaux de bord Power BI et des outils Excel automatisés consolidant les données durabilité.",
+        "Formé aux référentiels ISO 9001, 14001 et 45001 ; participe aux analyses d'écart et à la structuration des systèmes de management."
+      ]
+    },
+    {
+      "title": "Chercheur et développeur",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Sept. 2025",
+      "context": "AgTech et production hydroponique innovante, Bruxelles",
+      "bullets": [
+        "Analyse des séries temporelles environnementales pour identifier des tendances et optimiser productivité et efficacité énergétique.",
+        "Développe des indicateurs de performance et appuie l'optimisation des procédés en collaboration avec ingénieurs et agronomes."
+      ]
+    },
+    {
+      "title": "Consultant énergie et environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Août 2024",
+      "context": "Ingénierie énergétique et conseil technique, Bruxelles",
+      "bullets": [
+        "Contribue aux études de faisabilité de systèmes bas carbone : géothermie, hydrothermie, valorisation des biodéchets.",
+        "Prépare la double matérialité CSRD des clients et rédige les supports de présentation."
+      ]
+    },
+    {
+      "title": "Botaniste",
+      "employer": "Vertiberry",
+      "dates": "Nov. 2021 – Mai 2022",
+      "context": "AgTech et production hydroponique innovante, Bruxelles",
+      "bullets": [
+        "Mène des expérimentations de croissance végétale et analyse les résultats selon les conditions environnementales."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Durabilité : transition socio-écologique, climat, ISO 14001 / 9001 / 50001, CSRD, GHG Protocol.\nProjets : coordination multi-acteurs, suivi opérationnel, reporting et indicateurs.\nPédagogie : vulgarisation scientifique, rédaction, présentation de résultats."
+      ]
+    },
+    {
+      "heading": "Informatique & Data",
+      "type": "skills",
+      "lines": [
+        "Power BI, Excel / Power Query,",
+        "SQL, Python, Power Automate"
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Esprit analytique",
+        "Rigueur et autonomie",
+        "Communication"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. Bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. Sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}

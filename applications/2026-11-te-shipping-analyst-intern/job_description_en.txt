@@ -1,0 +1,64 @@
+Shipping Analyst Intern, Transport & Environment (T&E)
+Source : https://jobs.transportenvironment.org/o/shipping-analyst-intern
+Relevé le 2026-11-10.
+Deadline : 29/11/2026 à minuit. Début préféré : 1er février 2027, 12 mois maximum.
+Stage à temps plein, Bruxelles (hybride, présence régulière au bureau), 1 800 EUR/mois
+(Convention d'Immersion Professionnelle). Équipe Trends & Analysis.
+Candidature : CV + cover letter d'une page maximum.
+
+RÔLE
+
+Le stage appuie le travail quantitatif de T&E sur la politique maritime, dans
+l'UE et au niveau international.
+
+RESPONSABILITÉS CLÉS
+
+- Appuyer l'analyse interne du transport maritime, en utilisant et en améliorant
+  les modèles Excel et Python de T&E sur les émissions des navires, la demande
+  de carburant et le coût des carburants alternatifs.
+- Collecter, nettoyer et visualiser de grands jeux de données (activité et
+  émissions des navires, prix des carburants et de l'énergie, données sur les
+  ports et les flottes) et contrôler la qualité des entrées, des hypothèses et
+  des résultats.
+- Rechercher les aspects technologiques et économiques de l'efficacité
+  énergétique et des carburants alternatifs pour les navires : hydrogène,
+  e-fuels, biocarburants, ammoniac, propulsion par le vent.
+- Analyser l'impact de la politique maritime de l'UE et internationale (FuelEU
+  Maritime, EU ETS pour le shipping, cadre net-zéro de l'IMO) du point de vue
+  environnemental, économique et sociétal.
+- Transformer l'analyse technique en graphiques clairs, briefings et messages
+  clés pour le plaidoyer de T&E.
+- Présenter les résultats en interne et, avec accompagnement, à des publics
+  externes.
+- Soutenir l'organisation sur des recherches et analyses ad hoc.
+
+EXIGENCES
+
+- Solide base en programmation (Python obligatoire) et en analyse de données
+  avec Excel ou Google Sheets.
+- Fortes compétences analytiques, capacité à penser de façon indépendante et
+  critique, à saisir vite des questions techniques et à évaluer la fiabilité des
+  données et des sources.
+- Bonnes capacités de communication et bon niveau d'anglais (langue de travail),
+  avec un goût pour faire passer des messages simples par les données et les
+  infographies.
+- Autonomie et travail en équipe, gestion de tâches réactives sous délais courts.
+- Intérêt pour la politique environnementale et la décarbonation des transports.
+
+ATOUTS
+
+- Connaissance du shipping, de l'énergie ou de la modélisation des transports.
+- Expérience en visualisation de données et en gestion de grands jeux de données.
+- Expérience d'outils d'IA générative pour l'analyse de données et le code.
+- Autres langues européennes.
+- Profils ingénieur, économie, data science ou sciences environnementales
+  encouragés.
+
+À PROPOS
+
+T&E est le principal think tank et groupe de campagne européen sur le transport
+propre. La candidature doit inclure un cover letter d'une page maximum expliquant
+la motivation et l'adhésion aux objectifs de T&E, l'intérêt pour les sujets
+maritimes, et des exemples concrets des compétences ci-dessus. T&E demande aussi
+de confirmer dans la lettre la volonté de s'installer en Belgique et de venir
+régulièrement au bureau de Bruxelles.

@@ -1,0 +1,20 @@
+{
+  "typography": "en",
+  "name": "THOMAS CHACRA",
+  "tagline": "Bioengineer | Python, large datasets & energy analysis",
+  "place": "Brussels, Belgium",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "10/11/2026",
+  "addressee": "To the Trends & Analysis team, Transport & Environment.",
+  "subject": "Application: Shipping Analyst Intern, Trends & Analysis",
+  "salutation": "Dear Hiring Manager,",
+  "paragraphs": [
+    "Shipping is one of the few sectors where a spreadsheet can still move a policy, and that is exactly the work I want to do. FuelEU Maritime, the EU ETS extension to shipping and the IMO framework are decisions taken on the strength of the numbers behind them; I would like to be one of the people producing those numbers.",
+    "Most of my work has been data work with a deadline attached. I have cleaned and validated large environmental datasets, documented the quality rules behind them, and automated analyses that cut processing time by around 70 percent. I have also worked with energy demand and time-series data, built Power BI dashboards that non-specialists actually used, and turned technical results into charts and messages for people who had ten minutes to read them. My tools are Python, SQL, Power Query and Excel.",
+    "My maritime knowledge is limited so far, and I would rather say so than dress it up. What I bring is the ability to learn a model quickly, to ask the question that exposes a weak assumption, and to check whether a figure survives scrutiny before it reaches a briefing. I work in English and French, and I am based in Brussels and happy to come into the office every week.",
+    "I would welcome the chance to discuss how I could support the shipping modelling work, and I thank you for considering my application."
+  ],
+  "closing": "Yours sincerely,",
+  "signature": "Thomas Chacra"
+}
