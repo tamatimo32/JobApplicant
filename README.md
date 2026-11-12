@@ -44,6 +44,27 @@ If `render_cv.py` raises `LayoutOverflow`, the content does not fit on one page.
 
 ---
 
+## The job finder, three commands
+
+The registry says where to look; the finder reads it, crawls, scores every
+posting out of 100, and writes one HTML page with the best ones first.
+
+```bash
+python3 tools/jobfinder.py demo                        # offline, 26 postings
+python3 tools/jobfinder.py report --run 1 --open
+python3 tools/jobfinder.py crawl --countries BE,LU     # the real thing
+```
+
+Standard library only, no install, no API key. Scores are additive and the
+arithmetic for each posting is printed in the report, so a wrong ranking is
+visible rather than mysterious. Full write-up in `docs/JOB_FINDER.md`, the
+formula in `docs/SCORING.md`.
+
+Two things it will not do: scrape LinkedIn or Indeed (their terms forbid it),
+and decide for you. It ranks; you read the top twelve.
+
+---
+
 ## Repository layout
 
 ```
@@ -57,6 +78,9 @@ assets/
 data/
   experience_master.json           ALL experience, in English, over-complete
 tools/
+  jobfinder.py                     job finder CLI   (registry CSV -> ranked HTML)
+  serve_report.py                  live preview of the generated report
+  job_finder/                      the finder package (docs/JOB_FINDER.md)
   render_cv.py                     CV renderer      (content JSON -> PDF)
   render_letter.py                 letter renderer  (letter JSON  -> PDF)
   extract_assets.py                rebuilds assets/photo.jpg + assets/icons/*
@@ -64,6 +88,12 @@ tools/
   compare_letter_to_reference.py   letter regression test: fixture vs. ML_Master_Format
   fixtures/master_content.json     the master CV's own content, for the test
   fixtures/letter_content.json     the master letter's own text, for the test
+docs/
+  JOB_FINDER.md                    how the finder works, and its limits
+  SCORING.md                       the ranking formula, in full
+data/job_finder/
+  demo/                            two page snapshots, so `jobfinder demo` is offline
+  opportunities.db                 created on first crawl
 applications/
   _TEMPLATE/                       empty content file to copy
   2026-11-ulb-enseignement-durabilite/

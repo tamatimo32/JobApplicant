@@ -1,0 +1,350 @@
+"""Tests for the job finder.
+
+Run with:  python3 -m unittest discover -s tools/job_finder/tests -t tools
+
+No pytest, no network, no fixtures that are not in the repo. The point is that
+a collaborator can check the ranking maths without installing anything.
+"""
+
+from __future__ import annotations
+
+import sys
+import tempfile
+import unittest
+from datetime import date, timedelta
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "tools"))
+
+from job_finder import config as C                        # noqa: E402
+from job_finder import dates, report, seniority           # noqa: E402
+from job_finder.adapters import Context, extract_postings  # noqa: E402
+from job_finder.crawl import fingerprint                   # noqa: E402
+from job_finder.fetch import Fetcher                       # noqa: E402
+from job_finder.importer import match_source               # noqa: E402
+from job_finder.model import Keyword, Posting, Source, fold  # noqa: E402
+from job_finder.score import (KeywordIndex, band_for, keyword_points,  # noqa: E402
+                              score)
+from job_finder.store import Store                         # noqa: E402
+
+DEMO = ROOT / "data" / "job_finder" / "demo"
+
+CORE = [  # the keywords the CV really cares about
+    Keyword("sustainability", "sustainability analyst", "en", 3, "role"),
+    Keyword("sustainability", "double materiality", "en", 3, "skill"),
+    Keyword("carbon", "ghg protocol", "en", 3, "skill"),
+    Keyword("carbon", "bilan carbone", "fr", 3, "role"),
+    Keyword("reporting", "csrd", "en", 3, "skill"),
+    Keyword("reporting", "esrs", "en", 3, "skill"),
+    Keyword("lca", "life cycle assessment", "en", 3, "skill"),
+    Keyword("lca", "iso 14067", "en", 3, "skill"),
+    Keyword("data", "power bi", "en", 3, "tool"),
+    Keyword("certification", "b corp", "en", 3, "skill"),
+    Keyword("certification", "ecovadis", "en", 3, "skill"),
+    Keyword("adjacent", "environment", "en", 1, "degree"),
+]
+
+
+def a_posting(**kw) -> Posting:
+    base = dict(url="https://example.org/job/1", title="Sustainability Analyst",
+                employer="Test", country="BE", language="en",
+                description="CSRD reporting, GHG Protocol inventories and "
+                            "double materiality work for SME clients.")
+    base.update(kw)
+    return Posting(**base)
+
+
+class WeightsTest(unittest.TestCase):
+    def test_components_sum_to_one_hundred(self):
+        total = (C.MAX_KEYWORD + C.MAX_SENIORITY + C.MAX_GEOGRAPHY +
+                 C.MAX_LANGUAGE + C.MAX_EMPLOYER + C.MAX_FRESHNESS)
+        self.assertEqual(total, 100)
+
+    def test_bands_cover_zero(self):
+        self.assertEqual(band_for(0), "D")
+        self.assertEqual(band_for(100), "A")
+        floors = [f for _, f, _ in C.BANDS]
+        self.assertEqual(floors, sorted(floors, reverse=True))
+
+
+class FoldTest(unittest.TestCase):
+    def test_accents_collapse(self):
+        self.assertEqual(fold("Toitū Envirocare"), fold("Toitu Envirocare"))
+        self.assertEqual(fold("Möbius"), "mobius")
+
+    def test_fingerprint_is_stable_across_accents(self):
+        self.assertEqual(fingerprint("Analyste ESG", "Möbius", "BE"),
+                         fingerprint("analyste esg", "Mobius", "be"))
+
+
+class SeniorityTest(unittest.TestCase):
+    def test_levels(self):
+        cases = {
+            "Junior Analyst": "graduate",
+            "Sustainability Intern": "intern",
+            "Senior Manager, Climate": "senior",
+            "Head of Sustainability": "exec",
+            "Carbon Consultant": "unspecified",
+        }
+        for title, expected in cases.items():
+            with self.subTest(title=title):
+                self.assertEqual(seniority.detect(title).level, expected)
+
+    def test_zero_years_is_not_three_years(self):
+        self.assertEqual(seniority.min_years("0-2 years of experience"), 0)
+        self.assertEqual(seniority.min_years("No prior experience required"), 0)
+        self.assertEqual(seniority.min_years("3-5 years"), 3)
+
+    def test_years_override_an_inflated_title(self):
+        s = seniority.detect("Junior Analyst", "You have 8 years of experience.")
+        self.assertEqual(s.level, "senior")
+
+
+class DateTest(unittest.TestCase):
+    today = date(2026, 11, 12)
+
+    def test_relative(self):
+        self.assertEqual(dates.parse_date("Posted today", self.today), self.today)
+        self.assertEqual(dates.parse_date("Posted 6 days ago", self.today),
+                         self.today - timedelta(days=6))
+
+    def test_absolute_and_missing_year(self):
+        self.assertEqual(dates.parse_date("2026-11-04", self.today),
+                         date(2026, 11, 4))
+        self.assertEqual(dates.parse_date("Deadline 22 November", self.today),
+                         date(2026, 11, 22))
+        # a date just behind us is next year's
+        self.assertEqual(dates.parse_date("4 January", self.today),
+                         date(2027, 1, 4))
+
+    def test_nonsense_is_none(self):
+        self.assertIsNone(dates.parse_date("as soon as possible", self.today))
+
+
+class KeywordScoringTest(unittest.TestCase):
+    def setUp(self):
+        self.index = KeywordIndex(CORE)
+
+    def test_title_beats_body(self):
+        title_hit = self.index.match(a_posting(title="Sustainability Analyst"))
+        body_hit = self.index.match(a_posting(
+            title="Officer",
+            description="We need a sustainability analyst urgently."))
+        p1, _ = keyword_points(title_hit, {"sustainability analyst"})
+        p2, _ = keyword_points(body_hit, set())
+        self.assertGreater(p1, p2)
+
+    def test_diminishing_returns(self):
+        once = self.index.match(a_posting(description="CSRD"))
+        many = self.index.match(a_posting(description="CSRD " * 20))
+        p1, _ = keyword_points(once, set())
+        p2, _ = keyword_points(many, set())
+        self.assertLess(p2 - p1, 4 * len(many))
+
+    def test_capped_at_the_maximum(self):
+        body = "CSRD ESRS GHG Protocol double materiality EcoVadis B Corp " * 3
+        hits = self.index.match(a_posting(description=body))
+        pts, _ = keyword_points(hits, set())
+        self.assertLessEqual(pts, C.MAX_KEYWORD)
+
+    def test_offtopic_only_is_penalised(self):
+        off = self.index.match(a_posting(
+            title="Marketing Coordinator", description="environment"))
+        on = self.index.match(a_posting())
+        self.assertLess(keyword_points(off, set())[0],
+                        keyword_points(on, set())[0])
+
+
+class ScoreTest(unittest.TestCase):
+    def setUp(self):
+        self.index = KeywordIndex(CORE)
+        self.today = date(2026, 11, 12)
+        self.source = Source("c1", "Test", "company", "BE", "https://x.be", "",
+                             "en", "env_consulting", "sme", "open", "high", 1,
+                             "yes", "")
+
+    def test_total_matches_the_parts(self):
+        b = score(a_posting(posted=self.today), self.source, self.index,
+                  self.today)
+        parts = (b.keyword + b.seniority + b.geography + b.language +
+                 b.employer + b.freshness + b.penalties)
+        self.assertEqual(b.total, max(0, min(100, parts)))
+
+    def test_every_point_is_traceable(self):
+        b = score(a_posting(posted=self.today), self.source, self.index,
+                  self.today)
+        self.assertTrue(any("keyword relevance" in r for r in b.reasons))
+        self.assertTrue(any("penalties" in r for r in b.reasons))
+
+    def test_senior_role_scores_below_junior_role(self):
+        junior = score(a_posting(title="Junior Sustainability Analyst"),
+                       self.source, self.index, self.today)
+        senior = score(a_posting(title="Senior Sustainability Analyst"),
+                       self.source, self.index, self.today)
+        self.assertGreater(junior.total, senior.total)
+
+    def test_fluent_dutch_is_a_penalty_in_belgium(self):
+        fr = score(a_posting(title="Analyste durabilite", language="fr"),
+                   self.source, self.index, self.today)
+        nl = score(a_posting(title="Duurzaamheidsanalist", language="nl"),
+                   self.source, self.index, self.today)
+        self.assertGreater(fr.total, nl.total)
+
+    def test_unpaid_internship_is_penalised(self):
+        paid = score(a_posting(title="ESG Intern"), self.source, self.index,
+                     self.today)
+        unpaid = score(a_posting(title="ESG Intern",
+                                 description="CSRD reporting. Unpaid, six months."),
+                       self.source, self.index, self.today)
+        self.assertGreater(paid.total, unpaid.total)
+
+    def test_exclusion_for_out_of_reach_experience(self):
+        b = score(a_posting(title="Environmental Compliance Manager",
+                            description="You have 9 years of experience."),
+                  self.source, self.index, self.today)
+        self.assertTrue(b.excluded)
+        self.assertIn("year", b.exclude_reason)
+
+    def test_stale_postings_lose_points(self):
+        fresh = score(a_posting(posted=self.today), self.source, self.index,
+                      self.today)
+        old = score(a_posting(posted=self.today - timedelta(days=90)),
+                    self.source, self.index, self.today)
+        self.assertGreater(fresh.total, old.total)
+
+    def test_outside_the_six_countries_scores_low(self):
+        be = score(a_posting(country="BE"), self.source, self.index, self.today)
+        uk = score(a_posting(country="UK"), self.source, self.index, self.today)
+        self.assertGreater(be.total, uk.total)
+
+
+class AdapterTest(unittest.TestCase):
+    def ctx(self, source=None, base="https://example.org/jobs"):
+        return Context(source=source or Source(
+            "s", "Board", "job_board", "BE", "https://example.org", "",
+            "en", "", "", "open", "high", 1, "", ""),
+            base_url=base, today=date(2026, 11, 12), language="en")
+
+    def test_jsonld_is_preferred(self):
+        html = """<html><body>
+        <script type="application/ld+json">
+        {"@type":"JobPosting","title":"Junior Carbon Analyst",
+         "hiringOrganization":{"name":"Acme"},
+         "datePosted":"2026-11-01",
+         "jobLocation":{"address":{"addressLocality":"Brussels",
+                                   "addressCountry":"BE"}},
+         "description":"<p>GHG Protocol.</p>"}
+        </script></body></html>"""
+        postings, adapter = extract_postings(html, self.ctx())
+        self.assertEqual(adapter, "jsonld")
+        self.assertEqual(postings[0].title, "Junior Carbon Analyst")
+        self.assertEqual(postings[0].employer, "Acme")
+        self.assertEqual(postings[0].country, "BE")
+        self.assertEqual(postings[0].posted, date(2026, 11, 1))
+
+    def test_eurobrussels_cards(self):
+        path = DEMO / "job_board-BE-eurobrussels.html"
+        ctx = Context(Source("job_board-BE-eurobrussels", "EuroBrussels",
+                             "job_board", "BE", "https://www.eurobrussels.com",
+                             "https://www.eurobrussels.com/jobs/environment",
+                             "en", "", "", "open", "high", 1, "", ""),
+                      base_url="https://www.eurobrussels.com/jobs/environment",
+                      today=date(2026, 11, 12), language="en")
+        postings, adapter = extract_postings(path.read_text(), ctx)
+        self.assertEqual(adapter, "eurobrussels")
+        self.assertEqual(len(postings), 20)
+        named = [p for p in postings if p.employer and p.employer != "EuroBrussels"]
+        self.assertGreaterEqual(len(named), 19)
+        titles = [p.title for p in postings]
+        self.assertIn("Junior Analyst - Renewable Fuels", titles)
+
+    def test_empty_page_is_not_a_crash(self):
+        postings, adapter = extract_postings("", self.ctx())
+        self.assertEqual(postings, [])
+
+
+class FetchPolitenessTest(unittest.TestCase):
+    def test_restricted_domains_are_refused_locally(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Fetcher(Path(tmp), offline=False, respect_robots=False)
+            for url in ("https://www.linkedin.com/jobs/view/1",
+                        "https://be.indeed.com/viewjob?jk=1"):
+                r = f.get(url)
+                self.assertFalse(r.ok)
+                self.assertIn("refused", r.error.lower())
+            self.assertEqual(f.stats["network"], 0)
+
+    def test_offline_never_touches_the_network(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            f = Fetcher(Path(tmp), offline=True)
+            r = f.get("https://example.org/jobs")
+            self.assertIn("offline", r.error)
+            self.assertEqual(f.stats["network"], 0)
+
+
+class StoreTest(unittest.TestCase):
+    def test_upsert_is_idempotent_and_flags_new(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "t.db")
+            run = store.start_run("first")
+            p = a_posting()
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            self.assertTrue(store.upsert(p, run))
+            self.assertFalse(store.upsert(p, run))
+            store.finish_run(run, 1, 1, 1)
+            run2 = store.start_run("second")
+            self.assertFalse(store.upsert(p, run2))
+            store.save_score(p.fingerprint, score(
+                p, None, KeywordIndex(CORE), date(2026, 11, 12)))
+            store.finish_run(run2, 0, 0, 0)
+            run3 = store.start_run("third")
+            store.upsert(p, run3)
+            rows = store.ranked(new_since_run=run3)
+            self.assertEqual(len(rows), 1)
+            self.assertFalse(rows[0]["is_new"])
+
+
+class ImporterTest(unittest.TestCase):
+    def test_matching_a_saved_file_to_its_row(self):
+        sources = [Source("company-BE-sustenuto-formerly-betterbusiness",
+                          "Sustenuto (formerly BetterBusiness)", "company",
+                          "BE", "https://sustenuto.com", "", "fr", "env_consulting",
+                          "sme", "open", "high", 1, "yes", "")]
+        for name in ("company-BE-sustenuto__careers.html",
+                     "Sustenuto (formerly BetterBusiness).html",
+                     "ESG role at Sustenuto.txt"):
+            with self.subTest(name=name):
+                self.assertEqual(match_source(Path(name), sources).id,
+                                 "company-BE-sustenuto-formerly-betterbusiness")
+
+
+class ReportTest(unittest.TestCase):
+    def test_report_is_self_contained(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "t.db"
+            store = Store(db)
+            run = store.start_run("t")
+            index = KeywordIndex(CORE)
+            source = Source("s", "Board", "job_board", "BE", "https://x", "",
+                            "en", "env_consulting", "sme", "open", "high", 1,
+                            "yes", "")
+            for i, title in enumerate(["Junior Carbon Analyst",
+                                       "Senior Climate Director"]):
+                p = a_posting(title=title, url=f"https://x/{i}")
+                p.fingerprint = fingerprint(p.title, p.employer, p.country)
+                store.upsert(p, run)
+                store.save_score(p.fingerprint, score(p, source, index,
+                                                      date(2026, 11, 12)))
+            store.finish_run(run, 1, 2, 2)
+            out = report.render(db, Path(tmp) / "r.html", run_id=run)
+            html = out.read_text()
+            self.assertIn("<style>", html)
+            self.assertNotIn("http://cdn", html)
+            self.assertNotIn("<link rel=\"stylesheet\"", html)
+            self.assertIn("Junior Carbon Analyst", html)
+            self.assertIn("How the number is made", html)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)

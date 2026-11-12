@@ -11,3 +11,10 @@ out/*.pdf
 .work/
 google_drive/
 *.tmp
+
+# job finder output (reproducible from the registry + a crawl)
+data/job_finder/opportunities.db
+data/job_finder/live.db
+data/job_finder/demo.db
+data/job_finder/cache/
+out/opportunities.html
