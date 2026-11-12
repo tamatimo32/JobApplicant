@@ -65,11 +65,20 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         snapshot = None
         if snapshot_dir:
             exact = Path(snapshot_dir) / f"{source.id}.html"
-            # build_job_sources_csv slugifies ids; a renamed row still matches
-            # its snapshot by prefix, which keeps the demo stable
-            snapshot = exact if exact.exists() else next(
-                (q for q in sorted(Path(snapshot_dir).glob("*.html"))
-                 if source.id.startswith(q.stem)), None)
+            # A query's synthetic id is "query-<id>"; its capture is named
+            # after the query. Fall back to a prefix match so a renamed
+            # registry row still finds its page.
+            plain = source.id.removeprefix("query-")
+            candidates = [f"{plain}.html", f"{source.id}.html"]
+            for name in candidates:
+                if (Path(snapshot_dir) / name).exists():
+                    snapshot = Path(snapshot_dir) / name
+                    break
+            if snapshot is None:
+                snapshot = next(
+                    (q for q in sorted(Path(snapshot_dir).glob("*.html"))
+                     if plain.startswith(q.stem) or q.stem.startswith(plain)),
+                    None)
         if snapshot is not None:
             from .fetch import Response
             resp = Response(url=url, status=200,

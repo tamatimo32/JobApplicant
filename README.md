@@ -53,8 +53,14 @@ posting out of 100, and writes one HTML page with the best ones first.
 python3 tools/jobfinder.py demo                        # offline, 23 postings
 python3 tools/jobfinder.py report --run 1 --open
 python3 tools/jobfinder.py crawl --countries BE,LU     # the real thing
+python3 tools/jobfinder.py crawl --query energy --query internships
 python3 tools/jobfinder.py verify                      # are the links still alive?
 ```
+
+A **query** is one saved search: a listing URL plus the country, language and
+sector its postings inherit. They live in `data/job_finder/queries.json`, so
+"the energy page" and "the 0-2 years page" are two queries on one board rather
+than two registry rows that must be kept in step.
 
 Standard library only, no install, no API key. Scores are additive and the
 arithmetic for each posting is printed in the report, so a wrong ranking is

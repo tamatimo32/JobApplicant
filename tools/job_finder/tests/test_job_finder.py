@@ -244,7 +244,7 @@ class AdapterTest(unittest.TestCase):
         self.assertEqual(postings[0].posted, date(2026, 11, 1))
 
     def test_eurobrussels_cards(self):
-        path = DEMO / "job_board-BE-eurobrussels.html"
+        path = DEMO / "eurobrussels-environment.html"
         ctx = Context(Source("job_board-BE-eurobrussels", "EuroBrussels",
                              "job_board", "BE", "https://www.eurobrussels.com",
                              "https://www.eurobrussels.com/jobs/environment",
@@ -317,6 +317,87 @@ class ImporterTest(unittest.TestCase):
             with self.subTest(name=name):
                 self.assertEqual(match_source(Path(name), sources).id,
                                  "company-BE-sustenuto-formerly-betterbusiness")
+
+
+class QueryTest(unittest.TestCase):
+    """Saved searches: the registry says which sites, a query says which search."""
+
+    def test_the_shipped_queries_load(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        self.assertTrue(qs)
+        for q in qs:
+            self.assertTrue(q.url.startswith("https://"), q.id)
+            self.assertTrue(q.country, f"{q.id} needs a country")
+            self.assertTrue(q.sector, f"{q.id} needs a sector")
+
+    def test_a_query_becomes_a_source(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        src = qs[0].as_source()
+        self.assertEqual(src.listing_url, src.url)
+        self.assertEqual(src.access, "open")
+        self.assertEqual(src.category, "job_board")
+        self.assertTrue(src.id.startswith("query-") or src.id == qs[0].id)
+
+    def test_selection_by_id_board_and_label(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        one = Q.select(qs, ["eurobrussels-energy"])
+        self.assertEqual(len(one), 1)
+        by_board = Q.select(qs, ["EuroBrussels"])
+        self.assertEqual(len(by_board), len(qs))
+        by_label = Q.select(qs, ["intern"])
+        self.assertGreaterEqual(len(by_label), 1)
+
+    def test_unknown_query_is_an_error_not_a_silent_empty_run(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        with self.assertRaises(SystemExit):
+            Q.select(qs, ["no-such-query"])
+
+
+class CaptureFidelityTest(unittest.TestCase):
+    """Every committed snapshot must be captured, never composed.
+
+    The manifest is the receipt: it records the URL and capture date of each
+    file, and this test checks the files and the manifest still agree.
+    """
+
+    def setUp(self):
+        import json
+        self.manifest = json.loads(
+            (DEMO / "manifest.json").read_text(encoding="utf-8"))
+
+    def test_every_snapshot_is_in_the_manifest(self):
+        on_disk = {p.name for p in DEMO.glob("*.html")}
+        listed = set(self.manifest["files"])
+        self.assertEqual(on_disk, listed,
+                         "a captured page without a manifest entry, or the "
+                         "reverse: where did this file come from?")
+
+    def test_every_manifest_entry_records_provenance(self):
+        for name, meta in self.manifest["files"].items():
+            with self.subTest(name=name):
+                self.assertTrue(meta["url"].startswith("https://"))
+                self.assertIn("captured", self.manifest)
+                self.assertGreater(meta["postings"], 0)
+
+    def test_snapshots_carry_real_job_ids_and_nothing_invented(self):
+        """Each file must hold as many distinct ids as the manifest claims."""
+        import re
+        for name, meta in self.manifest["files"].items():
+            with self.subTest(name=name):
+                text = (DEMO / name).read_text(encoding="utf-8")
+                ids = set(re.findall(r"job_display/(\d+)", text))
+                self.assertEqual(len(ids), meta["postings"])
+
+    def test_the_fabricated_sustenuto_fixture_is_gone(self):
+        """It must not come back. This is the URL a reader clicked."""
+        for path in DEMO.glob("*.html"):
+            text = path.read_text(encoding="utf-8").lower()
+            self.assertNotIn("sustainability-analyst-brussels", text)
+            self.assertNotIn("quantis.com/careers", text)
 
 
 class ProvenanceTest(unittest.TestCase):

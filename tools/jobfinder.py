@@ -33,6 +33,7 @@ DEFAULT_CSV = ROOT / "google_drive" / "job_sources_registry.csv"
 DEFAULT_DB = ROOT / "data" / "job_finder" / "opportunities.db"
 DEFAULT_CACHE = ROOT / "data" / "job_finder" / "cache"
 DEFAULT_REPORT = ROOT / "out" / "opportunities.html"
+DEFAULT_QUERIES = ROOT / "data" / "job_finder" / "queries.json"
 DEMO_DIR = ROOT / "data" / "job_finder" / "demo"
 
 
@@ -54,8 +55,34 @@ def _split(value: str | None) -> list[str] | None:
 # commands
 # --------------------------------------------------------------------------- #
 
+def _query_sources(args) -> list:
+    """Queries named on the command line, as synthetic registry rows."""
+    from job_finder import queries as Q
+    qfile = Path(getattr(args, "queries_file", None) or DEFAULT_QUERIES)
+    saved = Q.load(qfile)
+    if not saved:
+        raise SystemExit(f"no queries in {qfile}")
+    picked = Q.select(saved, args.query)
+    return [q.as_source() for q in picked]
+
+
 def cmd_crawl(args) -> int:
     sources, keywords = reg.load(_csv(args.csv))
+    if getattr(args, "query", None):
+        # a query names one saved search; the registry rows are not used
+        chosen = _query_sources(args)
+        print(f"{len(chosen)} queries selected")
+        store = Store(Path(args.db))
+        report = crawl(chosen, keywords, store, Path(args.cache),
+                       offline=args.offline, limit=args.limit,
+                       label=args.label or "queries: " + ",".join(args.query),
+                       verbose=not args.quiet,
+                       snapshot_dir=DEMO_DIR if getattr(args, "demo", False) else None)
+        for line in report.lines():
+            print(line)
+        print(f"database: {args.db}")
+        print(f"next: python3 tools/jobfinder.py report --run {report.run_id}")
+        return 0
     chosen = reg.select(
         sources,
         countries=_split(args.countries),
@@ -226,6 +253,24 @@ def cmd_verify(args) -> int:
     return 0
 
 
+def cmd_queries(args) -> int:
+    """List the saved searches, so a run can be aimed without guessing."""
+    from job_finder import queries as Q
+    qfile = Path(args.file or DEFAULT_QUERIES)
+    saved = Q.load(qfile)
+    if not saved:
+        print(f"no queries in {qfile}")
+        return 1
+    print(f"{len(saved)} queries in {qfile}\n")
+    width = max(len(q.id) for q in saved)
+    for q in saved:
+        print(f"  {q.id:{width}}  {q.country:2} {q.sector:12} "
+              f"{q.label[:34]:34} {q.url}")
+        if q.why and args.verbose:
+            print(f"  {'':{width}}  {q.why}")
+    return 0
+
+
 def cmd_stats(args) -> int:
     store = Store(Path(args.db))
     print(store.stats())
@@ -257,6 +302,9 @@ def build_parser() -> argparse.ArgumentParser:
     c.add_argument("--categories", help="e.g. job_board,company")
     c.add_argument("--priorities", help="e.g. 1 or 1,2")
     c.add_argument("--name", help="substring match on source name")
+    c.add_argument("--query", action="append", metavar="ID",
+                   help="run a saved query from data/job_finder/queries.json "
+                        "(repeatable)")
     c.add_argument("--limit", type=int, help="stop after N sources")
     c.add_argument("--label", help="label stored with the run")
     c.add_argument("--offline", action="store_true",
@@ -316,6 +364,11 @@ def build_parser() -> argparse.ArgumentParser:
                    help="seconds between requests (default 1.0)")
     v.add_argument("--cache", default=str(DEFAULT_CACHE))
     v.set_defaults(func=cmd_verify)
+
+    q = sub.add_parser("queries", help="list the saved searches")
+    q.add_argument("--file", help="default: data/job_finder/queries.json")
+    q.add_argument("--verbose", action="store_true", help="show why each exists")
+    q.set_defaults(func=cmd_queries)
 
     t = sub.add_parser("stats", help="what is in the database")
     t.set_defaults(func=cmd_stats)

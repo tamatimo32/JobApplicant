@@ -62,11 +62,47 @@ registry CSV ──► plan ──► fetch (cached, 1 req/host/1.5 s) ──►
 
 ---
 
+## Queries: which search to run, not just which site
+
+The registry says which sites exist. A board with filters has many searches
+inside it, and each is a different question: "environment" and "0-2 years
+experience" return different postings with different scoring context.
+
+`data/job_finder/queries.json` is the list of saved searches:
+
+```json
+{
+  "id": "eurobrussels-energy",
+  "board": "EuroBrussels",
+  "label": "Energy jobs",
+  "url": "https://www.eurobrussels.com/jobs/energy",
+  "country": "BE",
+  "language": "en",
+  "sector": "energy",
+  "why": "clean energy, renewables, efficiency and Fit for 55 files"
+}
+```
+
+`country`, `language` and `sector` are what a posting inherits when the page
+does not say, and they feed the location and employer components of the score.
+Without them, a listing found under `/jobs/energy` scores as an unknown
+employer in an unknown country.
+
+```bash
+python3 tools/jobfinder.py queries --verbose        # what is saved
+python3 tools/jobfinder.py crawl --query energy --query internships
+```
+
+Overlapping queries are fine and expected: the same vacancy appears under
+several filters, and the fingerprint collapses them, keeping the copy that was
+scored first.
+
 ## Commands
 
 | command | what it does |
 | --- | --- |
-| `crawl` | fetch sources, score, store. `--countries BE,LU`, `--categories job_board,company`, `--priorities 1`, `--limit N`, `--offline` |
+| `crawl` | fetch sources, score, store. `--countries BE,LU`, `--categories job_board,company`, `--priorities 1`, `--limit N`, `--offline`, `--query ID` |
+| `queries` | list the saved searches in `data/job_finder/queries.json` |
 | `demo` | offline run against the two committed snapshots |
 | `import` | score pages you saved by hand: `--dir ~/Downloads/jobs` |
 | `report` | write `out/opportunities.html`. `--run N`, `--show-excluded`, `--hide-dead`, `--open` |
