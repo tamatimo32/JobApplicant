@@ -37,7 +37,7 @@ b("BE", "Sustenuto (formerly BetterBusiness)", "https://sustenuto.com",
        "merged, and Sustenuto runs Belgium, Luxembourg and Switzerland practices. "
        "ESG strategy, CSRD and VSME reporting, double materiality, B Corp, "
        "EcoVadis, LCA and EPD. One row for all three countries because it is one "
-       "career site.", verified="yes")
+       "career site. Its Swiss practice also covers the CH seeker.", verified="yes")
 b("BE", "RDC Environment", "https://www.rdcenvironment.be",
   note="Brussels environmental economics and LCA consultancy, 30+ years, 11-50 staff. "
        "Life-cycle assessment is a direct match to the masters.", verified="no")
@@ -196,20 +196,28 @@ b("CH", "EBP", "https://www.ebp.ch",
   note="Zurich; large Swiss sustainability and infrastructure consultancy, "
        "mid-sized rather than a boutique.", size="mid", verified="yes")
 b("CH", "Carbura", "https://www.carbura.ch",
-  note="Swiss climate protection foundation.", verified="yes")
+  note="Swiss climate protection foundation. Carbon offset funds and "
+       "verification, not employer-side ESG work.", verified="yes")
 b("CH", "ClimatePartner Switzerland", "https://www.climatepartner.com",
   note="Carbon labelling and climate action for companies.", size="mid",
   verified="yes")
 b("CH", "MyClimate", "https://www.myclimate.org",
   note="Carbon-offset foundation; project development and advisory roles.",
   size="mid", verified="yes")
-b("CH", "ESG2go", "https://www.esg2go.ch",
-  note="Swiss ESG rating and reporting tool for SMEs; software plus advisory.",
-  verified="no")
-b("CH", "Center for Sustainability (CSS) Zurich", "https://www.sustainable.ch",
-  note="Sustainability consultancy and training.", verified="no")
+b("CH", "BSD Consulting", "https://www.bsdconsulting.com",
+  note="Zurich, 1998, B Corp. Sustainability strategy and reporting for "
+       "companies and foundations.", verified="yes")
+b("CH", "Quantis", "https://quantis.com",
+  note="Lausanne, with Paris, Zurich, Berlin, Milan and Boston. Quantified "
+       "environmental footprints, CSRD and ESRS, LCA. Strongest single fit in "
+       "Switzerland for a bioengineering profile.", size="mid", verified="yes")
+b("CH", "AdvantiKA", "https://www.advantika.com",
+  note="Geneva boutique, B Corp since 2021. ESG strategy and transformation for "
+       "mid-sized companies.", verified="no")
 b("CH", "Basler & Hofmann", "https://www.baslerhofmann.ch",
-  note="Engineering and environmental consultancy.", size="mid", verified="yes")
+  note="Zurich engineering and environmental consultancy; the hiring is "
+       "engineering-led rather than sustainability-led.", size="mid",
+  verified="yes")
 
 # =========================================================================== #
 # AUSTRALIA
@@ -338,6 +346,21 @@ b("AE", "Dubai Carbon Centre of Excellence", "https://www.dubicarbon.com",
   note="Carbon measurement and MRV.", verified="yes")
 b("AE", "Sustainability Knowledge Group", "https://www.sustainabilityknowledgegroup.com",
   note="ESG training and advisory.", verified="yes")
+b("AE", "Alpin Limited", "https://www.alpinme.com",
+  note="Dubai, 2011, 10-100 staff. ESG strategy, commissioning, energy and "
+       "environmental compliance.", size="mid", verified="yes")
+b("AE", "Sustainable Square", "https://www.sustainablesquare.com",
+  note="Dubai, 2011. ESG advisory and a benchmark platform; SME and government "
+       "clients.", size="mid", verified="yes")
+b("AE", "Aridzone Sustainability Management Consulting", "https://aridzone.ae",
+  note="Dubai boutique, 1-10 staff. ESG management consulting.",
+  verified="no")
+b("AE", "ImpactGulf", "https://impactgulf.com",
+  note="Abu Dhabi boutique, 1-10 staff. Sustainability innovation and advisory.",
+  verified="no")
+b("AE", "Zest Associates", "https://www.zestassociates.com",
+  note="Dubai boutique, 1-10 staff. Low-carbon economy research and policy.",
+  verified="no")
 b("AE", "MenetZero", "https://app.menetzero.com",
   note="Directory of 50 verified UAE carbon consultants; a route to many small "
        "practices rather than an employer itself.", verified="yes")

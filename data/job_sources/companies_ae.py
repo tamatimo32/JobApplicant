@@ -56,12 +56,8 @@ c("Dulsco", "https://www.dulsco.com", "waste", "large", "medium", 3)
 # --- ESG, environmental and green-building consultancies (the SME layer)
 c("AESG", "https://www.aesg.com", "env_consulting", "mid", "high", 1,
   "Sustainability, environmental and commissioning consultancy; hires juniors.")
-c("Alpin Limited", "https://www.alpinme.com", "env_consulting", "mid", "high", 1,
-  "Abu Dhabi sustainability consultancy; runs internships and analyst roles.")
 c("WKC Group", "https://www.wkcgroup.com", "env_consulting", "sme", "high", 2,
   "Environmental impact assessment and acoustics.")
-c("Sustainable Square", "https://www.sustainablesquare.com", "env_consulting",
-  "sme", "high", 2)
 c("Accuracy", "https://www.proaccuracy.com", "env_consulting", "sme", "high", 3)
 c("Uniqus", "https://www.uniqus.com", "env_consulting", "mid", "high", 3)
 c("Planet First", "https://www.planetfirst.ae", "env_consulting", "sme", "high", 2,
