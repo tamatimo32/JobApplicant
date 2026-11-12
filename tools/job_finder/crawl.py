@@ -1,0 +1,133 @@
+"""Crawl a set of registry sources, score what comes back, store the result."""
+
+from __future__ import annotations
+
+import hashlib
+import time
+from dataclasses import dataclass, field
+from datetime import date
+from pathlib import Path
+
+from . import config as C
+from . import registry as reg
+from .adapters import Context, extract_postings
+from .fetch import Fetcher
+from .model import Keyword, Posting, Source, fold
+from .score import KeywordIndex, score
+from .seniority import detect
+from .store import Store
+
+
+@dataclass
+class RunReport:
+    run_id: int = 0
+    fetched: int = 0
+    postings: int = 0
+    new: int = 0
+    kept: int = 0
+    excluded: int = 0
+    log: list[dict] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+
+    def lines(self) -> list[str]:
+        out = [f"run {self.run_id}: {self.fetched} pages, {self.postings} postings, "
+               f"{self.new} new, {self.kept} kept, {self.excluded} excluded"]
+        return out
+
+
+def fingerprint(title: str, employer: str, country: str) -> str:
+    """Identity for deduplication.
+
+    Title plus employer plus country, not the URL, because the same posting is
+    routinely published at three URLs (board, ATS, employer site). Folded so
+    "Möbius" and "Mobius" collapse, which is the same accent bug as before.
+    """
+    blob = "|".join([fold(title), fold(employer), fold(country)])
+    return hashlib.sha1(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
+          cache_dir: Path, *, offline: bool = False, limit: int | None = None,
+          label: str = "", verbose: bool = True,
+          snapshot_dir: Path | None = None) -> RunReport:
+    run_id = store.start_run(label or f"run {date.today()}")
+    report = RunReport(run_id=run_id)
+    fetcher = Fetcher(cache_dir, offline=offline, verbose=verbose)
+    index = KeywordIndex(keywords)
+    today = date.today()
+    seen: set[str] = set()
+
+    for i, source in enumerate(sources[:limit] if limit else sources, 1):
+        started = time.time()
+        url = source.target
+        if verbose:
+            print(f"[{i}/{len(sources)}] {source.name}  {url}")
+        snapshot = None
+        if snapshot_dir:
+            exact = Path(snapshot_dir) / f"{source.id}.html"
+            # build_job_sources_csv slugifies ids; a renamed row still matches
+            # its snapshot by prefix, which keeps the demo stable
+            snapshot = exact if exact.exists() else next(
+                (q for q in sorted(Path(snapshot_dir).glob("*.html"))
+                 if source.id.startswith(q.stem)), None)
+        if snapshot is not None:
+            from .fetch import Response
+            resp = Response(url=url, status=200,
+                            text=snapshot.read_text(encoding="utf-8"),
+                            content_type="text/html; charset=utf-8")
+            print(f"        (snapshot {snapshot.name})" if verbose else "", end="\n")
+        else:
+            resp = fetcher.get(url)
+        ms = int((time.time() - started) * 1000)
+
+        if not resp.ok:
+            report.log.append({"source": source.name, "error": resp.error,
+                               "status": resp.status})
+            store.log_source(run_id, source.id, source.name, url, resp.status,
+                             resp.error, 0, "", ms)
+            if verbose:
+                print(f"        ! {resp.error}")
+            continue
+
+        report.fetched += 1
+        # the registry cell can hold "fr/nl/en"; a posting has one language
+        lang = source.language if len(source.language) == 2 else ""
+        ctx = Context(source=source, base_url=resp.url or url, today=today,
+                      language=lang)
+        postings, adapter = extract_postings(resp.text, ctx)
+
+        kept_here = 0
+        for p in postings:
+            if not p.country:
+                p.country = source.country
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            if p.fingerprint in seen:
+                continue
+            seen.add(p.fingerprint)
+            if not p.seniority.level:
+                p.seniority = detect(p.title, p.description)
+            b = score(p, source, index, today)
+            is_new = store.upsert(p, run_id)
+            store.save_score(p.fingerprint, b)
+            report.postings += 1
+            report.new += int(is_new)
+            if b.excluded:
+                report.excluded += 1
+            else:
+                report.kept += 1
+                kept_here += 1
+
+        store.log_source(run_id, source.id, source.name, url, resp.status, "",
+                         len(postings), adapter, ms)
+        if verbose:
+            print(f"        {len(postings)} postings via {adapter}"
+                  f"{'  [cached]' if resp.from_cache else ''}")
+
+    # anything not seen this run is no longer advertised
+    store.con.execute(
+        "UPDATE postings SET active=0 WHERE last_seen < (SELECT mark FROM runs WHERE id=?)",
+        (run_id,))
+    store.con.commit()
+    store.finish_run(run_id, report.fetched, report.new, report.kept,
+                     notes=f"adapters: {fetcher.stats}")
+    return report

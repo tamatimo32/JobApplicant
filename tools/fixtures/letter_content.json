@@ -1,0 +1,22 @@
+{
+  "typography": "en",
+  "_note": "Regression fixture: the exact text of assets/reference/ML_Master_Format.pdf. Rendering this must reproduce the reference page.",
+  "name": "THOMAS CHACRA",
+  "tagline": "Environmental Bioengineer & Sustainability and Energy Analyst",
+  "place": "Brussels, Belgium",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "03/11/2026",
+  "addressee": "To Eftychia Michailidou, HR Manager at Clerens.",
+  "subject": "Subject: Application - Project Assistant (CIP Traineeship) - Thomas Chacra",
+  "salutation": "Dear Ms. Michailidou,",
+  "paragraphs": [
+    "Most bioengineers from my degree woud love to bridge technical depth with EU policy, funding, and project execution; I am one of those bioengineers. Joining CLERENS as a Project Assistant is the ideal opportunity to apply my quantitative engineering background directly to proposal drafting and project management in EU energy, climate, and storage affairs.",
+    "I hold a master’s in environmental bioengineering and bring hands-on experience across EU sustainability frameworks and energy data analysis. My background includes performing pre-feasibility studies for low-carbon energy systems (geothermal, river heat recovery, biowaste), building ROI calculations, assessing climate risks via Copernicus datasets, digitalizing CSRD matrices, and participating in ISO audit structures (9001, 14001, 50001).",
+    "Throughout my work, I have consistently focused on structured data collection, deliverable monitoring, and process automation. I am eager to bring this analytical mindset to CLERENS to support proposal drafting for EU funding programs (such as Horizon Europe and Innovation Fund), monitor project work plans, assist in financial reporting, and help draft high-quality reports and presentations for stakeholders.",
+    "Fully bilingual in English and French, based in Brussels, and eligible for the CIP framework starting January 2027, I am ready to contribute proactively to your team's day-to-day operations and project management tasks.",
+    "I would be delighted to discuss how my profile aligns with your current project portfolio. Even if my application is unsuccessful, I would welcome your feedback and any insights on building a career within EU public affairs and project consultancy."
+  ],
+  "closing": "Sincerely,",
+  "signature": "Thomas Chacra"
+}

@@ -1,0 +1,98 @@
+{
+  "_source": {
+    "job": "Consultant / Senior Consultant - Energy Transition & Utilities, Capgemini Invent (Issy-les-Moulineaux)",
+    "url": "https://www.capgemini.com/fr-fr/carrieres/offres-demploi/consultant-senior-consultant-energy-transition-utilities/",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": ["job_description_fr.txt (in this folder)", "data/experience_master.json", "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"],
+    "verification_status": "PENDING USER VERIFICATION. The posting is a CDI aimed at experienced consultants (several years in consulting or the energy sector). The sources support 2 years of internships and junior roles, not consulting seniority. Content is otherwise sourced: energy and environmental consulting, techno-economic analyses, data and dashboards."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Consultant Energy Transition & Utilities, Capgemini Invent",
+  "title": "Bioingénieur | Transition énergétique, analyses technico-économiques & data",
+  "summary": "Bioingénieur de formation, consultant par pratique : j'ai passé deux ans à traduire des problématiques énergétiques en analyses chiffrées et en recommandations utilisables par un comité de direction. La transition énergétique est le terrain où mes compétences techniques et mon goût du conseil se rejoignent.",
+  "contact": [
+    {"text": "Bruxelles, Belgique"},
+    {"text": "+32 485 31 52 76"},
+    {"text": "thomaschacra@gmail.com", "link": true},
+    {"text": "Permis B"},
+    {"text": "www.linkedin.com/in/thomas-chacra/", "link": true, "size": 7.0}
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Déc. 2026",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Conçu un outil de calcul d'empreinte carbone produit selon ISO 14067 et hiérarchisé les leviers de réduction avec les équipes opérationnelles."
+      ]
+    },
+    {
+      "title": "Analyste ESG & durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en durabilité, Bruxelles",
+      "bullets": [
+        "Mené des missions de conseil pour des clients grands comptes : cadrage, collecte de données, analyse et restitution aux décideurs.",
+        "Construit des tableaux de bord Power BI et des outils Excel de pilotage adoptés par les équipes clients.",
+        "Automatisé une analyse de certification ESG, réduisant de 70 % le temps de traitement et libérant du temps pour l'analyse."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Oct. 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Réalisé des analyses technico-économiques et des benchmarks pour des projets d'énergie, en lien direct avec les clients.",
+        "Préparé des dossiers CSRD et contribué aux analyses de risques climatiques."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Juil. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé des séries temporelles de consommation énergétique pour relier consommation et rendement, et construit les outils de suivi automatisé.",
+        "Présenté les résultats à des interlocuteurs non spécialistes, en les traduisant en décisions concrètes."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Énergie : efficacité énergétique, projets d'énergie, analyses technico-économiques, marchés et réglementation.\nConseil : cadrage de mission, collecte et fiabilisation des données, recommandations, restitution client.\nData : Excel avancé, Power BI, Power Query, SQL, Python ; automatisation de workflows."
+      ]
+    },
+    {
+      "heading": "Secteurs",
+      "type": "text",
+      "paras": [
+        "Énergie et utilités, industrie, agroalimentaire et chaînes d'approvisionnement, secteur public."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": ["Esprit d'analyse et de synthèse", "Aisance relationnelle", "Curiosité et initiative"]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {"lines": ["M.Sc. en bioingénieur en environnement", "Université libre de Bruxelles (ULB)"]},
+        {"lines": ["B.Sc. en sciences de l'ingénieur", "Université libre de Bruxelles (ULB)"]}
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [["Français", "Bilingue"], ["Anglais", "Bilingue"], ["Néerlandais", "En cours"]]
+    }
+  ]
+}

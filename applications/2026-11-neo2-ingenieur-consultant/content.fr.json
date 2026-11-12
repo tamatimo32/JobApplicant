@@ -1,0 +1,143 @@
+{
+  "_source": {
+    "job": "Ingénieur.e consultant.e, NEO2 Consultant (Belgique : Bruxelles, Namur, Liège, Mons, Anvers, Gand)",
+    "url": "https://neo2consultant.teamtailor.com/jobs/8673347-ingenieur-e-consultant-e-f-h-x",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. NEO2 asks for a civil/industrial engineering degree with a specialisation in electricity, electromechanics, biosciences, brewing, civil engineering or automation. A ULB bioengineering degree with a B.Sc. in Engineering Sciences is close but not identical; the CV presents it factually and does not claim the specific specialisations. To confirm: work authorisation for Belgium (the posting makes it a condition)."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Ingénieur consultant, NEO2 Consultant",
+  "title": "Bioingénieur | Projets industriels, données techniques & amélioration continue",
+  "summary": "Bioingénieur avec une expérience de terrain en environnement industriel : analyse de données de production, modélisation énergétique, contrôle qualité et documentation de procédé. J'aime comprendre une installation avant d'en parler, et je veux mettre cette culture technique au service de plusieurs secteurs clients plutôt que d'un seul.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Déc. 2026",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Développé un outil de modélisation de l'empreinte carbone produit (ISO 14067) et documenté les hypothèses pour le rendre auditable."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Juil. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé les données de performance d'installations de production sous serre, en reliant éclairage, consommation d'énergie, conditions climatiques et rendement des cultures.",
+        "Conduit des analyses multifactorielles d'optimisation des procédés et construit des outils de reporting automatisés pour la décision opérationnelle.",
+        "Travaillé au quotidien avec des ingénieurs et des agronomes sur des projets d'efficacité des ressources."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Oct. 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Réalisé des études de préfaisabilité technique et économique (CAPEX, retour sur investissement) pour des installations de récupération de chaleur.",
+        "Évalué les performances énergétiques de bâtiments (isolation, systèmes de chauffage, menuiseries) et les contraintes réglementaires associées.",
+        "Rédigé les supports de présentation et répondu aux questions techniques des clients."
+      ]
+    },
+    {
+      "title": "AI Quality Assurance Assistant",
+      "employer": "Kaspard",
+      "dates": "Mars 2024 – Août 2024",
+      "context": "Projets d'IA et de vision par ordinateur, Bruxelles",
+      "bullets": [
+        "Validé la qualité et la cohérence de jeux de données techniques et documenté les défauts dans un référentiel partagé avec l'équipe projet."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences",
+      "type": "text",
+      "paras": [
+        "Procédés : analyse de performance industrielle, efficacité énergétique, optimisation de production.\nIngénierie : études de faisabilité, modèles CAPEX et ROI, évaluation de contraintes réglementaires.\nQualité : contrôle et validation de données, documentation de procédé, traçabilité."
+      ]
+    },
+    {
+      "heading": "Outils",
+      "type": "skills",
+      "lines": [
+        "Excel avancé, Power Query, Power BI,",
+        "Python, SQL, Power Automate"
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Analyse et rigueur technique",
+        "Communication client",
+        "Adaptation à des secteurs variés"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}

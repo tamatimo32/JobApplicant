@@ -1,0 +1,151 @@
+{
+  "_source": {
+    "job": "Junior Application Support Agent, Environmental Sector, Netcompany (Brussels, hybrid)",
+    "url": "https://jobs.smartrecruiters.com/Netcompany1/744000160840439-junior-application-support-agent-environmental-sector-",
+    "language": "en",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. No helpdesk, ticketing, ServiceNow, Jira or UAT experience exists in the sources, so none is claimed as a past duty. The CV leans on data validation, documentation, workflow digitisation and explaining technical points to non-specialists. To confirm: any user support, ticketing or IT-service exposure; any EU institutional or EUDR/waste-shipment context."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Junior Application Support Agent, Netcompany",
+  "title": "Bioengineer | Data validation, workflow support & clear documentation",
+  "summary": "Bioengineer who has spent the last years making messy data usable and explaining technical problems to people who have no time for jargon. I validate data, document rules and procedures, and digitise workflows that were previously manual. I want to do that for systems that serve environmental regulation.",
+  "contact": [
+    {
+      "text": "Brussels, Belgium"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Licence B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Dec. 2026",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Maintained the documentation and assumptions behind a product carbon model to ISO 14067, so that every figure could be traced back to its source.",
+        "Structured supplier and freight records from several sources into one consistent dataset for reporting."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Sustainability consulting, Brussels",
+      "bullets": [
+        "Controlled the quality and consistency of client datasets, documenting the validation rules applied and logging every input that failed them.",
+        "Digitised a client audit trail with Power Automate, filing documents into the correct folders and removing a manual workflow.",
+        "Automated an ESG certification analysis with Power Query and Excel macros, cutting processing time by 70 percent, and built the Power BI reports that consultants used with clients."
+      ]
+    },
+    {
+      "title": "AI Quality Assurance Assistant",
+      "employer": "Kaspard",
+      "dates": "Mar. 2024 – Aug. 2024",
+      "context": "AI and computer-vision projects, Brussels",
+      "bullets": [
+        "Evaluated system outputs against documented quality rules, investigated inconsistencies, and logged defects in a shared tracker with reproducible descriptions.",
+        "Performed data validation and consistency checks across annotated datasets, and contributed to the working notes the project team reused."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Jul. 2025",
+      "context": "AgTech and hydroponic production, Brussels",
+      "bullets": [
+        "Built automated reporting and monitoring tools, and translated their output into plain-language guidance for engineers and agronomists."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – Oct. 2024",
+      "context": "Energy engineering consultancy, Brussels",
+      "bullets": [
+        "Advised clients on environmental and regulatory constraints for energy systems, answering technical questions and preparing the material presented to them."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Key skills",
+      "type": "text",
+      "paras": [
+        "Data: validation, consistency checks, quality rules, documentation of procedures and FAQs.\nSystems: Power Query, Power Automate, Power BI, Excel, SQL, Python.\nService: explaining technical issues to non-specialist users, writing reproduction notes."
+      ]
+    },
+    {
+      "heading": "Regulation",
+      "type": "text",
+      "paras": [
+        "EU environmental reporting context: CSRD, ESRS, GHG Protocol, waste and supplier data. Comfortable reading regulatory text and turning it into a data check."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "High attention to detail",
+        "Analytical troubleshooting",
+        "Customer-facing patience"
+      ]
+    },
+    {
+      "heading": "Education",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. in Environmental Bioengineering",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. in Engineering Sciences",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [
+        [
+          "English",
+          "Fluent"
+        ],
+        [
+          "French",
+          "Bilingual"
+        ],
+        [
+          "Dutch",
+          "In progress"
+        ]
+      ]
+    }
+  ]
+}

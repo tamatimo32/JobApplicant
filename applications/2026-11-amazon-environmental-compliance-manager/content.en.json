@@ -1,0 +1,144 @@
+{
+  "_source": {
+    "job": "Environmental Compliance Manager, EAP France, Amazon (Job ID 10599504)",
+    "url": "https://www.amazon.jobs/en/jobs/10599504/environmental-compliance-manager-eap-france",
+    "language": "en",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder, full posting text)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. The posting asks for several years of compliance programme, audit and regulatory experience plus ISO 14001/50001; the sources support ISO self-training, gap analyses, environmental data and reporting, but not multi-site permit management, authority liaison or ISO 50001. Those are not claimed. To confirm: any permitting, inspection or authority-facing work."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Environmental Compliance Manager, Amazon (EAP France)",
+  "title": "Bioengineer | Environmental compliance, permits & management systems",
+  "summary": "Bioengineer who works at the point where environmental rules meet operating reality: permits, reporting obligations, management systems and the evidence file behind each declaration. I am comfortable with dense regulation and with the unglamorous work of keeping a site compliant across several regimes at once.",
+  "contact": [
+    {
+      "text": "Brussels, Belgium"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Licence B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Dec. 2026",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Built a product carbon footprint model to ISO 14067 with explicit, traceable assumptions, defensible to an external reviewer.",
+        "Structured upstream environmental data, including international freight, to identify the levers that actually moved the result."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Sustainability consulting, Brussels",
+      "bullets": [
+        "Trained myself on ISO 9001, 14001 and 45001 requirements and took part in training-aided gap analyses against those standards.",
+        "Built environmental performance indicators and monitoring routines used to spot deviations before they became non-conformities.",
+        "Controlled the quality of environmental datasets and documented the validation rules, so that every reported figure could be traced to its source.",
+        "Digitised a client audit trail with Power Automate, filing evidence into the correct folders and removing a manual workflow."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Jul. 2025",
+      "context": "AgTech and hydroponic production, Brussels",
+      "bullets": [
+        "Ran risk-aware analyses on energy and water data, and documented protocols so that results stayed reproducible across campaigns.",
+        "Worked with engineers and agronomists on resource-efficiency initiatives, turning measurements into operating rules."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – Oct. 2024",
+      "context": "Energy engineering consultancy, Brussels",
+      "bullets": [
+        "Assessed environmental and regulatory constraints for energy projects, including compliance with regional building performance rules.",
+        "Wrote compliance summaries for decision-makers."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Key skills",
+      "type": "text",
+      "paras": [
+        "Compliance: ISO 14001, ISO 45001, ISO 9001, gap analysis, evidence files, corrective action follow-up.\nEnvironmental regimes: air, water, waste and energy reporting; GHG Protocol; ISO 14067.\nTools: Excel, Power BI, Power Query, Power Automate, SQL, Python; MS Office suite."
+      ]
+    },
+    {
+      "heading": "Stakeholder work",
+      "type": "text",
+      "paras": [
+        "Working across technical and non-technical teams, suppliers and clients; writing procedures and explaining regulatory requirements to people who have to apply them."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Rigour and attention to detail",
+        "Analytical problem solving",
+        "Clear written communication"
+      ]
+    },
+    {
+      "heading": "Education",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. in Environmental Bioengineering",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. in Engineering Sciences",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [
+        [
+          "English",
+          "Fluent (C1)"
+        ],
+        [
+          "French",
+          "Native / bilingual"
+        ],
+        [
+          "Dutch",
+          "In progress"
+        ]
+      ]
+    }
+  ]
+}

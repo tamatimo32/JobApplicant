@@ -1,0 +1,21 @@
+{
+  "typography": "fr",
+  "name": "THOMAS CHACRA",
+  "tagline": "Bioingénieur | Bilan carbone, risques climatiques & conseil environnemental",
+  "place": "Bruxelles, Belgique",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "10/11/2026",
+  "addressee": "À l'attention de l'équipe ESGlogic, Ixelles.",
+  "subject": "Objet : Consultant·e ESG, pilier Environnement, candidature",
+  "salutation": "Madame, Monsieur,",
+  "paragraphs": [
+    "Un bilan carbone qui reste dans un tiroir n'a rien changé au climat, et c'est pourtant ce qui arrive à la plupart. Ce qui m'intéresse, c'est le moment d'après : quand le chiffre devient un arbitrage, une ligne de CAPEX qu'on assume ou une machine qu'on remplace. ESGlogic décrit exactement ce passage, du diagnostic à la mise en action, et c'est pour cela que je vous adresse ma candidature au pilier E.",
+    "Dans mes expériences précédentes, j'ai fait ce travail à plusieurs échelles. J'ai calculé des empreintes carbone selon le GHG Protocol et construit les indicateurs qui les accompagnent ; j'ai conçu un outil de calcul d'empreinte produit selon ISO 14067, avec des hypothèses explicites pour que le client puisse les contester et les défendre. J'ai aussi contribué à des analyses de risques climatiques à partir de données Copernicus, et préparé des dossiers CSRD, dont la digitalisation d'une matrice de double matérialité. Ce que j'en retiens tient en une phrase : la donnée doit être assez solide pour qu'on puisse décider dessus.",
+    "Ce qui me plaît dans ce poste, c'est qu'il ne sépare pas les référentiels de leur usage. CSRD, VSME, EcoVadis et B Corp y sont des outils au service d'une trajectoire, pas la finalité du travail, et les Médailles VSME montrent que le cabinet assume de rendre cette exigence accessible aux PME plutôt que de la réserver aux grands groupes. Travailler avec des PME industrielles et de la distribution, c'est aussi accepter que la recommandation doit tenir dans leur réalité opérationnelle ; c'est la partie du métier qui m'intéresse le plus.",
+    "Je parle couramment français et anglais, à l'écrit comme à l'oral, et j'apprends le néerlandais. Mon parcours de bioingénieur m'a donné l'habitude de partir du processus physique avant de modéliser, ce qui aide beaucoup quand il faut expliquer une méthode à un directeur financier sans la trahir.",
+    "Je serais heureux de vous exposer de vive voix comment j'aborderais les premiers bilans carbone de vos clients et la manière dont je monterais en compétence sur les trajectoires SBTi, et je vous remercie de l'attention portée à ma candidature."
+  ],
+  "closing": "Cordialement,",
+  "signature": "Thomas Chacra"
+}

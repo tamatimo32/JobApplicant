@@ -1,0 +1,202 @@
+#!/usr/bin/env python3
+"""Build the job-source registry CSV.
+
+Two things come out of this, both written to google_drive/ (git-ignored):
+
+  job_sources_registry.csv   one row per source, employer or keyword
+  job_sources_summary.md     counts by country, sector and size
+
+The data lives in data/job_sources/*.py, one module per country plus a
+sources module and a keyword table. Edit those, not the CSV: this script
+overwrites the CSV on every run.
+
+    python3 tools/build_job_sources_csv.py
+    python3 tools/build_job_sources_csv.py --check   # validate only
+"""
+
+import argparse
+import collections
+import csv
+import unicodedata
+import importlib
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT))
+
+from data.job_sources import keywords  # noqa: E402
+from data.job_sources.model import Row  # noqa: E402
+
+OUT_CSV = ROOT / "google_drive" / "job_sources_registry.csv"
+OUT_SUMMARY = ROOT / "google_drive" / "job_sources_summary.md"
+
+MODULES = [
+    "data.job_sources.sources",
+    "data.job_sources.companies_be",
+    "data.job_sources.companies_lu",
+    "data.job_sources.companies_ch",
+    "data.job_sources.companies_au",
+    "data.job_sources.companies_nz",
+    "data.job_sources.companies_ae",
+    "data.job_sources.companies_sme",
+    "data.job_sources.companies_boutiques",
+]
+
+FIELDS = ["id", "category", "country", "name", "url", "listing_url", "language",
+          "sector", "size", "what_it_lists", "access", "fit", "priority",
+          "verified", "notes"]
+
+COUNTRY_ORDER = ["BE", "LU", "CH", "AU", "NZ", "AE", "EU", "GLOBAL", "ANY"]
+CATEGORY_ORDER = ["job_board", "pes", "public_sector", "institution", "big4",
+                  "company", "federation", "aggregator", "remote", "keyword"]
+
+
+def slug(text):
+    # fold accents first: "Toitu" and "Toitū" are the same firm and must not
+    # produce two ids
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    out = "".join(c.lower() if c.isalnum() else "-" for c in text)
+    while "--" in out:
+        out = out.replace("--", "-")
+    return out.strip("-")
+
+
+def collect():
+    rows = []
+    for mod_name in MODULES:
+        mod = importlib.import_module(mod_name)
+        rows.extend(mod.ROWS)
+    rows.extend(keywords.rows())
+    return rows
+
+
+def assign_ids(rows):
+    """Deterministic ids: category-country-slug, with a numeric suffix when a
+    name repeats inside one country."""
+    seen = collections.Counter()
+    for r in rows:
+        if r.id:
+            continue
+        base = f"{r.category}-{r.country}-{slug(r.name)}"
+        seen[base] += 1
+        r.id = base if seen[base] == 1 else f"{base}-{seen[base]}"
+
+
+def validate(rows):
+    problems = []
+    url_owner = {}
+    for r in rows:
+        if r.url != "https://":
+            url_owner.setdefault(r.url, []).append(r.name)
+        if r.category == "company" and not r.size:
+            problems.append(f"company without size: {r.name}")
+        if r.category == "company" and not r.sector:
+            problems.append(f"company without sector: {r.name}")
+        if r.category != "company" and r.size:
+            problems.append(f"non-company with a size: {r.name}")
+    for url, names in url_owner.items():
+        if len(names) > 1:
+            problems.append(f"duplicate url {url}: {names}")
+    ids = [r.id for r in rows]
+    dupes = {i for i, n in collections.Counter(ids).items() if n > 1}
+    if dupes:
+        problems.append(f"duplicate ids: {sorted(dupes)}")
+    return problems
+
+
+def sort_key(r):
+    return (CATEGORY_ORDER.index(r.category)
+            if r.category in CATEGORY_ORDER else 99,
+            COUNTRY_ORDER.index(r.country) if r.country in COUNTRY_ORDER else 99,
+            -{"high": 3, "medium": 2, "low": 1}[r.fit],
+            r.priority,
+            r.name.lower())
+
+
+def write_csv(rows):
+    OUT_CSV.parent.mkdir(parents=True, exist_ok=True)
+    with OUT_CSV.open("w", newline="", encoding="utf-8") as fh:
+        w = csv.DictWriter(fh, fieldnames=FIELDS)
+        w.writeheader()
+        for r in sorted(rows, key=sort_key):
+            d = r.as_dict()
+            w.writerow({k: d.get(k, "") for k in FIELDS})
+
+
+def write_summary(rows):
+    sites = [r for r in rows if r.category != "keyword"]
+    kws = [r for r in rows if r.category == "keyword"]
+    companies = [r for r in sites if r.category == "company"]
+
+    def table(title, counter, order=None):
+        keys = order or sorted(counter, key=lambda k: -counter[k])
+        lines = [f"### {title}", "", "| | Count |", "| --- | --- |"]
+        for k in keys:
+            if counter.get(k):
+                lines.append(f"| {k} | {counter[k]} |")
+        lines.append("")
+        return lines
+
+    by_country = collections.Counter(r.country for r in companies)
+    by_verified = collections.Counter(
+        (r.country, r.verified) for r in companies)
+    by_size = collections.Counter(r.size for r in companies)
+    by_sector = collections.Counter(r.sector for r in companies)
+    by_cat = collections.Counter(r.category for r in sites)
+    by_country_all = collections.Counter(r.country for r in sites)
+
+    out = ["# Job sources registry, summary", "",
+           f"{len(sites)} sources and employers, {len(kws)} keywords. "
+           f"Generated by `tools/build_job_sources_csv.py`; do not edit by hand.", ""]
+    out += table("Rows by category", by_cat, CATEGORY_ORDER)
+    out += table("All sources by country", by_country_all, COUNTRY_ORDER)
+    out += table(f"Employers by country ({len(companies)} total)", by_country, COUNTRY_ORDER)
+    out += table("Employers by size", by_size, ["large", "mid", "sme"])
+    out += ["### Employer URLs by verification", "",
+            "`yes` = domain seen in a source; `no` = inferred, HEAD-check first.", "",
+            "| Country | Verified | Inferred |", "| --- | --- | --- |"]
+    for c in COUNTRY_ORDER:
+        if by_verified[(c, "yes")] or by_verified[(c, "no")]:
+            out.append(f"| {c} | {by_verified[(c, 'yes')]} | {by_verified[(c, 'no')]} |")
+    out.append("")
+    out += table("Employers by sector", by_sector)
+    out += table("Keywords by language", collections.Counter(r.language for r in kws))
+    OUT_SUMMARY.write_text("\n".join(out), encoding="utf-8")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--check", action="store_true", help="validate without writing")
+    args = ap.parse_args()
+
+    rows = collect()
+    assign_ids(rows)
+    problems = validate(rows)
+
+    if problems:
+        print(f"{len(problems)} problem(s):")
+        for p in problems:
+            print("  -", p)
+        if args.check:
+            return 1
+
+    if args.check:
+        print(f"ok: {len(rows)} rows, no structural problems")
+        return 0
+
+    write_csv(rows)
+    write_summary(rows)
+
+    sites = [r for r in rows if r.category != "keyword"]
+    companies = [r for r in sites if r.category == "company"]
+    print(f"wrote {OUT_CSV.name}: {len(sites)} sources/employers "
+          f"({len(companies)} companies), {len(rows) - len(sites)} keywords")
+    print("  by country:", dict(collections.Counter(r.country for r in sites)))
+    print("  by size:   ", dict(collections.Counter(r.size for r in companies)))
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

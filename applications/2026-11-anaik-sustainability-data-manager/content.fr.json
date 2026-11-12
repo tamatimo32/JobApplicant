@@ -1,0 +1,142 @@
+{
+  "_source": {
+    "job": "Sustainability & Compliance Data Manager, ANAÏK (Villeneuve-d'Ascq ou Paris)",
+    "url": "https://anaik.talentview.io/jobs/nmb0kp",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. The posting asks for one or more years of experience combining technical and regulatory CSR knowledge, and B Corp certification practice. The sources support B Corp-related structure work, EcoVadis-style supplier assessment, CSRD and data/BI. They do NOT support formal B Corp certification ownership, GOTS/FSC/GRS product labels, or managing an apprentice. To confirm: any certification file ownership, any team management."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Sustainability & Compliance Data Manager, ANAÏK",
+  "title": "Bioingénieur | Données RSE, certifications & pilotage de la performance",
+  "summary": "Bioingénieur spécialisé dans les données de durabilité : je construis les indicateurs, je fiabilise les chiffres et je prépare les dossiers de preuves que demandent les certifications. Un bilan carbone ne vaut que si l'on peut défendre chaque hypothèse devant un auditeur, et c'est ce niveau d'exigence que je veux apporter à une entreprise à mission.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Déc. 2026",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Conçu un outil de calcul d'empreinte carbone produit selon ISO 14067, avec des hypothèses explicites et traçables, utilisable comme base de dossier de preuves.",
+        "Structuré les données environnementales amont, y compris le fret international, pour identifier et hiérarchiser les leviers de réduction."
+      ]
+    },
+    {
+      "title": "Analyste ESG & durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en durabilité, Bruxelles",
+      "bullets": [
+        "Construit et fiabilisé des indicateurs de performance RSE, avec contrôle qualité des données et règles de validation documentées.",
+        "Participé à des jeux de données d'évaluation fournisseurs et à des benchmarks ESG, et accompagné la structuration d'un référentiel type B Corp.",
+        "Automatisé une analyse de certification ESG, réduisant de 70 % le temps de traitement, et digitalisé la traçabilité documentaire des audits."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Juil. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé des séries temporelles énergétiques pour relier consommation et rendement, et construit les outils de reporting automatisé qui alimentaient le suivi opérationnel.",
+        "Présenté les résultats à des interlocuteurs non spécialistes, en les traduisant en décisions concrètes."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Oct. 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Préparé des dossiers CSRD clients, dont la digitalisation de la matrice de double matérialité, et contribué aux analyses de risques climatiques (données Copernicus)."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "RSE : indicateurs, objectifs chiffrés, bilan carbone, GHG Protocol, ISO 14067, CSRD, ESRS, EcoVadis, B Corp.\nData : collecte, nettoyage, fiabilisation, analyse, restitution ; Excel avancé, Power BI, Power Query, SQL, Python.\nConformité : dossiers de preuves, préparation d'audits, veille réglementaire."
+      ]
+    },
+    {
+      "heading": "Reporting",
+      "type": "text",
+      "paras": [
+        "Construction de tableaux de bord de pilotage et restitution chiffrée à des directions et à des clients grands comptes."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Rigueur et organisation",
+        "Restitution claire et factuelle",
+        "Autonomie et leadership"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}
