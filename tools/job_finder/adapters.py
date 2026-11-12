@@ -167,6 +167,7 @@ class EuroBrusselsAdapter:
                 location=town, language="en",
                 description=card.get("blurb", ""),
                 posted=parse_date(card.get("posted", ""), ctx.today),
+                deadline=parse_deadline(card.get("deadline", ""), ctx.today),
                 source_id=ctx.source.id, source_name=ctx.source.name,
                 adapter=self.name,
             )
@@ -178,56 +179,90 @@ class EuroBrusselsAdapter:
 _EURO_POSTED = re.compile(
     r"^(posted\s+(today|yesterday|\d+\s+\w+\s+ago)|\d+\s+days?\s+left|"
     r"deadline\s+[^\n]+|saved!?|save this job)$", re.IGNORECASE)
+# a card can carry a posted line and a deadline line; keep both, the posted
+# one is what freshness scoring needs and the deadline is what "gone" needs
+_EURO_DEADLINE = re.compile(r"^(deadline\s+.*|\d+\s+days?\s+left)$", re.I)
 # "Europe" contains "eur", so match a currency amount, not the letters.
 _EURO_SALARY = re.compile(r"(€\s?[\d.,]+|\bEUR\s?[\d.,]+|"
                           r"\b\d[\d.,]*\s*(?:€|EUR)\b|\bsalary\b|"
                           r"\bper (?:year|month|annum)\b)", re.IGNORECASE)
 
 
+_EURO_TAGS = re.compile(r"^([A-Z][A-Za-z &/().'-]+){2,}$")
+
+
+def _looks_like_title(candidate: str, nxt: str) -> bool:
+    return (10 <= len(candidate) <= 160
+            and not _EURO_POSTED.match(candidate)
+            and not _EURO_SALARY.search(candidate)
+            and not candidate.endswith((".", ":", ";"))
+            and (" " in candidate or len(candidate) > 12)
+            and 2 <= len(nxt) <= 90
+            and not nxt.endswith(".")
+            and not _EURO_POSTED.match(nxt))
+
+
 def _eurobrussels_cards(text: str) -> dict[str, dict]:
     """Group the page text into cards, keyed by title (raw and folded).
 
-    A card is: title, employer, town, then any of salary, posted date, tags and
-    a blurb, in no fixed order. Rather than one clever regex, walk the lines:
-    a line followed by a line that looks like an organisation is a title.
+    A card is read in a fixed order, which is how both saved pages are laid
+    out: title, employer, optional town, optional salary, optional blurb and
+    tags, then the posted and deadline lines, which always come last and are
+    what freshness and "is this still open" depend on. The card ends at the
+    first line after the dates that looks like a new title.
     """
     lines = [ln.strip() for ln in text.split("\n")]
     lines = [ln for ln in lines if ln]
     out: dict[str, dict] = {}
     i = 0
     while i < len(lines) - 1:
-        candidate = lines[i]
-        nxt = lines[i + 1]
-        looks_title = (10 <= len(candidate) <= 160
-                       and not _EURO_POSTED.match(candidate)
-                       and not _EURO_SALARY.search(candidate)
-                       and not candidate.endswith((".", ":", ";"))
-                       and (" " in candidate or len(candidate) > 12)
-                       and 2 <= len(nxt) <= 90
-                       and not nxt.endswith(".")
-                       and not _EURO_POSTED.match(nxt))
-        if not looks_title:
+        candidate, nxt = lines[i], lines[i + 1]
+        if not _looks_like_title(candidate, nxt):
             i += 1
             continue
-        location, posted, blurb = "", "", ""
+
+        location, salary, blurb = "", "", ""
         j = i + 2
-        if j < len(lines) and len(lines[j]) <= 40 and not _EURO_POSTED.match(lines[j]):
+        if j < len(lines) and len(lines[j]) <= 40 and not _special(lines[j]):
             location = lines[j]
             j += 1
-        while j < len(lines) and (_EURO_POSTED.match(lines[j])
-                                  or _EURO_SALARY.search(lines[j])):
-            if lines[j].lower().startswith("posted") or "left" in lines[j].lower():
-                posted = lines[j]
+        if j < len(lines) and _EURO_SALARY.search(lines[j]) and lines[j] != location:
+            salary = lines[j]
             j += 1
-        if j < len(lines) and not _EURO_POSTED.match(lines[j]) \
-                and len(lines[j]) > 60:
+        if j < len(lines) and not _special(lines[j]) and len(lines[j]) >= 40:
             blurb = lines[j]
-        d = {"employer": nxt, "location": location,
-             "posted": posted, "blurb": blurb}
+            j += 1
+            # tags run straight on from the blurb in the saved markup
+            while j < len(lines) and not _special(lines[j]) \
+                    and not _looks_like_title(lines[j],
+                                              lines[j + 1] if j + 1 < len(lines) else ""):
+                j += 1
+
+        posted = deadline = ""
+        while j < len(lines) and _special(lines[j]):
+            line = lines[j]
+            if _EURO_DEADLINE.match(line):
+                deadline = line
+            elif line.lower().startswith(("posted", "just posted")):
+                posted = line
+            j += 1
+        # A card always carries a date or two; if the walk consumed the whole
+        # page it has run away, so treat this candidate as prose and move on.
+        if not posted and not deadline and not salary:
+            i += 1
+            continue
+
+        d = {"employer": nxt, "location": location, "posted": posted,
+             "deadline": deadline, "blurb": blurb, "salary": salary}
         out.setdefault(candidate, d)
         out.setdefault(fold(candidate), d)
         i = max(j, i + 1)
     return out
+
+
+def _special(line: str) -> bool:
+    """A line that is metadata rather than prose."""
+    return bool(_EURO_POSTED.match(line) or _EURO_SALARY.search(line))
 
 
 class LinkListAdapter:

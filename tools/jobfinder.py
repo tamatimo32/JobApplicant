@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
 import webbrowser
 from pathlib import Path
 
@@ -65,9 +66,21 @@ def cmd_crawl(args) -> int:
     )
     if getattr(args, "demo", False):
         # the demo runs only sources we actually have a snapshot for
-        snapshots = {p.stem for p in DEMO_DIR.glob("*.html")} if DEMO_DIR.exists() else set()
-        chosen = [s for s in chosen
-                  if s.id in snapshots or any(s.id.startswith(k) for k in snapshots)]
+        # a source may have more than one committed snapshot (a board's
+        # environment page and its internship page are separate captures)
+        snap_names = {p.stem for p in DEMO_DIR.glob("*.html")} if DEMO_DIR.exists() else set()
+        matched = []
+        for s in chosen:
+            hits = [n for n in snap_names
+                    if n == s.id or n.startswith(s.id + "-") or s.id.startswith(n)]
+            if hits:
+                matched.append(s)
+                for extra in sorted(h for h in hits if h != s.id):
+                    from dataclasses import replace
+                    twin = replace(s, id=extra)
+                    if args.demo:
+                        matched.append(twin)
+        chosen = list({s.id: s for s in matched}.values())
         keywords = keywords or []
     if not chosen:
         print("No sources matched that selection.")
@@ -94,7 +107,7 @@ def cmd_report(args) -> int:
         run_id = row["id"] if row else None
     out = render(Path(args.db), Path(args.out), run_id=run_id,
                  title=args.title, include_excluded=args.show_excluded,
-                 top_n=args.top, limit=args.limit)
+                 top_n=args.top, limit=args.limit, hide_dead=args.hide_dead)
     print(f"wrote {out}")
     if args.open:
         webbrowser.open(out.resolve().as_uri())
@@ -174,6 +187,45 @@ def cmd_import(args) -> int:
     return 0
 
 
+def cmd_verify(args) -> int:
+    """HEAD every posting URL and record whether it still resolves.
+
+    A 404 does not mean the URL was wrong, it usually means the vacancy has
+    been filled and taken down. Either way it must not keep appearing in the
+    report as if it were open.
+    """
+    from job_finder.fetch import Fetcher
+
+    store = Store(Path(args.db))
+    todo = store.needing_link_check(max_age_days=args.max_age,
+                                    limit=args.limit)
+    if args.only_unchecked:
+        todo = [t for t in todo if not t.get("link_checked")]
+    if not todo:
+        print("nothing to check (every link is fresh)")
+        return 0
+
+    fetcher = Fetcher(Path(args.cache), offline=False)
+    counts = {"ok": 0, "redirect": 0, "gone": 0, "error": 0}
+    for i, row in enumerate(todo, 1):
+        status = fetcher.check(row["url"])
+        counts[status] += 1
+        store.mark_link(row["fingerprint"], status)
+        if args.verbose or status in ("gone", "error"):
+            print(f"[{i}/{len(todo)}] {status:8} {row['title'][:46]:46} "
+                  f"{row['url'][:56]}")
+        if args.delay:
+            time.sleep(args.delay)
+
+    print()
+    print(f"checked {len(todo)}: " + ", ".join(
+        f"{v} {k}" for k, v in counts.items() if v))
+    if counts["gone"]:
+        print(f"{counts['gone']} are dead. They stay in the database but the "
+              "report badges them and can hide them with --hide-dead.")
+    return 0
+
+
 def cmd_stats(args) -> int:
     store = Store(Path(args.db))
     print(store.stats())
@@ -224,6 +276,8 @@ def build_parser() -> argparse.ArgumentParser:
     r.add_argument("--top", type=int, default=C.TOP_N_FOR_HIGHLIGHTS)
     r.add_argument("--limit", type=int, default=400)
     r.add_argument("--show-excluded", action="store_true")
+    r.add_argument("--hide-dead", action="store_true",
+                   help="drop postings whose link returned 404")
     r.add_argument("--open", action="store_true", help="open in the browser")
     r.set_defaults(func=cmd_report)
 
@@ -250,6 +304,18 @@ def build_parser() -> argparse.ArgumentParser:
     i.add_argument("--csv")
     i.add_argument("--label")
     i.set_defaults(func=cmd_import)
+
+    v = sub.add_parser("verify", help="check that posting URLs still resolve")
+    v.add_argument("--limit", type=int, help="stop after N links")
+    v.add_argument("--max-age", type=int, default=7,
+                   help="re-check links older than N days (default 7)")
+    v.add_argument("--only-unchecked", action="store_true",
+                   help="skip links that were checked before")
+    v.add_argument("--verbose", action="store_true")
+    v.add_argument("--delay", type=float, default=1.0,
+                   help="seconds between requests (default 1.0)")
+    v.add_argument("--cache", default=str(DEFAULT_CACHE))
+    v.set_defaults(func=cmd_verify)
 
     t = sub.add_parser("stats", help="what is in the database")
     t.set_defaults(func=cmd_stats)

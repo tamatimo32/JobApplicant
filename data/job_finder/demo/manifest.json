@@ -1,0 +1,15 @@
+{
+  "captured": "2026-11-12",
+  "source": "https://www.eurobrussels.com",
+  "note": "Captured with fetch_page on the date shown. Job ids, titles, employers, towns and deadlines are as published. Descriptions are condensed to the first sentences so the files stay small. These URLs were real when captured; vacancies may have closed since.",
+  "files": {
+    "job_board-BE-eurobrussels.html": {
+      "url": "https://www.eurobrussels.com/jobs/environment",
+      "postings": 20
+    },
+    "job_board-BE-eurobrussels-internships.html": {
+      "url": "https://www.eurobrussels.com/jobs/internship",
+      "postings": 6
+    }
+  }
+}

@@ -89,9 +89,35 @@ class Posting:
     adapter: str = ""
     raw_title: str = ""
 
+    # Where the posting came from. This decides whether the report is allowed
+    # to present it as a real vacancy, so it is not optional bookkeeping:
+    #   crawl    fetched from the live site during a run
+    #   snapshot a page committed to the repo, used by `jobfinder demo`
+    #   import   a page the user saved by hand
+    #   fixture  written by the developer, not fetched from anywhere
+    #
+    # "snapshot" and "fixture" are not the same claim. A snapshot holds URLs
+    # that really existed when the page was captured; a vacancy may since have
+    # closed, which is what `verify` is for. A fixture holds URLs nobody ever
+    # saw, and those must never be clickable.
+    discovered_via: str = "crawl"
+
     # computed later
     seniority: Seniority = field(default_factory=Seniority)
     fingerprint: str = ""
+
+    @property
+    def is_fictional(self) -> bool:
+        """True when nobody has ever seen this vacancy on a real site.
+
+        A snapshot is historical, not fictional: it was real when captured.
+        """
+        return self.discovered_via == "fixture"
+
+    @property
+    def is_historical(self) -> bool:
+        """Real once, but not fetched by this run."""
+        return self.discovered_via == "snapshot"
 
     def text(self, limit: int = 6000) -> str:
         """Title-present-first text blob for keyword matching."""

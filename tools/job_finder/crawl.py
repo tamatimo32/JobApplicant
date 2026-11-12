@@ -95,11 +95,15 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         ctx = Context(source=source, base_url=resp.url or url, today=today,
                       language=lang)
         postings, adapter = extract_postings(resp.text, ctx)
+        # remember whether these came from a committed snapshot or the live
+        # site, so the report can never present a snapshot as a real vacancy
+        via = "snapshot" if snapshot is not None else "crawl"
 
         kept_here = 0
         for p in postings:
             if not p.country:
                 p.country = source.country
+            p.discovered_via = via
             p.fingerprint = fingerprint(p.title, p.employer, p.country)
             if p.fingerprint in seen:
                 continue

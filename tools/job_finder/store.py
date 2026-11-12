@@ -34,6 +34,9 @@ CREATE TABLE IF NOT EXISTS postings (
     adapter       TEXT,
     seniority     TEXT,
     seniority_years INTEGER,
+    discovered_via TEXT DEFAULT 'crawl',
+    link_status   TEXT DEFAULT '',
+    link_checked  TEXT,
     first_seen    TEXT NOT NULL,
     first_run     INTEGER DEFAULT 0,
     last_seen     TEXT NOT NULL,
@@ -88,12 +91,30 @@ CREATE INDEX IF NOT EXISTS idx_postings_country ON postings(country);
 """
 
 
+# columns added after the first release; CREATE TABLE IF NOT EXISTS does not
+# alter an existing table, so they are added explicitly
+MIGRATIONS = [
+    ("postings", "discovered_via", "TEXT DEFAULT 'crawl'"),
+    ("postings", "link_status", "TEXT DEFAULT ''"),
+    ("postings", "link_checked", "TEXT"),
+]
+
+
+def _migrate(con: sqlite3.Connection) -> None:
+    for table, column, decl in MIGRATIONS:
+        cols = {r["name"] for r in con.execute(f"PRAGMA table_info({table})")}
+        if column not in cols:
+            con.execute(f"ALTER TABLE {table} ADD COLUMN {column} {decl}")
+    con.commit()
+
+
 def connect(path: Path | str) -> sqlite3.Connection:
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     con = sqlite3.connect(path)
     con.row_factory = sqlite3.Row
     con.executescript(SCHEMA)
+    _migrate(con)
     return con
 
 
@@ -142,26 +163,27 @@ class Store:
                 """UPDATE postings SET url=?, title=?, employer=?, country=?,
                    location=?, language=?, salary=?, posted=?, deadline=?,
                    description=?, tags=?, source_id=?, source_name=?,
-                   adapter=?, seniority=?, seniority_years=?, last_seen=?,
-                   active=1 WHERE fingerprint=?""",
+                   adapter=?, seniority=?, seniority_years=?,
+                   discovered_via=?, last_seen=?, active=1
+                   WHERE fingerprint=?""",
                 (p.url, p.title, p.employer, p.country, p.location, p.language,
                  p.salary, _d(p.posted), _d(p.deadline), p.description[:8000],
                  json.dumps(p.tags, ensure_ascii=False), p.source_id,
                  p.source_name, p.adapter, p.seniority.level,
-                 p.seniority.years, now, p.fingerprint))
+                 p.seniority.years, p.discovered_via, now, p.fingerprint))
             self.con.commit()
             return False
         self.con.execute(
             """INSERT INTO postings (fingerprint, url, title, employer, country,
                location, language, salary, posted, deadline, description, tags,
                source_id, source_name, adapter, seniority, seniority_years,
-               first_seen, first_run, last_seen, active)
-               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)""",
+               discovered_via, first_seen, first_run, last_seen, active)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,1)""",
             (p.fingerprint, p.url, p.title, p.employer, p.country, p.location,
              p.language, p.salary, _d(p.posted), _d(p.deadline),
              p.description[:8000], json.dumps(p.tags, ensure_ascii=False),
              p.source_id, p.source_name, p.adapter, p.seniority.level,
-             p.seniority.years, now, run_id, now))
+             p.seniority.years, p.discovered_via, now, run_id, now))
         self.con.commit()
         return True
 
@@ -199,11 +221,20 @@ class Store:
 
     # --------------------------------------------------------------- reading
     def ranked(self, limit: int | None = None, include_excluded: bool = False,
-               new_since_run: int | None = None) -> list[dict]:
+               new_since_run: int | None = None,
+               include_inactive: bool = False) -> list[dict]:
+        """Scored postings, best first.
+
+        ``include_inactive=False`` (the default) drops anything the last crawl
+        did not see. A posting that vanished from its board is closed; showing
+        it forever is how a report fills up with dead links.
+        """
         where = ["1=1"]
         params: list = []
         if not include_excluded:
             where.append("s.excluded = 0")
+        if not include_inactive:
+            where.append("p.active = 1")
         sql = f"""
             SELECT p.*,
                    s.total, s.band,
@@ -240,6 +271,44 @@ class Store:
             "excluded": one("SELECT COUNT(*) FROM scores WHERE excluded=1"),
             "runs": one("SELECT COUNT(*) FROM runs"),
         }
+
+    # ------------------------------------------------------------ link checks
+    def mark_link(self, fingerprint: str, status: str) -> None:
+        """Record what a HEAD request said about this posting's URL.
+
+        ``status`` is a short word, not a code: ok / redirect / gone / error.
+        """
+        self.con.execute(
+            "UPDATE postings SET link_status=?, link_checked=? WHERE fingerprint=?",
+            (status, datetime.now().isoformat(timespec="seconds"), fingerprint))
+        self.con.commit()
+
+    def needing_link_check(self, max_age_days: int = 7,
+                           limit: int | None = None) -> list[dict]:
+        """Postings whose link has never been checked, or not lately."""
+        sql = """
+            SELECT fingerprint, url, title, employer, link_status, link_checked
+            FROM postings
+            WHERE active = 1 AND url LIKE 'http%'
+              AND (link_checked IS NULL OR link_checked < ?)
+            ORDER BY (link_checked IS NULL) DESC, link_checked ASC
+        """
+        from datetime import timedelta
+        cutoff = (datetime.now() - timedelta(days=max_age_days)).isoformat(
+            timespec="seconds")
+        params: list = [cutoff]
+        if limit:
+            sql += " LIMIT ?"
+            params.append(limit)
+        return [dict(r) for r in self.con.execute(sql, params)]
+
+    def link_summary(self) -> dict[str, int]:
+        out = {"ok": 0, "redirect": 0, "gone": 0, "error": 0, "unchecked": 0}
+        for r in self.con.execute(
+                "SELECT COALESCE(link_status,'') AS s, COUNT(*) AS n "
+                "FROM postings WHERE active = 1 GROUP BY s"):
+            out[r["s"] or "unchecked"] = r["n"]
+        return out
 
     def source_health(self, run_id: int) -> list[dict]:
         return [dict(r) for r in self.con.execute(

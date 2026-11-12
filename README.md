@@ -44,15 +44,16 @@ If `render_cv.py` raises `LayoutOverflow`, the content does not fit on one page.
 
 ---
 
-## The job finder, three commands
+## The job finder
 
 The registry says where to look; the finder reads it, crawls, scores every
 posting out of 100, and writes one HTML page with the best ones first.
 
 ```bash
-python3 tools/jobfinder.py demo                        # offline, 26 postings
+python3 tools/jobfinder.py demo                        # offline, 23 postings
 python3 tools/jobfinder.py report --run 1 --open
 python3 tools/jobfinder.py crawl --countries BE,LU     # the real thing
+python3 tools/jobfinder.py verify                      # are the links still alive?
 ```
 
 Standard library only, no install, no API key. Scores are additive and the
@@ -62,6 +63,25 @@ formula in `docs/SCORING.md`.
 
 Two things it will not do: scrape LinkedIn or Indeed (their terms forbid it),
 and decide for you. It ranks; you read the top twelve.
+
+Two honesty features worth knowing. Postings from the demo snapshots are
+labelled **Demo data · captured page** (they are real, just historical), and a
+hand-written fixture would be labelled **invented** and never made clickable.
+`verify` marks postings whose URL has gone 404, and a dead link stops being
+clickable so a filled vacancy cannot keep looking open.
+
+### Never invent a posting
+
+If you add demo data, it must be **captured, not composed**. Save the page,
+record its URL and date in `data/job_finder/demo/manifest.json`, and let the
+adapter read it. A hand-written fixture is allowed only for a unit test, and
+must be labelled `discovered_via="fixture"` so the report refuses to link it.
+
+This is not hypothetical. A composed fixture once produced
+`sustenuto.com/careers/sustainability-analyst-brussels`, a polished, plausible
+URL for a vacancy that never existed. It scored 99 and sat at the top of a
+report, and a reader clicked it and got a 404. The rule that came out of it:
+**if nobody fetched it, the report must not present it as real.**
 
 ---
 

@@ -69,7 +69,8 @@ registry CSV ──► plan ──► fetch (cached, 1 req/host/1.5 s) ──►
 | `crawl` | fetch sources, score, store. `--countries BE,LU`, `--categories job_board,company`, `--priorities 1`, `--limit N`, `--offline` |
 | `demo` | offline run against the two committed snapshots |
 | `import` | score pages you saved by hand: `--dir ~/Downloads/jobs` |
-| `report` | write `out/opportunities.html`. `--run N`, `--show-excluded`, `--open` |
+| `report` | write `out/opportunities.html`. `--run N`, `--show-excluded`, `--hide-dead`, `--open` |
+| `verify` | HEAD every posting URL and record ok / redirect / gone / error. `--limit N`, `--max-age 7`, `--only-unchecked` |
 | `explain` | print the arithmetic for one posting: `explain "carbon"` |
 | `sources` | list what a crawl would visit before committing to it |
 | `stats` | what is in the database and when each run happened |
@@ -77,6 +78,61 @@ registry CSV ──► plan ──► fetch (cached, 1 req/host/1.5 s) ──►
 Global: `--db path` (default `data/job_finder/opportunities.db`).
 
 ---
+
+## Links go stale, and the report says so
+
+A vacancy that has been filled is usually taken down, so a URL that worked
+last week returns 404 this week. Three guards, because a ranked list of dead
+links is worse than no list:
+
+1. **Postings the last crawl did not see are inactive** and drop out of the
+   report. `Store.ranked()` filters on `active` by default.
+2. **`jobfinder verify`** HEADs each URL and stores one of four words:
+
+   | status | meaning | what the report does |
+   | --- | --- | --- |
+   | `ok` | 200 | nothing |
+   | `redirect` | 3xx | badges it |
+   | `gone` | 404 or 410 | badges it, and `--hide-dead` removes it |
+   | `error` | unreachable, timeout, TLS failure | nothing: a network problem is not a dead job |
+
+   That last distinction matters. A machine behind a proxy that blocks the
+   site will get `error` for everything; it must not conclude that every
+   vacancy has closed.
+3. **`report --hide-dead`** drops the 404s from the page while keeping them in
+   the database, so history survives.
+
+Run `verify` weekly, before `report`.
+
+## Demonstration data is labelled, everywhere
+
+A fixture is fine for a test and unacceptable in a report someone might act
+on. Every posting carries a `discovered_via` value, and the report treats them
+differently:
+
+| | where it came from | in the report |
+| --- | --- | --- |
+| `crawl` | fetched from the live site | a normal, clickable card |
+| `import` | a page you saved by hand | badged "Imported from a saved page" |
+| `snapshot` | a page committed to this repo | badged "Demo data · real posting, captured page"; the link is kept because the URL did exist |
+| `fixture` | written by a developer, never fetched | badged "Demo data · invented posting", **never a link** |
+
+When **every** visible posting is a snapshot or fixture, a dark banner appears
+above the fold. Its wording depends on which: a snapshot report says the page
+was captured rather than crawled and that vacancies may have closed; a fixture
+report says the links are not real. Fictional postings are never rendered as
+hyperlinks and never appear as clickable cards in the "start here" strip. A
+dead link (`link_status = gone`) also stops being clickable, so a filled
+vacancy is visibly closed rather than quietly wrong.
+
+This exists because of a real failure. An early demo fixture invented a
+Sustenuto vacancy with a plausible URL (`sustenuto.com/careers/sustainability-
+analyst-brussels`), it scored 99 and sat at the top of the report, and a reader
+clicked it and got a 404. Two things were wrong: the URL was fabricated, and
+nothing on the page said so. The fixture has been deleted and replaced with
+captured EuroBrussels pages carrying real job ids. The labelling is the part
+that prevents a repeat, because the next fixture someone writes will have the
+same problem.
 
 ## When the crawler cannot reach a site
 
@@ -117,7 +173,8 @@ tools/job_finder/
   report.py                     the HTML
   tests/                        30 tests, no network
 data/job_finder/
-  demo/                         two committed snapshots used by `demo`
+  demo/                         two captured EuroBrussels pages + manifest.json
+                                recording the URL and date of each capture
   opportunities.db              created on first run
   cache/                        raw pages, 12 hour TTL
 docs/SCORING.md                 why the numbers are what they are

@@ -319,6 +319,126 @@ class ImporterTest(unittest.TestCase):
                                  "company-BE-sustenuto-formerly-betterbusiness")
 
 
+class ProvenanceTest(unittest.TestCase):
+    """A demonstration must never be able to pass itself off as live data.
+
+    This is the regression test for the bug that shipped a fabricated URL to
+    the top of a report: a hand-written fixture was scored, rendered, and read
+    as a real vacancy.
+    """
+
+    def _report(self, via_values):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        db = Path(tmp.name) / "t.db"
+        store = Store(db)
+        run = store.start_run("t")
+        index = KeywordIndex(CORE)
+        source = Source("s", "Board", "job_board", "BE", "https://x", "",
+                        "en", "env_consulting", "sme", "open", "high", 1,
+                        "yes", "")
+        for i, via in enumerate(via_values):
+            p = a_posting(title=f"Junior Carbon Analyst {i}", url=f"https://x/{i}")
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            p.discovered_via = via
+            store.upsert(p, run)
+            store.save_score(p.fingerprint, score(p, source, index,
+                                                  date(2026, 11, 12)))
+        store.finish_run(run, 1, len(via_values), len(via_values))
+        out = report.render(db, Path(tmp.name) / "r.html", run_id=run)
+        return out.read_text()
+
+    def test_a_snapshot_report_is_bannered_and_keeps_real_links(self):
+        """A snapshot is historical, not invented: the URLs did exist."""
+        html = self._report(["snapshot", "snapshot"])
+        self.assertIn("not a live crawl", html)
+        self.assertIn("captured page", html.lower())
+        # the anchor survives, because the page really was there
+        self.assertEqual(html.count("<h3><a href="), 2)
+
+    def test_a_fixture_report_is_bannered_and_never_linked(self):
+        """The regression test. A hand-written URL must never be clickable."""
+        html = self._report(["fixture", "fixture"])
+        self.assertIn("invented", html.lower())
+        self.assertIn("invented posting", html)
+        self.assertEqual(html.count("<h3><a href="), 0)
+
+    def test_live_postings_are_linked_and_not_bannered(self):
+        html = self._report(["crawl", "crawl"])
+        self.assertNotIn("not a live crawl", html)
+        self.assertNotIn("invented", html.lower())
+        self.assertIn("<h3><a href=", html)
+
+    def test_a_mixed_report_warns_about_the_demo_rows(self):
+        html = self._report(["crawl", "fixture"])
+        self.assertIn("invented demo data", html.lower())
+        # the real one stays clickable, the invented one does not
+        self.assertEqual(html.count("<h3><a href="), 1)
+
+    def test_default_provenance_is_crawl(self):
+        self.assertEqual(a_posting().discovered_via, "crawl")
+
+
+class InactiveTest(unittest.TestCase):
+    """A posting the last crawl did not see is closed, and must fall out."""
+
+    def test_inactive_postings_are_hidden_by_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "t.db")
+            run = store.start_run("r")
+            p = a_posting()
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            store.upsert(p, run)
+            store.save_score(p.fingerprint, score(p, None, KeywordIndex(CORE),
+                                                  date(2026, 11, 12)))
+            store.finish_run(run, 1, 1, 1)
+            self.assertEqual(len(store.ranked()), 1)
+
+            # a later run marks it gone
+            run2 = store.start_run("r2")
+            store.finish_run(run2, 0, 0, 0)
+            store.con.execute("UPDATE postings SET active=0")
+            store.con.commit()
+
+            self.assertEqual(len(store.ranked()), 0)
+            self.assertEqual(len(store.ranked(include_inactive=True)), 1)
+
+
+class LinkCheckTest(unittest.TestCase):
+    def test_link_status_round_trip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "t.db")
+            run = store.start_run("r")
+            p = a_posting()
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            store.upsert(p, run)
+            self.assertEqual(len(store.needing_link_check()), 1)
+
+            store.mark_link(p.fingerprint, "gone")
+            self.assertEqual(store.link_summary()["gone"], 1)
+            self.assertEqual(len(store.needing_link_check()), 0)
+
+    def test_a_dead_link_can_be_hidden_from_the_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "t.db"
+            store = Store(db)
+            run = store.start_run("r")
+            for i, status in enumerate(["ok", "gone"]):
+                p = a_posting(title=f"Analyst {i}", url=f"https://x/{i}")
+                p.fingerprint = fingerprint(p.title, p.employer, p.country)
+                store.upsert(p, run)
+                store.save_score(p.fingerprint, score(p, None, KeywordIndex(CORE),
+                                                      date(2026, 11, 12)))
+                store.mark_link(p.fingerprint, status)
+            store.finish_run(run, 1, 2, 2)
+
+            both = report.render(db, Path(tmp) / "a.html", run_id=run)
+            self.assertEqual(both.read_text().count('class="card '), 2)
+            one = report.render(db, Path(tmp) / "b.html", run_id=run,
+                                hide_dead=True)
+            self.assertEqual(one.read_text().count('class="card '), 1)
+
+
 class ReportTest(unittest.TestCase):
     def test_report_is_self_contained(self):
         with tempfile.TemporaryDirectory() as tmp:
