@@ -1,0 +1,144 @@
+{
+  "_source": {
+    "job": "PMO Junior, Syngenia (projets industriels, sites en zone controlee)",
+    "url": "https://www.syngenia.com/en/job/6319-pmo-junior/",
+    "language": "fr",
+    "date": "2026-11-10",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. No project-management or MS Project experience exists in the sources, so none is claimed. The CV leans on planning, KPI dashboards, risk review and budget/ROI modelling. To confirm: any MS Project use (even coursework), any PMO, planning or coordination responsibility, and whether the profile can access Belgian nuclear-controlled sites (badge/medical clearance)."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "PMO Junior, Syngenia",
+  "title": "Bioingénieur | Pilotage de projets industriels, planning & tableaux de bord",
+  "summary": "Bioingénieur qui a appris à tenir un projet par ses données : plannings, budgets, indicateurs et suivi des risques, avec Excel et Power BI comme outils quotidiens. J'aime le travail invisible qui fait qu'un projet ne dérape pas, et je cherche à le faire à l'échelle d'un portefeuille de projets industriels.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Déc. 2026",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Piloté de bout en bout le développement d'un outil de calcul d'empreinte carbone (ISO 14067), depuis le cadrage des besoins jusqu'à la mise à disposition aux équipes.",
+        "Structuré les données amont et les hypothèses du modèle pour rendre les résultats auditables et reproductibles."
+      ]
+    },
+    {
+      "title": "Analyste ESG & durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en durabilité, Bruxelles",
+      "bullets": [
+        "Construit des tableaux de bord Power BI et des outils Excel de suivi d'indicateurs, utilisés pour le reporting et la décision chez les clients.",
+        "Automatisé une analyse de certification ESG, réduisant de 70 % le temps de traitement, et digitalisé la traçabilité documentaire des audits.",
+        "Contrôlé la qualité et la cohérence des données de reporting, en documentant les règles de validation appliquées."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Oct. 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Réalisé des calculs de CAPEX et des modèles de retour sur investissement en Excel pour des projets hydrothermaux, et présenté les arbitrages aux clients.",
+        "Évalué les contraintes réglementaires et techniques des projets, en lien direct avec les maîtres d'ouvrage.",
+        "Assuré le suivi budgétaire et la présentation des résultats chiffrés aux interlocuteurs techniques et non techniques."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Juil. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Coordonné des analyses multifactorielles avec des ingénieurs et des agronomes, et construit les outils de suivi automatisé des résultats.",
+        "Documenté les protocoles et les règles d'analyse, pour que les résultats restent reproductibles d'une campagne à l'autre."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Pilotage : suivi d'indicateurs, tableaux de bord, analyse de risques, contrôle qualité des données.\nGestion : structures budgétaires, modèles CAPEX et ROI, documentation de processus.\nOutils : Excel avancé, Power BI, Power Query, Power Automate, Python, SQL."
+      ]
+    },
+    {
+      "heading": "Gestion de projet",
+      "type": "text",
+      "paras": [
+        "Cadrage des besoins, définition des hypothèses, suivi des livrables et restitution aux décideurs. Environnement industriel et réglementé."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Communication structurée",
+        "Autonomie et proactivité",
+        "Travail en équipes pluridisciplinaires"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}

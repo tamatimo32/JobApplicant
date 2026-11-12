@@ -1,0 +1,102 @@
+{
+  "_source": {
+    "job": "QHSE Engineer Trainee, DEME Group (Belgium HQ + international project sites)",
+    "url": "https://www.deme-group.com/jobs/qhse-engineer-trainee",
+    "language": "en",
+    "date": "2026-11-10",
+    "sources": ["job_description_fr.txt (in this folder, responsibilities from the Workday posting)", "data/experience_master.json", "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"],
+    "verification_status": "PENDING USER VERIFICATION. No QHSE, safety or audit role exists in the sources. What is real: ISO management-system self-training and gap analyses, environmental indicators, data quality and documentation. To confirm: any safety training, site experience, or ISO 14001/45001 audit participation."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "QHSE Engineer Trainee, DEME Group",
+  "title": "Bioengineer | Environmental management systems, audits & risk review",
+  "summary": "Bioengineer who has worked inside management systems rather than beside them: ISO 14001 and 45001 requirements, gap analyses, environmental indicators and the documentation an audit actually asks for. Safety and environment are the same discipline of rigour, and I want to build a career where the two meet.",
+  "contact": [
+    {"text": "Brussels, Belgium"},
+    {"text": "+32 485 31 52 76"},
+    {"text": "thomaschacra@gmail.com", "link": true},
+    {"text": "Licence B"},
+    {"text": "www.linkedin.com/in/thomas-chacra/", "link": true, "size": 7.0}
+  ],
+  "experience_heading": "PROFESSIONAL EXPERIENCE",
+  "experience": [
+    {
+      "title": "Sustainability Adviser",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Dec. 2026",
+      "context": "Compostable packaging and sustainable supply chains",
+      "bullets": [
+        "Documented the assumptions and data sources behind an ISO 14067 carbon model, so that every figure could be defended to an external reviewer.",
+        "Structured supplier and freight records into one consistent dataset, and identified where the data was too weak to support a claim."
+      ]
+    },
+    {
+      "title": "ESG & Sustainability Analyst",
+      "employer": "BetterBusiness",
+      "dates": "Dec. 2025 – May 2026",
+      "context": "Sustainability consulting, Brussels",
+      "bullets": [
+        "Trained myself on ISO 9001, 14001 and 45001 requirements and took part in training-aided gap analyses against those standards.",
+        "Built sustainability KPI frameworks and environmental performance indicators used to monitor sites and flag deviations.",
+        "Controlled the quality of environmental data and documented the validation rules, so that non-conformities could be traced rather than corrected ad hoc."
+      ]
+    },
+    {
+      "title": "Research and Development Scientist",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Jul. 2025",
+      "context": "AgTech and hydroponic production, Brussels",
+      "bullets": [
+        "Ran risk-aware analyses on energy and environmental data, and documented protocols so that results stayed reproducible across campaigns.",
+        "Worked with engineers and agronomists on resource-efficiency initiatives, turning measurements into operating rules."
+      ]
+    },
+    {
+      "title": "Energy and Environmental Consultant",
+      "employer": "Deplasse et Associés",
+      "dates": "June 2024 – Oct. 2024",
+      "context": "Energy engineering consultancy, Brussels",
+      "bullets": [
+        "Assessed environmental and regulatory constraints for energy projects, including compliance with regional rules for building performance."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Key skills",
+      "type": "text",
+      "paras": [
+        "Management systems: ISO 14001, ISO 45001, ISO 9001, gap analysis, documentation, corrective action follow-up.\nEnvironment: GHG Protocol, ISO 14067, environmental indicators, regulatory constraints.\nRisk: data quality control, deviation analysis, reproducible protocol design."
+      ]
+    },
+    {
+      "heading": "Field & reporting",
+      "type": "text",
+      "paras": [
+        "Field exposure in agricultural production and industrial sites. Comfortable writing procedures and training colleagues in them."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Rigour and attention to detail",
+        "Pragmatic, hands-on mindset",
+        "Analytical and proactive"
+      ]
+    },
+    {
+      "heading": "Education",
+      "type": "education",
+      "items": [
+        {"lines": ["M.Sc. in Environmental Bioengineering", "Université libre de Bruxelles (ULB)"]},
+        {"lines": ["B.Sc. in Engineering Sciences", "Université libre de Bruxelles (ULB)"]}
+      ]
+    },
+    {
+      "heading": "Languages",
+      "type": "languages",
+      "items": [["English", "Fluent"], ["French", "Bilingual"], ["Dutch", "In progress"]]
+    }
+  ]
+}

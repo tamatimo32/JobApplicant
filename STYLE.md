@@ -123,6 +123,19 @@ file is ignored, so old files keep working.
 **The photo stays.** "No images" means no emoji; the applicant's portrait is
 part of the template.
 
+### Sidebar headings are one line, so keep them short
+
+A sidebar heading is drawn once at 12 pt and never wrapped. A long one does not
+error usefully: it runs straight through the rounded edge of the panel. The
+Amazon CV shipped `Stakeholders & communication` (172.3 pt wide) into a panel
+that only offers 129.2 pt, and the text was sliced off at the page edge.
+
+`tools/render_cv.py` now measures every sidebar heading before drawing it and
+raises `LayoutOverflow` when it does not fit with 6 pt to spare. Keep headings
+to two words where possible (`Stakeholder work`, not `Stakeholders and
+communication`). The same limit applies to `Languages`, which renders its
+heading at 11 pt.
+
 ## 5. No tables in the letter
 
 The motivation letter is absolute-positioned text lines, not a table, and it

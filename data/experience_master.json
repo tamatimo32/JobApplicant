@@ -16,6 +16,18 @@
     "are worded loosely — re-read them with the applicant before they go on a CV."
   ],
 
+  "_changelog": [
+    {
+      "date": "2026-11-10",
+      "source": "Google Sheets 'All experience _ Chacra Thomas', re-read live (Sheet1!A2:P10)",
+      "changes": [
+        "Green Stems end -> 2026-12 (sheet 11/12/2026)",
+        "Vertiberry R&D end -> 2025-07 (sheet 31-Jul-2025)"
+      ],
+      "note": "Previous values came from a CSV export that had drifted from the live sheet. Green Stems was recorded as ongoing; the sheet now gives an end date of 11/12/2026. Vertiberry R&D ended 31/07/2025, not 30/09/2025. All other dates and all bullets match the sheet."
+    }
+  ],
+
   "profile": {
     "name": "Thomas Chacra",
     "email": "thomaschacra@gmail.com",
@@ -76,7 +88,7 @@
       "employer": "Green Stems Products",
       "title": "Sustainability Adviser",
       "start": "2026-09",
-      "end": null,
+      "end": "2026-12",
       "location": null,
       "context": "Compostable packaging and sustainable supply chains",
       "bullets": [
@@ -115,7 +127,7 @@
       "title": "Research and Development Scientist",
       "title_alt": "Plant Scientist & Environmental Data Analyst",
       "start": "2024-09",
-      "end": "2025-09",
+      "end": "2025-07",
       "location": "Brussels",
       "context": "AgTech and innovative hydroponic production",
       "bullets": [

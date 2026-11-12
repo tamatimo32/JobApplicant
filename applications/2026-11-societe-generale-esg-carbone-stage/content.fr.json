@@ -1,0 +1,144 @@
+{
+  "_source": {
+    "job": "Chargé Mission ESG - Pilotage Réduction Émissions Carbone Du Groupe (stage 6 mois), Société Générale, Puteaux",
+    "url": "https://careers.societegenerale.com/offres-d-emploi/charge-mission-esg-pilotage-reduction-emissions-carbone-du-groupe-26000M6F-fr",
+    "language": "fr",
+    "date": "2026-11-10",
+    "deadline": null,
+    "start": "2027-03-01",
+    "sources": [
+      "job_description_fr.txt (in this folder)",
+      "data/experience_master.json",
+      "Google Sheets 'All experience _ Chacra Thomas', re-read live 2026-11-10"
+    ],
+    "verification_status": "PENDING USER VERIFICATION. The posting asks for a Bac+4/5 student (stage) in an engineering or business school. Thomas is a graduate, not a current student: check the internship eligibility (French stage convention, age/enrolment rules) before applying. Content is otherwise sourced: CSRD dashboards, KPI follow-up, benchmark work, carbon accounting."
+  },
+  "name": "Thomas Chacra",
+  "subtitle": "Chargé Mission ESG - Pilotage Réduction Émissions Carbone, Société Générale",
+  "title": "Bioingénieur | Bilan carbone, reporting CSRD & tableaux de bord de pilotage",
+  "summary": "Bioingénieur orienté chiffres et pilotage : je construis des tableaux de bord d'émissions, je suis des plans d'action et je produis le reporting CSRD qui les rend vérifiables. Un objectif de réduction ne tient que si l'on sait d'où vient chaque tonne, et j'aime le travail de rigueur que cela impose.",
+  "contact": [
+    {
+      "text": "Bruxelles, Belgique"
+    },
+    {
+      "text": "+32 485 31 52 76"
+    },
+    {
+      "text": "thomaschacra@gmail.com",
+      "link": true
+    },
+    {
+      "text": "Permis B"
+    },
+    {
+      "text": "www.linkedin.com/in/thomas-chacra/",
+      "link": true,
+      "size": 7.0
+    }
+  ],
+  "experience_heading": "EXPÉRIENCE PROFESSIONNELLE",
+  "experience": [
+    {
+      "title": "Conseiller en durabilité",
+      "employer": "Green Stems Products",
+      "dates": "Sept. 2026 – Déc. 2026",
+      "context": "Emballages compostables et chaînes d'approvisionnement durables",
+      "bullets": [
+        "Conçu un outil de calcul d'empreinte carbone produit (ISO 14067) et structuré les données amont pour hiérarchiser les leviers de réduction."
+      ]
+    },
+    {
+      "title": "Analyste ESG & durabilité",
+      "employer": "BetterBusiness",
+      "dates": "Déc. 2025 – Mai 2026",
+      "context": "Conseil en durabilité, Bruxelles",
+      "bullets": [
+        "Calculé des empreintes carbone selon le GHG Protocol et construit les indicateurs de performance environnementale associés.",
+        "Conçu des tableaux de bord Power BI de suivi de KPI et des outils Excel de reporting utilisés par les consultants et leurs clients.",
+        "Contrôlé la qualité des données de reporting et documenté les règles de validation appliquées."
+      ]
+    },
+    {
+      "title": "Scientifique R&D",
+      "employer": "Vertiberry",
+      "dates": "Sept. 2024 – Juil. 2025",
+      "context": "AgTech et production hydroponique, Bruxelles",
+      "bullets": [
+        "Analysé des séries temporelles de consommation énergétique et construit les outils de suivi automatisé des indicateurs opérationnels.",
+        "Présenté les résultats à des interlocuteurs non spécialistes, à l'écrit comme à l'oral."
+      ]
+    },
+    {
+      "title": "Consultant énergie & environnement",
+      "employer": "Deplasse et Associés",
+      "dates": "Juin 2024 – Oct. 2024",
+      "context": "Bureau d'études en ingénierie énergétique, Bruxelles",
+      "bullets": [
+        "Préparé des dossiers CSRD clients, dont la digitalisation de la matrice de double matérialité, et contribué aux analyses de risques climatiques.",
+        "Réalisé des benchmarks et des analyses d'impact technico-économiques pour des projets d'énergie."
+      ]
+    }
+  ],
+  "sidebar": [
+    {
+      "heading": "Compétences clés",
+      "type": "text",
+      "paras": [
+        "Climat : GHG Protocol, ISO 14067, empreinte produit, leviers de réduction, risques climatiques.\nReporting : CSRD, ESRS, indicateurs RSE, plans d'action, analyse d'impact, benchmarks.\nData : Excel avancé, Power BI, Power Query, SQL, Python."
+      ]
+    },
+    {
+      "heading": "Pilotage",
+      "type": "text",
+      "paras": [
+        "Construction de dashboards de pilotage, suivi de KPI, coordination de réunions et restitution chiffrée aux décideurs."
+      ]
+    },
+    {
+      "heading": "Soft skills",
+      "type": "bullets",
+      "items": [
+        "Rigueur et curiosité",
+        "Force de proposition",
+        "Gestion des priorités"
+      ]
+    },
+    {
+      "heading": "Formation",
+      "type": "education",
+      "items": [
+        {
+          "lines": [
+            "M.Sc. en bioingénieur en environnement",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        },
+        {
+          "lines": [
+            "B.Sc. en sciences de l'ingénieur",
+            "Université libre de Bruxelles (ULB)"
+          ]
+        }
+      ]
+    },
+    {
+      "heading": "Langues",
+      "type": "languages",
+      "items": [
+        [
+          "Français",
+          "Bilingue"
+        ],
+        [
+          "Anglais",
+          "Bilingue"
+        ],
+        [
+          "Néerlandais",
+          "En cours"
+        ]
+      ]
+    }
+  ]
+}

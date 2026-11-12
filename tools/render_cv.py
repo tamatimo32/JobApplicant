@@ -541,9 +541,20 @@ def draw_sidebar(c: canvas.Canvas, blocks: list[dict]) -> float:
         panel(c, block_top, rect_h)
         rule(c, PANEL_X + PANEL_RULE_INSET, PANEL_X + PANEL_RULE_INSET + PANEL_RULE_W,
              block_top + PANEL_RULE_DY, C_RULE, 1.25)
+        head_size = (PANEL_HEAD_SIZE_LANG if kind == "languages"
+                     else PANEL_HEAD_SIZE)
+        # The heading is drawn once and never wrapped, so a long one runs
+        # straight through the rounded panel edge. "Stakeholders &
+        # communication" at 12 pt did this. Keep it 6 pt clear of the edge.
+        head_w = tw(block["heading"], "Aptos-Bold", head_size)
+        head_room = PANEL_X + PANEL_W - 6.0 - PANEL_HEAD_X
+        if head_w > head_room:
+            raise LayoutOverflow(
+                f'sidebar heading {block["heading"]!r} is {head_w:.1f} pt wide '
+                f'but only {head_room:.1f} pt fit before the panel edge. '
+                "Shorten the heading.")
         put(c, PANEL_HEAD_X, head_base, block["heading"], "Aptos-Bold",
-            PANEL_HEAD_SIZE_LANG if kind == "languages" else PANEL_HEAD_SIZE,
-            C_SIDEBAR_HEAD)
+            head_size, C_SIDEBAR_HEAD)
         for base, x, runs, size in rows:
             cx = x
             for i, (text, font) in enumerate(runs):

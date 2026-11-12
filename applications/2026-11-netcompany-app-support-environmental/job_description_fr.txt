@@ -1,0 +1,41 @@
+Junior Application Support Agent - Environmental Sector, Netcompany
+Source : https://jobs.smartrecruiters.com/Netcompany1/744000160840439-junior-application-support-agent-environmental-sector-
+Relevé le 2026-11-10. Full-time, Bruxelles, hybride.
+Candidature : CV en anglais obligatoire (pas de lettre demandée par l'annonce).
+
+ENTREPRISE
+
+Netcompany, plus de 8 900 professionnels en Europe, digitalisation responsable pour
+les institutions européennes et des organisations publiques et privées.
+
+LE POSTE
+
+- Point de contact principal des utilisateurs par e-mail et via les outils de
+  ticketing (ServiceNow, Jira).
+- Diagnostiquer et résoudre les problèmes techniques de base : accès EU Login,
+  attribution de rôles, erreurs de validation de documents.
+- Appuyer la saisie de données et les requêtes de workflow liées à l'EUDR
+  (règlement sur la déforestation) et aux notifications de transfert de déchets.
+- Escalader les problèmes complexes vers le support L2/L3 avec une documentation
+  précise et des étapes de reproduction.
+- Enregistrer, catégoriser, prioriser et gérer les tickets dans le respect des SLA.
+- Tenir des registres d'incidents exacts et contribuer à la base de connaissances,
+  aux FAQ et aux guides utilisateurs.
+- Fournir des explications claires et non techniques aux utilisateurs finaux et
+  collaborer avec les équipes politiques sur les mises à jour réglementaires.
+- Participer aux tests d'acceptation utilisateur (UAT) et à la migration des
+  données de référence.
+
+PROFIL
+
+- Bachelor en informatique, IT, sciences de l'environnement, études européennes,
+  ou expérience équivalente.
+- Expérience en support client, helpdesk ou IT service management : un atout, non
+  indispensable.
+- Aisance avec Microsoft Office 365 (Outlook, Teams, SharePoint) et les outils de
+  ticketing de type ServiceNow ou Jira.
+- Compréhension de base des applications web, bases de données ou intégrations API.
+- Attention au détail, capacité d'analyse et de dépannage, sens du service.
+- Connaissance des réglementations environnementales de l'UE : un plus.
+- Anglais professionnel complet (C1 ou plus) ; autres langues de l'UE (français,
+  allemand) souhaitées.
