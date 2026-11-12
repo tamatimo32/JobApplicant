@@ -38,8 +38,6 @@ c("Environment Agency Abu Dhabi", "https://www.ead.gov.ae", "public_body", "mid"
   "high", 1, "The emirate's environmental regulator.")
 c("Ministry of Climate Change and Environment", "https://www.moccae.gov.ae",
   "public_body", "mid", "high", 1)
-c("Dubai Carbon Centre of Excellence", "https://www.dubicarbon.com", "env_consulting",
-  "sme", "high", 2, "Carbon measurement and MRV; a strong SME target.")
 c("Emirates Nature-WWF", "https://www.emiratesnaturewwf.ae", "ngo", "sme", "high", 2)
 c("Abu Dhabi Department of Energy", "https://www.doe.gov.ae", "public_body", "mid",
   "high", 2)

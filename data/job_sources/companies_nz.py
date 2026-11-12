@@ -90,13 +90,6 @@ c("Tonkin + Taylor", "https://www.tonkintaylor.co.nz", "env_consulting", "mid",
 c("Beca", "https://www.beca.com", "engineering", "large", "high", 1)
 c("Pattle Delamore Partners", "https://www.pdp.co.nz", "env_consulting", "mid",
   "high", 1, "Environmental and water consultancy.")
-c("Meadowbank Consulting", "https://www.meadowbank.co.nz", "env_consulting", "sme",
-  "high", 3)
-c("Kōkiri Solutions", "https://kokiri.co.nz", "env_consulting", "sme", "medium", 3)
-c("Ekos", "https://www.ekos.co.nz", "env_consulting", "sme", "high", 3,
-  "Carbon and biodiversity certification.")
-c("Toitū Envirocare", "https://www.toitu.co.nz", "env_consulting", "sme", "high", 2,
-  "Carbon certification programme; audit and advisory roles.")
 c("Deloitte New Zealand", "https://www.deloitte.com/nz", "services", "large", "high", 2)
 c("PwC New Zealand", "https://www.pwc.co.nz", "services", "large", "high", 2)
 c("EY New Zealand", "https://www.ey.com/en_nz", "services", "large", "high", 2)

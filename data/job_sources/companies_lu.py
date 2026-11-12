@@ -51,8 +51,6 @@ c("BlackRock Luxembourg", "https://www.blackrock.com", "finance", "large", "medi
 c("DekaBank Luxembourg", "https://www.deka.de", "finance", "mid", "medium", 3)
 c("Luxembourg Stock Exchange", "https://www.luxse.com", "finance", "mid", "high", 2,
   "Runs the Luxembourg Green Exchange; a natural home for ESG-data work.")
-c("LuxFLAG", "https://www.luxflag.org", "finance", "sme", "high", 3,
-  "Labels sustainable investment funds; small team.")
 c("ALFI", "https://www.alfi.lu", "finance", "mid", "medium", 3,
   "Fund industry association.")
 c("PwC Luxembourg", "https://www.pwc.lu", "services", "large", "high", 2)

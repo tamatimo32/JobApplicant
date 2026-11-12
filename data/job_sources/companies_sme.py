@@ -105,15 +105,10 @@ c("BE", "The Beacon", "https://www.thebeacon.eu", "services", "sme", "medium", 3
   "Sustainability and innovation hub; hosts many small mission-aligned teams.")
 
 # --- environmental labs, consultancies and one-person-plus firms
-c("BE", "Ecoteam", "https://www.ecoteam.be", "env_consulting", "sme")
-c("BE", "Advize", "https://www.advize.be", "env_consulting", "sme")
-c("BE", "Arcade", "https://www.arcade.be", "env_consulting", "sme")
 c("BE", "Idelux Environnement", "https://www.idelux.be", "waste", "mid", "high", 2,
   "Walloon inter-municipal environmental group.")
 c("BE", "Ipalle", "https://www.ipalle.be", "waste", "mid", "high", 3)
 c("BE", "Tributerre", "https://www.tributerre.be", "env_consulting", "sme", "medium", 3)
-c("BE", "Meesen", "https://www.meesen.be", "env_consulting", "sme", "medium", 3)
-c("BE", "Ariane Environment", "https://www.ariane-env.be", "env_consulting", "sme", "medium", 3)
 c("BE", "Universite de Namur", "https://www.unamur.be", "research", "large", "medium", 3)
 c("BE", "Haute Ecole Lucia de Brouckere", "https://www.heldb.be", "research", "sme",
   "medium", 3)

@@ -36,6 +36,7 @@ class Row:
     access: str = "open"     # open | login_required | api | tos_restricted
     fit: str = "medium"      # high | medium | low
     priority: int = 2        # 1 every run, 2 weekly, 3 occasionally
+    verified: str = ""       # "yes" = URL seen in a source; "no" = inferred domain
     notes: str = ""
     id: str = field(default="", compare=False)
 
@@ -50,6 +51,8 @@ class Row:
             raise ValueError(f"{self.name}: unknown fit {self.fit!r}")
         if self.priority not in (1, 2, 3):
             raise ValueError(f"{self.name}: bad priority {self.priority!r}")
+        if self.verified not in ("", "yes", "no"):
+            raise ValueError(f"{self.name}: unknown verified {self.verified!r}")
         if not self.url.startswith("https://"):
             raise ValueError(f"{self.name}: url must be https:// ({self.url})")
 
@@ -63,14 +66,19 @@ class Row:
         return f"<{self.category} {self.country} {self.name}>"
 
 
-def company(country, name, url, sector, size, fit="medium", priority=2, note=""):
+def company(country, name, url, sector, size, fit="medium", priority=2, note="",
+            verified=""):
     """An employer career page. `url` is the root domain on purpose: career
-    paths move when an employer changes applicant tracking system."""
+    paths move when an employer changes applicant tracking system.
+
+    `verified` records whether the domain was seen in a source ("yes") or
+    inferred from the firm's name ("no"). Inferred domains must be HEAD-checked
+    before a scraper trusts them."""
     return Row(
         category="company", country=country, name=name, url=url,
         language=_lang(country), sector=sector, size=size,
         what_it_lists="Employer career page (resolve Careers from the homepage)",
-        access="open", fit=fit, priority=priority,
+        access="open", fit=fit, priority=priority, verified=verified,
         notes=note or "Root domain on purpose: career-page paths break on ATS migrations.",
     )
 

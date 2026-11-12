@@ -65,29 +65,14 @@ c("ERZ Entsorgung + Recycling Zurich", "https://www.stadt-zuerich.ch/erz", "wast
 c("Gruner", "https://www.gruner.ch", "engineering", "mid", "high", 2)
 c("Implenia", "https://www.implenia.com", "engineering", "large", "medium", 2)
 c("Eberhard", "https://www.eberhard.ch", "engineering", "mid", "medium", 3)
-c("Basler & Hofmann", "https://www.baslerhofmann.ch", "engineering", "mid", "high", 2)
 c("Amstein + Walthert", "https://www.amstein-walthert.ch", "buildings", "mid",
   "high", 2)
 c("CSD Ingenieure", "https://www.csd.ch", "engineering", "mid", "high", 3)
 c("Holinger", "https://www.holinger.com", "engineering", "mid", "high", 3)
 
 # --- environmental consulting and certification
-c("EBP (Ernst Basler + Partner)", "https://www.ebp.ch", "env_consulting", "mid",
-  "high", 1, "Swiss sustainability and infrastructure consultancy.")
-c("econcept", "https://www.econcept.ch", "env_consulting", "sme", "high", 2)
-c("Infras", "https://www.infras.ch", "env_consulting", "sme", "high", 2,
-  "Research and consultancy on energy and environment policy.")
-c("TEP Energy", "https://www.tep-energy.ch", "env_consulting", "sme", "high", 2)
-c("Planair", "https://www.planair.ch", "env_consulting", "sme", "high", 2)
-c("Intep", "https://www.intep.com", "env_consulting", "sme", "high", 2)
-c("Carbura", "https://www.carbura.ch", "env_consulting", "sme", "medium", 3)
 c("Anthesis", "https://www.anthesisgroup.com", "env_consulting", "large",
   "high", 1, "One row for the firm; offices in BE, CH, AU and AE.")
-c("Swiss Climate", "https://www.swissclimate.ch", "env_consulting", "sme", "high", 2)
-c("MyClimate", "https://www.myclimate.org", "ngo", "sme", "high", 2,
-  "Carbon-offset foundation; project and advisory roles.")
-c("ClimatePartner Switzerland", "https://www.climatepartner.com", "env_consulting",
-  "mid", "high", 2)
 c("WWF Switzerland", "https://www.wwf.ch", "ngo", "mid", "medium", 2)
 c("Pro Natura", "https://www.pronatura.ch", "ngo", "mid", "medium", 3)
 c("Greenpeace Switzerland", "https://www.greenpeace.ch", "ngo", "mid", "medium", 3)

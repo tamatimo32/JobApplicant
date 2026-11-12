@@ -17,6 +17,7 @@ overwrites the CSV on every run.
 import argparse
 import collections
 import csv
+import unicodedata
 import importlib
 import pathlib
 import sys
@@ -39,10 +40,12 @@ MODULES = [
     "data.job_sources.companies_nz",
     "data.job_sources.companies_ae",
     "data.job_sources.companies_sme",
+    "data.job_sources.companies_boutiques",
 ]
 
 FIELDS = ["id", "category", "country", "name", "url", "listing_url", "language",
-          "sector", "size", "what_it_lists", "access", "fit", "priority", "notes"]
+          "sector", "size", "what_it_lists", "access", "fit", "priority",
+          "verified", "notes"]
 
 COUNTRY_ORDER = ["BE", "LU", "CH", "AU", "NZ", "AE", "EU", "GLOBAL", "ANY"]
 CATEGORY_ORDER = ["job_board", "pes", "public_sector", "institution", "big4",
@@ -50,6 +53,10 @@ CATEGORY_ORDER = ["job_board", "pes", "public_sector", "institution", "big4",
 
 
 def slug(text):
+    # fold accents first: "Toitu" and "Toitū" are the same firm and must not
+    # produce two ids
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
     out = "".join(c.lower() if c.isalnum() else "-" for c in text)
     while "--" in out:
         out = out.replace("--", "-")
@@ -82,16 +89,16 @@ def validate(rows):
     url_owner = {}
     for r in rows:
         if r.url != "https://":
-            if r.url in url_owner:
-                problems.append(
-                    f"duplicate url {r.url}: {r.name!r} and {url_owner[r.url]!r}")
-            url_owner[r.url] = r.name
+            url_owner.setdefault(r.url, []).append(r.name)
         if r.category == "company" and not r.size:
             problems.append(f"company without size: {r.name}")
         if r.category == "company" and not r.sector:
             problems.append(f"company without sector: {r.name}")
         if r.category != "company" and r.size:
             problems.append(f"non-company with a size: {r.name}")
+    for url, names in url_owner.items():
+        if len(names) > 1:
+            problems.append(f"duplicate url {url}: {names}")
     ids = [r.id for r in rows]
     dupes = {i for i, n in collections.Counter(ids).items() if n > 1}
     if dupes:
@@ -133,6 +140,8 @@ def write_summary(rows):
         return lines
 
     by_country = collections.Counter(r.country for r in companies)
+    by_verified = collections.Counter(
+        (r.country, r.verified) for r in companies)
     by_size = collections.Counter(r.size for r in companies)
     by_sector = collections.Counter(r.sector for r in companies)
     by_cat = collections.Counter(r.category for r in sites)
@@ -145,6 +154,13 @@ def write_summary(rows):
     out += table("All sources by country", by_country_all, COUNTRY_ORDER)
     out += table(f"Employers by country ({len(companies)} total)", by_country, COUNTRY_ORDER)
     out += table("Employers by size", by_size, ["large", "mid", "sme"])
+    out += ["### Employer URLs by verification", "",
+            "`yes` = domain seen in a source; `no` = inferred, HEAD-check first.", "",
+            "| Country | Verified | Inferred |", "| --- | --- | --- |"]
+    for c in COUNTRY_ORDER:
+        if by_verified[(c, "yes")] or by_verified[(c, "no")]:
+            out.append(f"| {c} | {by_verified[(c, 'yes')]} | {by_verified[(c, 'no')]} |")
+    out.append("")
     out += table("Employers by sector", by_sector)
     out += table("Keywords by language", collections.Counter(r.language for r in kws))
     OUT_SUMMARY.write_text("\n".join(out), encoding="utf-8")

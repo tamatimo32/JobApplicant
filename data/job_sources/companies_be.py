@@ -120,20 +120,12 @@ c("Kiwa Belgium", "https://www.kiwa.com", "services", "mid", "medium", 3)
 c("Enhesa", "https://www.enhesa.com", "software_data", "mid", "high", 1,
   "Brussels firm selling regulatory compliance intelligence; extremely close to "
   "the regulatory-watch part of this profile.")
-c("Greenfish", "https://www.greenfish.be", "env_consulting", "sme", "high", 2)
-c("Möbius", "https://www.mobius.be", "env_consulting", "sme", "high", 2,
-  "Brussels sustainability consultancy; circular economy and CSRD.")
-c("Klimaatzaak / Climact", "https://www.climact.com", "env_consulting", "sme", "high", 2,
-  "Climate strategy consultancy.")
-c("CO2logic", "https://www.co2logic.com", "env_consulting", "sme", "high", 1,
-  "Carbon accounting and climate-label specialist; the archetypal target employer.")
 c("The Shift", "https://www.theshift.be", "ngo", "sme", "medium", 3,
   "Sustainability business network; recruits project staff.")
 c("Bopro", "https://www.bopro.be", "buildings", "mid", "high", 2,
   "Sustainable real estate and BREEAM/GRESB certification.")
 c("CES (Clean Energy Solutions)", "https://www.ces.be", "env_consulting", "sme", "high", 3)
 c("T/DENZ", "https://www.tdenz.be", "env_consulting", "sme", "medium", 3)
-c("Sustacon", "https://www.sustacon.be", "env_consulting", "sme", "high", 3)
 c("Sigma Sustainability", "https://www.sigma-sustainability.com", "env_consulting",
   "sme", "medium", 3)
 
