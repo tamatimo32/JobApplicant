@@ -310,8 +310,37 @@ class SinglePostingAdapter:
 
     name = "single"
 
+    # Signals that a page is actually advertising a vacancy rather than being
+    # a company homepage. Before 2026-11-13 this adapter matched *any* page
+    # with 200+ characters of text, which is every homepage on the internet,
+    # so a crawl of the registry produced one fake "posting" per company
+    # titled with its marketing strapline ("Aquafin | Water zuiveren voor een
+    # betere wereld"). That is what made the report read as a list of
+    # companies instead of vacancies.
+    _JOB_WORDS = (
+        "job", "jobs", "vacanc", "vacature", "offre", "emploi", "stelle",
+        "position", "career", "carriere", "sollicit", "apply", "recruit",
+        "hiring", "traineeship", "internship", "stage", "cdd", "cdi",
+        "full-time", "part-time", "voltijds", "deeltijds",
+    )
+
     def match(self, page: H.Page) -> bool:
-        return bool(page.text) and len(page.text) > 200
+        text = page.text or ""
+        if len(text) < 200:
+            return False
+        title = fold(page.title or "")
+        body = fold(text[:4000])
+        # A vacancy page names the role and usually says how to apply.
+        has_role_word = any(w in title for w in self._JOB_WORDS) or \
+            any(w in body for w in self._JOB_WORDS)
+        if not has_role_word:
+            return False
+        # A homepage title is usually "Brand | strapline". A job page title
+        # is usually the role, often followed by the employer.
+        if "|" in (page.title or "") and not any(
+                w in title for w in self._JOB_WORDS):
+            return False
+        return True
 
     def parse(self, page: H.Page, ctx: Context) -> list[Posting]:
         title = _clean_title(page.title)

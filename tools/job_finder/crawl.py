@@ -133,8 +133,20 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         store.log_source(run_id, source.id, source.name, url, resp.status, "",
                          len(postings), adapter, ms)
         if verbose:
-            print(f"        {len(postings)} postings via {adapter}"
-                  f"{'  [cached]' if resp.from_cache else ''}")
+            if postings:
+                print(f"        {len(postings)} postings via {adapter}"
+                      f"{'  [cached]' if resp.from_cache else ''}")
+            else:
+                # Say why a page produced nothing. "no-adapter" now usually
+                # means the page looked like a homepage rather than a
+                # vacancy list, which is the normal outcome for a company
+                # whose careers link was never captured in the registry.
+                reason = {
+                    "no-adapter": "no vacancy list or posting found on the page",
+                    "empty": "page had no readable text (JavaScript-only?)",
+                    "error": "could not parse the HTML",
+                }.get(adapter, f"adapter {adapter}")
+                print(f"        ! {reason}{'  [cached]' if resp.from_cache else ''}")
 
     # anything not seen this run is no longer advertised
     store.con.execute(

@@ -603,3 +603,63 @@ class DemoCommandTest(unittest.TestCase):
             # --db is a global option and must precede the subcommand
             self.assertEqual(self._run("--db", str(db), "demo"), 0)
             self.assertTrue(db.exists(), "demo did not write to --db")
+
+
+class HomepageIsNotAVacancyTest(unittest.TestCase):
+    """A company homepage must not become a "posting" named after its tagline.
+
+    Bug (2026-11-13): the applicant reported that the report listed company
+    names instead of job titles. SinglePostingAdapter matched any page with
+    200+ characters of text, which is every homepage, so a registry crawl
+    produced one fake posting per company titled with its marketing strapline.
+    """
+
+    def _ctx(self, url="https://www.example.be"):
+        from datetime import date
+        return Context(
+            source=Source(
+                id="company-BE-example", name="Example", category="company",
+                country="BE", url=url, listing_url="", language="nl",
+                sector="env_consulting", size="large", access="open",
+                fit="high", priority=1, verified="", notes=""),
+            base_url=url, language="nl", today=date(2026, 11, 13))
+
+    HOMEPAGE = """
+    <html><head><title>Aquafin | Water zuiveren voor een betere wereld</title>
+    </head><body>
+    <nav><a href="/nl/over-ons">Over ons</a><a href="/nl/diensten">Diensten</a>
+    <a href="/nl/contact">Contact</a></nav>
+    <h1>Welkom bij Aquafin</h1>
+    <p>Wij zuiveren het afvalwater van meer dan 6 miljoen Vlamingen en dragen
+    zo bij aan een gezonde leefomgeving. Onze 1.900 medewerkers werken dagelijks
+    aan innovatieve oplossingen voor waterzuivering, klimaatadaptatie en
+    circulaire economie. Ontdek onze projecten, onze aanpak en de kansen die
+    wij bieden. Wij investeren in onderzoek en in duurzame technologie.</p>
+    </body></html>"""
+
+    VACANCY = """
+    <html><head><title>Milieudeskundige waterzuivering - Aquafin</title></head>
+    <body><h1>Milieudeskundige waterzuivering</h1>
+    <p>Wij zoeken een milieudeskundige voor onze waterzuiveringsinstallaties in
+    Vlaanderen. Je volgt de milieuvergunningen op, analyseert meetgegevens en
+    rapporteert aan de overheid. Voltijds contract van onbepaalde duur.</p>
+    <p>Solliciteer via onze website. Vereist: master milieuwetenschappen.</p>
+    </body></html>"""
+
+    def test_homepage_produces_no_posting(self):
+        postings, adapter = extract_postings(self.HOMEPAGE, self._ctx())
+        self.assertEqual(postings, [],
+                         "a homepage must never become a posting")
+        self.assertEqual(adapter, "no-adapter")
+
+    def test_real_vacancy_still_parses(self):
+        postings, adapter = extract_postings(self.VACANCY, self._ctx())
+        self.assertEqual(adapter, "single")
+        self.assertEqual(len(postings), 1)
+        self.assertIn("Milieudeskundige", postings[0].title)
+
+    def test_title_never_equals_employer_name(self):
+        """The reported symptom: titles that were company names."""
+        postings, _ = extract_postings(self.HOMEPAGE, self._ctx())
+        for p in postings:
+            self.assertNotEqual(fold(p.title), fold(p.employer))

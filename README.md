@@ -103,6 +103,26 @@ formula in `docs/SCORING.md`.
 Two things it will not do: scrape LinkedIn or Indeed (their terms forbid it),
 and decide for you. It ranks; you read the top twelve.
 
+### If the report lists companies instead of jobs
+
+That was a real bug, fixed 2026-11-13. `SinglePostingAdapter` used to accept
+any page with 200+ characters of text, which is every company homepage, so a
+registry crawl produced one fake "posting" per company titled with its
+marketing strapline. The adapter now requires a vacancy signal in the title or
+near the top of the body (job, vacature, offre, sollicit, career, internship,
+CDD…), and rejects `Brand | strapline` titles.
+
+If you still see it:
+
+```bash
+python3 tools/jobfinder.py crawl --countries BE --limit 5   # watch the output
+```
+
+Each source now prints either `N postings via <adapter>` or a reason such as
+`! no vacancy list found on the page`. A company homepage is a normal cause:
+the registry holds the site root, not a careers URL. Prefer the saved searches
+(`--query`) or a source whose `listing_url` points at the careers page.
+
 Two honesty features worth knowing. Postings from the demo snapshots are
 labelled **Demo data · captured page** (they are real, just historical), and a
 hand-written fixture would be labelled **invented** and never made clickable.
