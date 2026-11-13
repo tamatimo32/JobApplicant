@@ -1,20 +1,22 @@
-# Letter verification — Zurich
+# Letter verification — Zurich (rewritten)
 
-`letter.en.json`, 208 words, four paragraphs. Traineeship 137418, Zaventem.
-The advert does **not** ask for a letter; application is via the Zurich portal.
-This was produced on request.
+`letter.en.json`, 252 words, four paragraphs. Traineeship 137418, Zaventem.
+The advert does **not** ask for a letter; application is via the Zurich
+portal. Produced on request.
+
+At the applicant's instruction (2026-11-13), the letter states openly that an
+environmental-bioengineering master's is not the usual background for the role,
+and says why he is interested anyway: the work after a deal closes is turning
+an agreement into a policy, an invoice, and a file that still makes sense two
+years later.
 
 | Claim | Source | Status |
 | --- | --- | --- |
-| Turned manual processes into automated, checkable ones | "Built automated Excel and Power BI tools…"; "Created a Power Automate system to digitalise the audit trail" | supported, generalised |
-| Worked with financial data and clean audit trails | "Performed financial analysis of the company…"; Power Automate audit-trail bullet | supported |
+| Excel and Power BI tools that took over recurring reporting | "Built automated Excel and Power BI tools supporting ESG and environmental reporting workflows" | verbatim reuse |
+| Checked and validated the data feeding them | "Worked on data quality control, validation and structuring for environmental indicators" | verbatim reuse |
+| Power Automate system filing client documents into folders | "Created a Power Automate system to digitalise the audit trail of client documents and file them in the right folders" | verbatim reuse |
 | Automation cut processing time to about 30 % | "making 70 % faster" | same quantity restated |
-| No insurance background, no Dutch | true | stated as a limit |
+| No insurance background, no Dutch, no finance training | true; posting asks Dutch **or** French plus English | stated as a limit |
 | French and English at C1 | CV languages | supported |
 
-**This is the weakest fit of the four.** The role is insurance administration
-in Dutch/French-speaking Zaventem; the CV is environmental. There is no Dutch
-and no insurance exposure. The posting does say insurance knowledge is not
-required and accepts French, so it is worth sending, but the honest angle is
-process improvement, not sustainability. If the applicant would rather not
-send a letter to a posting that did not ask for one, this is the one to drop.
+No claim of insurance, underwriting, or financial-services experience is made.

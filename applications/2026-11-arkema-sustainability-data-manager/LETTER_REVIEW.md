@@ -1,19 +1,30 @@
-# Letter verification — Arkema
+# Letter verification — Arkema (rewritten against the live posting)
 
-`letter.fr.json`, 235 words, four paragraphs. Posting 71300, Puteaux, CDD.
-The advert does not require a letter; this was produced on request.
+`letter.fr.json`, 249 words, four paragraphs. Sustainability Data Manager,
+Adhesive Solutions (Bostik), Puteaux La Défense, CDD 18 months, published
+7 Nov 2026. The advert does not require a letter.
+
+**Correction to the previous version.** The 12/11 letter was written from a
+rehosted summary because jobs.arkema.com was blocking this environment. The
+live posting was fetched on 13/11 and differs in important ways: the role sits
+in Adhesive Solutions, the contract is 18 months, and the work is weighted
+25 % customer CSR support, **50 % Portfolio Sustainability Assessment in
+Archimedes**, 25 % data excellence and automation. The previous letter did not
+mention Adhesive Solutions, the 18 months, or the PSA weighting. It does now.
 
 | Claim | Source bullet | Status |
 | --- | --- | --- |
-| Excel / Power BI tools carrying recurring reporting | "Built automated Excel and Power BI tools supporting ESG and environmental reporting workflows" | verbatim reuse |
+| Power BI carbon-footprint tool following ISO 14067 | "Engineered a dynamic Power BI product carbon-footprint tool following ISO 14067…" | verbatim reuse |
+| ISO 14067 hypotheses used to justify each estimate | "Applied ISO 14067 hypotheses to substantiate the estimates produced" | verbatim reuse |
 | Carbon footprints with the GHG Protocol | "Calculated carbon footprints using the GHG Protocol…" | verbatim reuse |
-| ISO 14067 hypotheses to justify product estimates | "Applied ISO 14067 hypotheses to substantiate the estimates produced" | verbatim reuse |
-| Supplier datasets and double-materiality matrices | two master bullets | verbatim reuse |
-| Automation cut analysis time to 30 % of the initial figure | "…making 70 % faster through automation and data analysis" | **rewritten as a complement.** The master says 70 % faster, so 30 % of the original is the same quantity stated the other way. Confirm the framing is acceptable. |
-| No full LCA, no Archimedes | absence in the master | stated as a limit, correct |
-| Used to multiple stakeholders and short deadlines | consulting roles | supported |
+| Automated Excel and Power BI tools for recurring reporting | "Built automated Excel and Power BI tools supporting ESG and environmental reporting workflows" | verbatim reuse |
+| Supplier datasets for benchmarking exercises | "Participated in supplier sustainability assessment datasets and ESG benchmarking exercises" | verbatim reuse |
+| Digitalised a CSRD double-materiality matrix | "Aided CSRD preparation for clients and digitalised the CSRD double-materiality matrix" | verbatim reuse |
+| Data control and validation | "Worked on data quality control, validation and structuring for environmental indicators" | verbatim reuse |
+| Automation cut certification analysis time to 30 % of the initial figure | "making 70 % faster through automation and data analysis" | same quantity restated |
+| No Archimedes, no full LCA | absent from the master | stated as a limit |
+| Available for an 18-month CDD in Puteaux | posting terms | supported |
 
-Caveat: the full Arkema advert could not be fetched from this environment. The
-missions in `job_description_fr.txt` come from the Simplify listing and two
-Indeed reposts, so wording is reliable but not verbatim. Check the profile
-section against the live posting before sending.
+Note on the ISO 45001 point: this letter no longer contains a gap-analysis
+claim, so the earlier caveat does not apply to it. It still applies to the
+DEME and Amazon letters.

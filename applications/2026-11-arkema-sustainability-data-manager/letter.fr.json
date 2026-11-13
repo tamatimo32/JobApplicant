@@ -1,18 +1,18 @@
 {
   "typography": "fr",
   "name": "THOMAS CHACRA",
-  "tagline": "Bioingénieur en environnement, données de durabilité et reporting",
+  "tagline": "Bioingénieur en environnement, empreinte carbone produit et données ESG",
   "place": "Bruxelles, Belgique",
   "phone": "+32 485 31 52 76",
   "email": "thomaschacra@gmail.com",
-  "date": "12/11/2026",
+  "date": "13/11/2026",
   "addressee": "À l'attention de l'équipe recrutement, Arkema, Puteaux.",
   "subject": "Objet : Candidature au poste de Sustainability Data Manager (71300), Thomas Chacra",
   "salutation": "Madame, Monsieur,",
   "paragraphs": [
-    "Une empreinte carbone produit ne vaut que si l'on peut retrouver, deux ans plus tard, la donnée qui l'a produite. J'ai passé une bonne partie de l'année dernière à construire ce genre d'outil, puis à défendre les chiffres qu'il sortait. C'est ce travail de fond, entre la donnée et la preuve, qui m'intéresse dans le poste de Sustainability Data Manager.",
-    "Je travaille surtout sur des données ESG à structurer et à automatiser. J'ai construit des outils Excel et Power BI qui reprennent le reporting récurrent, calculé des empreintes carbone avec le GHG Protocol et appliqué les hypothèses de l'ISO 14067 pour justifier des estimations produit. J'ai aussi travaillé sur des jeux de données fournisseurs et sur des matrices de double matérialité CSRD. Sur une analyse de certification ESG, l'automatisation a ramené le temps de traitement à 30 % du temps initial, et c'est exactement le type de gain que je chercherais à reproduire sur les questionnaires clients.",
-    "Je n'ai pas réalisé d'analyse de cycle de vie complète, ni utilisé Archimedes. Ce sont des méthodes que j'apprendrai, et je préfère le dire plutôt que de le laisser deviner. En revanche, j'ai l'habitude de travailler avec des interlocuteurs multiples et sous contrainte de délai. Je parle français et anglais couramment et je peux être disponible à Puteaux.",
+    "Une empreinte carbone produit ne sert à rien si l'on ne peut pas retrouver, deux ans plus tard, la donnée qui l'a produite. J'ai passé une bonne partie de l'année dernière à construire ce genre d'outil et à défendre les chiffres qu'il sortait, et c'est ce travail de fond, entre la donnée et la preuve, qui m'intéresse dans le poste rattaché à Adhesive Solutions.",
+    "Je travaille sur l'empreinte carbone produit et les données ESG. J'ai construit un outil Power BI d'empreinte carbone suivant l'ISO 14067 et appliqué ses hypothèses pour justifier chaque estimation, calculé des empreintes avec le GHG Protocol, et automatisé des outils Excel et Power BI qui reprennent le reporting récurrent. J'ai aussi travaillé sur des jeux de données fournisseurs pour des exercices de notation, digitalisé une matrice de double matérialité CSRD, et fait du contrôle et de la validation de données. Sur une analyse de certification, l'automatisation a ramené le temps de traitement à 30 % du temps initial.",
+    "Je n'ai pas utilisé Archimedes et je n'ai pas mené d'analyse de cycle de vie complète. Ce sont les deux choses que le poste m'apprendrait, et je préfère les nommer plutôt que de les laisser deviner. En revanche, j'ai l'habitude des organisations matricielles et des interlocuteurs multiples, je travaille aussi bien en français qu'en anglais, et je suis disponible à Puteaux pour un CDD de 18 mois.",
     "Je serais heureux d'en discuter avec vous, et je reste preneur de vos remarques si ma candidature n'est pas retenue."
   ],
   "closing": "Cordialement,",

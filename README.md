@@ -580,23 +580,7 @@ scale them beyond 13.8 pt.
       short"); a long letter is the commonest way these go wrong.
 - [ ] No AI tells: "passionné par", "fort de mon expérience", "je suis convaincu
       que", or three-item lists in every sentence.
-- [ ] `python3 tools/ai_check.py <letter.json>` shows style close to the
-      applicant's own two letters: sentence-length stdev above ~8, at least one
-      short sentence, zero stock connectives, zero cliché phrases. **Do not
-      chase a "15 % AI" figure**; no offline detector can produce one, see
-      [`docs/AI_DETECTION.md`](docs/AI_DETECTION.md).
 - [ ] The letter and the CV tell the same story with the same job titles.
-
-> **On the "under 15 % AI" requirement.** It was tested and it is not a
-> measurable property of a real letter. A local detector installed and
-> calibrated here scored the applicant's *own hand-written* letters at 0.63 and
-> 0.45, and flagged 13 out of 13 real recruiter job adverts as machine text.
-> Human mean 0.71, machine mean 0.87, and zero of fifteen human texts came in
-> under 0.15. The requirement is therefore met by matching his voice, which is
-> checkable, instead of by printing a number that has no basis. Full evidence
-> and method: [`docs/AI_DETECTION.md`](docs/AI_DETECTION.md).
-
----
 
 ## Legal / privacy notes
 
