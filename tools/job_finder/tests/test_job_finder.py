@@ -549,3 +549,57 @@ class ReportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class DemoCommandTest(unittest.TestCase):
+    """The documented `demo` command must work with no arguments.
+
+    Bug (2026-11-13): `python3 tools/jobfinder.py demo` printed
+    "No sources matched that selection." The demo matched registry ids
+    ("job_board-BE-eurobrussels") against snapshot filenames
+    ("eurobrussels-energy"), two namespaces that never overlap. It now
+    pairs through the manifest, and falls back to building sources from
+    the saved queries that produced each capture.
+    """
+
+    def _run(self, *argv):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+
+        return jobfinder.main(list(argv))
+
+    def test_bare_demo_selects_every_capture(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+        from job_finder import queries as Q
+
+        sources = [q.as_source() for q in Q.load(jobfinder.DEFAULT_QUERIES)]
+        picked = jobfinder._demo_sources(sources)
+        self.assertTrue(picked, "manifest pairing found no captures")
+        self.assertEqual(len(picked), 4)
+
+    def test_demo_pairs_on_manifest_not_names(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+        from job_finder.model import Source
+
+        bogus = Source(
+            id="job_board-BE-eurobrussels", name="EuroBrussels",
+            category="job_board", country="BE",
+            url="https://www.eurobrussels.com",
+            listing_url="https://www.eurobrussels.com/jobs/environment",
+            language="en", sector="public", size="sme", access="open",
+            fit="high", priority=1, verified="", notes="")
+        # The old prefix rule would have matched nothing; the manifest does
+        # not know this id either, so the result must be empty, not a crash.
+        self.assertEqual(jobfinder._demo_sources([bogus]), [])
+
+    def test_demo_run_end_to_end(self):
+        import tempfile
+        from pathlib import Path as P
+
+        with tempfile.TemporaryDirectory() as tmp:
+            db = P(tmp) / "demo.db"
+            # --db is a global option and must precede the subcommand
+            self.assertEqual(self._run("--db", str(db), "demo"), 0)
+            self.assertTrue(db.exists(), "demo did not write to --db")

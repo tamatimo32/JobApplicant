@@ -14,6 +14,7 @@ Run ``--help`` on any subcommand. Everything reads the registry built by
 from __future__ import annotations
 
 import argparse
+import json
 import sys
 import time
 import webbrowser
@@ -66,6 +67,42 @@ def _query_sources(args) -> list:
     return [q.as_source() for q in picked]
 
 
+def _demo_sources(chosen) -> list:
+    """The subset of `chosen` that has a captured page, per the manifest.
+
+    Each captured file names the query that produced it. A source whose id is
+    that query (or a twin created by `as_source`) is the one to run. When no
+    filter was applied we simply run every query that has a capture.
+    """
+    import json
+    from dataclasses import replace
+
+    manifest_path = DEMO_DIR / "manifest.json"
+    if not manifest_path.exists():
+        return []
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    files = manifest.get("files", {})
+    if not files:
+        return []
+
+    by_query = {}
+    for filename, meta in files.items():
+        qid = meta.get("query") or Path(filename).stem
+        by_query[qid] = filename
+
+    wanted = {getattr(s, "id", "") for s in chosen}
+    picked = []
+    for qid, filename in sorted(by_query.items()):
+        if wanted and qid not in wanted and f"query-{qid}" not in wanted:
+            continue
+        base = next((s for s in chosen
+                     if getattr(s, "id", "") in (qid, f"query-{qid}")), None)
+        if base is None:
+            continue
+        picked.append(base)
+    return picked
+
+
 def cmd_crawl(args) -> int:
     sources, keywords = reg.load(_csv(args.csv))
     if getattr(args, "query", None):
@@ -92,22 +129,34 @@ def cmd_crawl(args) -> int:
         include_restricted=args.include_restricted,
     )
     if getattr(args, "demo", False):
-        # the demo runs only sources we actually have a snapshot for
-        # a source may have more than one committed snapshot (a board's
-        # environment page and its internship page are separate captures)
-        snap_names = {p.stem for p in DEMO_DIR.glob("*.html")} if DEMO_DIR.exists() else set()
-        matched = []
-        for s in chosen:
-            hits = [n for n in snap_names
-                    if n == s.id or n.startswith(s.id + "-") or s.id.startswith(n)]
-            if hits:
-                matched.append(s)
-                for extra in sorted(h for h in hits if h != s.id):
-                    from dataclasses import replace
-                    twin = replace(s, id=extra)
-                    if args.demo:
-                        matched.append(twin)
-        chosen = list({s.id: s for s in matched}.values())
+        # The demo runs only pages we actually captured.
+        #
+        # Bug fixed 2026-11-13. The old code tried to pair registry ids with
+        # snapshot filenames by string prefix ("job_board-BE-eurobrussels"
+        # against "eurobrussels-energy"). Those two namespaces never overlap,
+        # so the match was always empty and the documented `demo` command
+        # printed "No sources matched that selection."
+        #
+        # The manifest already records which saved search produced which
+        # capture, so pair on that instead of guessing from names.
+        matched = _demo_sources(chosen)
+        if not matched:
+            # No registry row covers a captured page. Every capture in the
+            # manifest names the saved search that produced it, so build the
+            # sources from those queries directly. This is what makes the
+            # bare `demo` command work without --query.
+            from job_finder import queries as Q
+            saved = Q.load(Path(DEFAULT_QUERIES))
+            have = {q.id for q in saved}
+            need = set()
+            for meta in json.loads(
+                    (DEMO_DIR / "manifest.json").read_text(encoding="utf-8")
+            ).get("files", {}).values():
+                qid = meta.get("query")
+                if qid and qid in have:
+                    need.add(qid)
+            matched = [q.as_source() for q in saved if q.id in need]
+        chosen = matched
         keywords = keywords or []
     if not chosen:
         print("No sources matched that selection.")
@@ -343,7 +392,6 @@ def build_parser() -> argparse.ArgumentParser:
     d = sub.add_parser("demo", help="offline run against the committed snapshot")
     d.add_argument("--csv")
     d.add_argument("--countries")
-    d.add_argument("--db", default=str(ROOT / "data" / "job_finder" / "demo.db"))
     d.add_argument("--cache", default=str(DEFAULT_CACHE))
     d.set_defaults(func=cmd_demo)
 

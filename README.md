@@ -50,11 +50,44 @@ The registry says where to look; the finder reads it, crawls, scores every
 posting out of 100, and writes one HTML page with the best ones first.
 
 ```bash
-python3 tools/jobfinder.py demo                        # offline, 23 postings
+python3 tools/jobfinder.py demo                        # offline, 42 postings
 python3 tools/jobfinder.py report --run 1 --open
 python3 tools/jobfinder.py crawl --countries BE,LU     # the real thing
 python3 tools/jobfinder.py crawl --query energy --query internships
 python3 tools/jobfinder.py verify                      # are the links still alive?
+```
+
+### Running it from PyCharm
+
+The script fixes `sys.path` itself, so it runs from any working directory.
+Two ways to set it up:
+
+**Run configuration (recommended).** Run > Edit Configurations > `+` > Python,
+then:
+
+| Field | Value |
+| --- | --- |
+| Script path | `tools/jobfinder.py` |
+| Parameters | `demo` |
+| Working directory | the repository root |
+| Python interpreter | any 3.10+; **no packages to install** |
+
+To see the report, add a second configuration with Parameters
+`report --run 1 --open`, or just right-click `out/opportunities.html`.
+
+**PyCharm terminal.** Nothing to activate:
+
+```bash
+python3 tools/jobfinder.py demo
+python3 tools/jobfinder.py report --run 1 --open
+```
+
+**One trap.** `--db` is a *global* option, so it must come **before** the
+subcommand:
+
+```bash
+python3 tools/jobfinder.py --db data/job_finder/queries.db report --run 1   # correct
+python3 tools/jobfinder.py report --run 1 --db data/job_finder/queries.db   # error
 ```
 
 A **query** is one saved search: a listing URL plus the country, language and
