@@ -43,7 +43,21 @@ _STRONG = re.compile(
     r"director|head|lead|stage|stagiaire|analyste|conseiller|ingenieur|"
     r"charge de mission|expert|associate|assistant|environment|climate|"
     r"carbon|energy|esg|durabilite|sustainability|environnement|"
-    r"biodiversity|water|waste|hse|qhse|sheq|ehs|hse|compliance)\b")
+    r"biodiversity|water|waste|hse|qhse|sheq|ehs|hse|compliance|"
+    r"deskundige|ingenieur|analist|adviseur|medewerker|stagiair|stagiaire|"
+    r"onderzoeker|specialist|co(ö|o)rdinator|teamlead|directeur|"
+    r"gestionnaire|charg(e|é) de mission|technicien|responsable|"
+    r"referent|referent(e)|expert|auditeur|audit)\b")
+# The same vocabulary, but allowing a compound prefix: Dutch and German glue
+# words together ("milieudeskundige", "klimaatcoordinator"), so a strict word
+# boundary misses them.
+_STRONG_COMPOUND = re.compile(
+    r"(?:[a-z]{3,})?(intern|internship|trainee|analyst|analist|consultant|"
+    r"officer|assistant|advisor|adviseur|specialist|engineer|ingenieur|"
+    r"researcher|onderzoeker|coordinator|co(ö|o)rdinator|manager|"
+    r"deskundige|medewerker|stagiair|stagiaire|technicien|responsable|"
+    r"gestionnaire|duurzaamheid|sustainability|environment|environnement|"
+    r"compliance|auditeur)\b")
 
 _URL_POSTING = re.compile(
     r"(/job[s]?/|/job_display/|/vacanc|/career[s]?/|/offre[s]?-?d?e?mploi|"
@@ -84,10 +98,80 @@ def _looks_like_posting(anchor: H.Anchor, base: str) -> bool:
         return False
     if _NOISE.search(fold(text)) and not _STRONG.search(fold(text)):
         return False
-    if _URL_POSTING.search(href) and _STRONG.search(fold(text)):
+    # A URL that looks like a posting is strong evidence on its own: real job
+    # titles are frequently two words ("Stagiair duurzaamheid", "Data analist
+    # energie"), and requiring four words silently dropped them. Before
+    # 2026-11-13 this rejected every short Dutch and French title.
+    if _URL_POSTING.search(href) and len(text.split()) >= 2:
+        return True
+    if len(text.split()) >= 2 and (_STRONG.search(fold(text))
+                                   or _STRONG_COMPOUND.search(fold(text))):
         return True
     # long, sentence-like anchors are usually cards
     return bool(_STRONG.search(fold(text))) and len(text.split()) >= 4
+
+
+# --------------------------------------------------------------------------- #
+# careers-page discovery
+# --------------------------------------------------------------------------- #
+
+# Anchors whose text or href says "this is where the vacancies live". Kept
+# separate from _STRONG because the language of a careers link is different
+# from the language of a job title.
+_CAREERS_TEXT = re.compile(
+    r"\b(careers?|jobs?|vacancies|vacancy|openings?|work with us|join us|"
+    r"join our team|werken bij|jobs bij|carrieres?|carriere|nous rejoindre|"
+    r"rejoignez|emplois?|offres? d emploi|stellen|karriere|stellenangebote|"
+    r"offene stellen|arbeite bei|trabaja|empleo)\b")
+
+_CAREERS_HREF = re.compile(
+    r"(/careers?\b|/jobs?\b|/jobs?[-_/]|/vacanc|/werken-bij|/werkenbij|"
+    r"/carrieres?|/karriere|/emplois?\b|/offres?-emploi|/stellenangebote?|"
+    r"/join-us|/work-with-us|/open-positions|/job-openings)", re.IGNORECASE)
+
+# Pages that contain the words "careers" or "jobs" but are not a listing:
+# press releases, job-alert signups, employee testimonials.
+_CAREERS_NOISE = re.compile(
+    r"\b(blog|news|press|article|stor(y|ies)|testimonial|alumni|"
+    r"job alert|jobalert|alertes? emploi|newsletter|login|sign in|register|"
+    r"privacy|cookie|terms|sitemap|faq)\b")
+
+
+def find_careers_url(page: H.Page, base_url: str) -> str:
+    """The best careers/listing URL linked from a page, or "".
+
+    Used when a registry row has no ``listing_url``: most rows point at a site
+    root, and fetching the root yields marketing copy rather than vacancies.
+    Following the careers link first is what makes a crawl return jobs.
+
+    Scoring prefers anchors whose *href* looks like a careers path, then
+    anchors whose *text* does, and penalises obvious non-listing pages.
+    """
+    best, best_score = "", 0
+    for a in page.anchors:
+        href = (a.href or "").strip()
+        text = (a.text or "").strip()
+        if not href or href.startswith(("#", "mailto:", "tel:", "javascript:")):
+            continue
+        url = up.urljoin(base_url, href)
+        if not url.startswith("http"):
+            continue
+        if not _same_site(url, base_url):
+            continue
+        folded = fold(f"{href} {text}")
+        if _CAREERS_NOISE.search(folded):
+            continue
+
+        score = 0
+        if _CAREERS_HREF.search(href):
+            score += 3
+        if _CAREERS_TEXT.search(fold(text)):
+            score += 2
+        if _CAREERS_TEXT.search(fold(up.urlsplit(url).path.replace("/", " "))):
+            score += 1
+        if score >= 2 and score > best_score:
+            best, best_score = url, score
+    return best
 
 
 # --------------------------------------------------------------------------- #
