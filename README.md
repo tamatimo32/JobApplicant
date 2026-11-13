@@ -578,6 +578,9 @@ scale them beyond 13.8 pt.
 - [ ] The title fits: it must end before x = 575, otherwise `LayoutOverflow`.
 - [ ] The letter is 220 to 300 words and four paragraphs (see "Length: keep it
       short"); a long letter is the commonest way these go wrong.
+- [ ] Register is professional, not chatty: medium sentences (mean 18-22 words,
+      almost none over 30), no rhetorical questions, no performed honesty, no
+      invented numbers. See `STYLE.md` §3.
 - [ ] No AI tells: "passionné par", "fort de mon expérience", "je suis convaincu
       que", or three-item lists in every sentence.
 - [ ] The letter and the CV tell the same story with the same job titles.
