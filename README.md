@@ -82,6 +82,19 @@ python3 tools/jobfinder.py demo
 python3 tools/jobfinder.py report --run 1 --open
 ```
 
+**Live preview in the browser.** `serve_report.py` re-renders on every
+refresh, so crawl in one terminal and refresh the page in the other:
+
+```bash
+python3 tools/jobfinder.py demo
+python3 tools/serve_report.py --port 8899
+```
+
+It binds `0.0.0.0` and defaults to `data/job_finder/opportunities.db`, which
+is exactly where `demo` writes. Those two paths used to disagree (the server
+defaulted to `demo.db`), so the documented sequence showed "Report could not
+be built"; both now point at `opportunities.db` and a test enforces it.
+
 **One trap.** `--db` is a *global* option, so it must come **before** the
 subcommand:
 

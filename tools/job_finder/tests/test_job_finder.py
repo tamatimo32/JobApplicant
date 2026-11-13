@@ -743,3 +743,28 @@ class CareersPageDiscoveryTest(unittest.TestCase):
             self.CAREERS, self._ctx("https://www.aquafin.be/nl/werken-bij-ons"))
         for p in postings:
             self.assertNotIn("aquafin", fold(p.title))
+
+
+class PreviewSetupTest(unittest.TestCase):
+    """`jobfinder.py demo` and `serve_report.py` must agree on the database.
+
+    Bug (2026-11-13): demo wrote data/job_finder/opportunities.db while the
+    server defaulted to demo.db, so "run demo, then serve" always produced
+    "Report could not be built".
+    """
+
+    def test_server_defaults_to_the_database_demo_writes(self):
+        tools = ROOT / "tools"
+        sys.path.insert(0, str(tools))
+        import jobfinder
+
+        src = (tools / "serve_report.py").read_text(encoding="utf-8")
+        self.assertIn("opportunities.db", src,
+                      "serve_report must default to the db `demo` writes")
+        self.assertNotIn('"demo.db"', src,
+                         "serve_report still defaults to demo.db")
+        self.assertTrue(str(jobfinder.DEFAULT_DB).endswith("opportunities.db"))
+
+    def test_generated_database_is_gitignored(self):
+        ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("data/job_finder/opportunities.db", ignored)
