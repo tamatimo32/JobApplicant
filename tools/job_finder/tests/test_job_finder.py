@@ -663,3 +663,108 @@ class HomepageIsNotAVacancyTest(unittest.TestCase):
         postings, _ = extract_postings(self.HOMEPAGE, self._ctx())
         for p in postings:
             self.assertNotEqual(fold(p.title), fold(p.employer))
+
+
+class CareersPageDiscoveryTest(unittest.TestCase):
+    """A crawl must reach the careers page when the registry gives a site root.
+
+    Bug (2026-11-13): the applicant reported that `crawl` returned website
+    names rather than job offers. Most registry rows have no listing_url, so
+    the crawler fetched homepages, and two defects hid the vacancies behind
+    them:
+      1. nothing followed the careers link on the homepage;
+      2. the link heuristic required 4+ word anchor text, which is almost
+         never how a Dutch or French vacancy is titled ("Stagiair
+         duurzaamheid", "Data analist energie").
+    """
+
+    HOME = """<html><head><title>Aquafin - Water zuiveren</title></head><body>
+    <nav><a href="/nl/over-ons">Over ons</a>
+    <a href="/nl/werken-bij-ons">Werken bij Aquafin</a>
+    <a href="/nl/contact">Contact</a></nav>
+    <p>Aquafin zuivert afvalwater voor 6 miljoen Vlamingen met 1.900
+    medewerkers en investeert in klimaat en duurzaamheid.</p></body></html>"""
+
+    CAREERS = """<html><head><title>Vacatures - Aquafin</title></head><body>
+    <ul>
+    <li><a href="/nl/vacatures/1001">Milieudeskundige waterzuivering</a></li>
+    <li><a href="/nl/vacatures/1002">Ingenieur klimaatadaptatie</a></li>
+    <li><a href="/nl/vacatures/1003">Data analist energie</a></li>
+    <li><a href="/nl/vacatures/1004">Stagiair duurzaamheid</a></li>
+    </ul></body></html>"""
+
+    def _ctx(self, base):
+        from datetime import date
+        return Context(
+            source=Source(
+                id="company-TEST-aquafin", name="Aquafin", category="company",
+                country="BE", url="https://www.aquafin.be", listing_url="",
+                language="nl", sector="env_consulting", size="large",
+                access="open", fit="high", priority=1, verified="", notes=""),
+            base_url=base, language="nl", today=date(2026, 11, 13))
+
+    def test_careers_link_is_found(self):
+        from job_finder.adapters import find_careers_url
+        from job_finder import html as H
+
+        url = find_careers_url(H.parse(self.HOME), "https://www.aquafin.be")
+        self.assertEqual(url, "https://www.aquafin.be/nl/werken-bij-ons")
+
+    def test_job_alert_link_is_not_mistaken_for_the_listing(self):
+        from job_finder.adapters import find_careers_url
+        from job_finder import html as H
+
+        page = H.parse("""<html><body>
+        <a href="/nl/careers/job-alert">Job alert</a>
+        <a href="/nl/werken-bij-ons">Werken bij Aquafin</a>
+        </body></html>""")
+        self.assertEqual(find_careers_url(page, "https://www.aquafin.be"),
+                         "https://www.aquafin.be/nl/werken-bij-ons")
+
+    def test_homepage_itself_yields_nothing(self):
+        postings, adapter = extract_postings(self.HOME, self._ctx(
+            "https://www.aquafin.be"))
+        self.assertEqual(postings, [])
+        self.assertEqual(adapter, "no-adapter")
+
+    def test_short_dutch_titles_are_recognised(self):
+        """Two-word titles were being dropped by the 4-word rule."""
+        postings, adapter = extract_postings(
+            self.CAREERS, self._ctx("https://www.aquafin.be/nl/werken-bij-ons"))
+        self.assertEqual(adapter, "links")
+        self.assertEqual(len(postings), 4)
+        titles = {p.title for p in postings}
+        self.assertIn("Stagiair duurzaamheid", titles)
+        self.assertIn("Data analist energie", titles)
+        self.assertIn("Milieudeskundige waterzuivering", titles)
+
+    def test_no_posting_is_named_after_its_company(self):
+        postings, _ = extract_postings(
+            self.CAREERS, self._ctx("https://www.aquafin.be/nl/werken-bij-ons"))
+        for p in postings:
+            self.assertNotIn("aquafin", fold(p.title))
+
+
+class PreviewSetupTest(unittest.TestCase):
+    """`jobfinder.py demo` and `serve_report.py` must agree on the database.
+
+    Bug (2026-11-13): demo wrote data/job_finder/opportunities.db while the
+    server defaulted to demo.db, so "run demo, then serve" always produced
+    "Report could not be built".
+    """
+
+    def test_server_defaults_to_the_database_demo_writes(self):
+        tools = ROOT / "tools"
+        sys.path.insert(0, str(tools))
+        import jobfinder
+
+        src = (tools / "serve_report.py").read_text(encoding="utf-8")
+        self.assertIn("opportunities.db", src,
+                      "serve_report must default to the db `demo` writes")
+        self.assertNotIn('"demo.db"', src,
+                         "serve_report still defaults to demo.db")
+        self.assertTrue(str(jobfinder.DEFAULT_DB).endswith("opportunities.db"))
+
+    def test_generated_database_is_gitignored(self):
+        ignored = (ROOT / ".gitignore").read_text(encoding="utf-8")
+        self.assertIn("data/job_finder/opportunities.db", ignored)

@@ -36,7 +36,8 @@ def make_handler(db: Path, title: str):
                 body = out.read_bytes()
             except Exception as exc:                      # noqa: BLE001
                 body = (f"<h1>Report could not be built</h1><pre>{exc}</pre>"
-                        "<p>Run <code>python3 tools/jobfinder.py demo</code> first."
+                        "<p>Run <code>python3 tools/jobfinder.py demo</code> first "
+                        f"(it writes {db}).</p>"
                         "</p>").encode()
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -54,7 +55,11 @@ def make_handler(db: Path, title: str):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8000)
-    ap.add_argument("--db", default=str(ROOT / "data" / "job_finder" / "demo.db"))
+    # Must match jobfinder.py's DEFAULT_DB. It used to default to demo.db
+    # while `jobfinder.py demo` wrote opportunities.db, so the documented
+    # "run demo, then serve" sequence always showed an empty/erroring report.
+    ap.add_argument("--db",
+                    default=str(ROOT / "data" / "job_finder" / "opportunities.db"))
     ap.add_argument("--title", default="Ranked opportunities")
     args = ap.parse_args()
 

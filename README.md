@@ -82,6 +82,19 @@ python3 tools/jobfinder.py demo
 python3 tools/jobfinder.py report --run 1 --open
 ```
 
+**Live preview in the browser.** `serve_report.py` re-renders on every
+refresh, so crawl in one terminal and refresh the page in the other:
+
+```bash
+python3 tools/jobfinder.py demo
+python3 tools/serve_report.py --port 8899
+```
+
+It binds `0.0.0.0` and defaults to `data/job_finder/opportunities.db`, which
+is exactly where `demo` writes. Those two paths used to disagree (the server
+defaulted to `demo.db`), so the documented sequence showed "Report could not
+be built"; both now point at `opportunities.db` and a test enforces it.
+
 **One trap.** `--db` is a *global* option, so it must come **before** the
 subcommand:
 
@@ -103,14 +116,42 @@ formula in `docs/SCORING.md`.
 Two things it will not do: scrape LinkedIn or Indeed (their terms forbid it),
 and decide for you. It ranks; you read the top twelve.
 
+### How the crawler finds the careers page
+
+Most registry rows have **no careers URL** — 808 of 821 point at a site root.
+Fetching a root returns marketing copy, so the crawl would come back with
+nothing useful. The crawler therefore works in two steps:
+
+1. fetch the row's URL (`listing_url` when present, otherwise the site root);
+2. if that page yields no vacancies, look for a careers link and fetch **that**
+   (`find_careers_url`). It scores anchors on the words in their text
+   (`careers`, `jobs`, `werken bij`, `carrières`, `emplois`, `Karriere`…) and
+   in their href (`/careers`, `/jobs`, `/werken-bij`, `/vacatures`…), skips
+   job-alert and newsletter traps, and stays on the same site.
+
+The source log records the URL actually used, so `report` shows where the
+postings came from rather than the page you asked for.
+
 ### If the report lists companies instead of jobs
 
-That was a real bug, fixed 2026-11-13. `SinglePostingAdapter` used to accept
+That was a real bug, fixed 2026-11-13, in two parts. `SinglePostingAdapter` used to accept
 any page with 200+ characters of text, which is every company homepage, so a
 registry crawl produced one fake "posting" per company titled with its
-marketing strapline. The adapter now requires a vacancy signal in the title or
-near the top of the body (job, vacature, offre, sollicit, career, internship,
-CDD…), and rejects `Brand | strapline` titles.
+marketing strapline. On top of that, `_looks_like_posting` required **four or
+more words** in an anchor before treating it as a vacancy, and its vocabulary
+was English-first. Real Dutch and French titles are two words ("Stagiair
+duurzaamheid", "Data analist energie"), so every one of them was dropped.
+
+Both are fixed:
+
+- `SinglePostingAdapter` requires a vacancy signal in the title or near the
+  top of the body and rejects `Brand | strapline` titles;
+- `_looks_like_posting` accepts two-word titles when the href looks like a
+  posting or the text contains a role word, and understands Dutch, French and
+  German role words, including compounds (`milieu|deskundige`,
+  `klimaat|coördinator`);
+- `crawl` refuses any posting whose title equals its employer name, and says
+  so (`! dropped N item(s) titled with the company name`).
 
 If you still see it:
 

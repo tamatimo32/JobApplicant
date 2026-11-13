@@ -10,7 +10,8 @@ from pathlib import Path
 
 from . import config as C
 from . import registry as reg
-from .adapters import Context, extract_postings
+from . import html as H
+from .adapters import (Context, extract_postings, find_careers_url)
 from .fetch import Fetcher
 from .model import Keyword, Posting, Source, fold
 from .score import KeywordIndex, score
@@ -104,12 +105,41 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         ctx = Context(source=source, base_url=resp.url or url, today=today,
                       language=lang)
         postings, adapter = extract_postings(resp.text, ctx)
+
+        # A registry row with no listing_url points at a site root, and a root
+        # sells the company rather than its vacancies. When the first parse
+        # finds nothing, look for the careers page and try that before giving
+        # up. This is what stops a crawl from returning company names.
+        followed = ""
+        if not postings and not snapshot:
+            page = H.parse(resp.text) if resp.ok else None
+            careers = find_careers_url(page, ctx.base_url) if page else ""
+            if careers and careers != url:
+                followed = careers
+                if verbose:
+                    print(f"        -> careers page {careers}")
+                resp2 = fetcher.get(careers)
+                if resp2.ok:
+                    report.fetched += 1
+                    ctx2 = Context(source=source, base_url=resp2.url or careers,
+                                   today=today, language=lang)
+                    postings, adapter = extract_postings(resp2.text, ctx2)
+                    resp = resp2
         # remember whether these came from a committed snapshot or the live
         # site, so the report can never present a snapshot as a real vacancy
         via = "snapshot" if snapshot is not None else "crawl"
 
         kept_here = 0
+        dropped = 0
         for p in postings:
+            # A job offer is never titled with the name of the company that
+            # posted it. When that happens the "posting" is really the
+            # company homepage, which reads as a website name in the report
+            # and carries no information. Refuse those outright rather than
+            # ranking them.
+            if fold(p.title) == fold(p.employer) or not p.title.strip():
+                dropped += 1
+                continue
             if not p.country:
                 p.country = source.country
             p.discovered_via = via
@@ -130,8 +160,11 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
                 report.kept += 1
                 kept_here += 1
 
-        store.log_source(run_id, source.id, source.name, url, resp.status, "",
-                         len(postings), adapter, ms)
+        store.log_source(run_id, source.id, source.name, followed or url,
+                         resp.status, "", len(postings), adapter, ms)
+        if dropped and verbose:
+            print(f"        ! dropped {dropped} item(s) titled with the "
+                  f"company name")
         if verbose:
             if postings:
                 print(f"        {len(postings)} postings via {adapter}"
