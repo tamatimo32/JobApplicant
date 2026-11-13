@@ -1,0 +1,53 @@
+Sustainability Data Manager (71300), Arkema
+Source: https://www.arkema.com/global/en/careers/ (offre 71300), via
+https://simplify.jobs/p/e62c436c-501c-4650-b32b-606ffca034ff/Sustainability-Data-Manager
+Puteaux (La Defense), France. CDD. Publiee vers le 9 octobre 2026.
+Releve le 2026-11-12.
+
+NOTE DE SOURCAGE : le texte complet de l'offre n'a pas pu etre recupere depuis
+le site d'Arkema (acces bloque depuis cet environnement). Ce qui suit provient
+du resume de l'offre publie par Simplify et de deux annonces Indeed qui la
+reprennent. Les missions sont fiables, la formulation n'est pas verbatim.
+
+L'annonce ne demande pas de lettre de motivation ; la candidature passe par le
+portail Arkema.
+
+PROFIL RECHERCHE
+- Master en sciences de l'environnement, genie chimique, chimie, science des
+  materiaux ou domaine technique connexe.
+- Premiere experience professionnelle ou solide bagage academique en Product
+  Stewardship et/ou methodes d'empreinte carbone produit (Product Carbon
+  Footprint).
+- Capacite a gerer, analyser et restituer de gros volumes de donnees en
+  traitant plusieurs priorites en parallele.
+- Capacite a travailler dans une organisation matricielle.
+- Communication ecrite et orale claire.
+
+MISSIONS
+- Preparer les donnees et documents pour les demandes RSE des clients et
+  repondre aux questionnaires clients en ligne, avec le Developpement Durable
+  corporate et les equipes RSE des business units.
+- Optimiser la generation, la disponibilite et la conservation des documents
+  d'analyse de cycle de vie (ACV) standardises.
+- Suivre l'activite des demandes de donnees durabilite (workflows, acces aux
+  documents, relances).
+- Contribuer a standardiser et automatiser les demandes recurrentes.
+- Appuyer les evaluations reglementaires avec Product Safety et Regulatory
+  Affairs.
+- Tenir a jour les Portfolio Sustainability Assessments dans l'outil Archimedes,
+  avec les mises a jour trimestrielles des ventes.
+- Signaler les risques reglementaires et les pistes d'amelioration.
+- Realiser evaluations et simulations pour les nouveaux produits R&D.
+- Ameliorer l'exploitation et la maintenance des donnees, la qualite, les
+  outils, les processus et l'automatisation.
+- Contribuer au reporting interne, aux tableaux de bord et au suivi des KPI.
+- Gerer les donnees fournisseurs : identifier et relancer les documents
+  durabilite manquants avec Product Safety et les Achats.
+- Analyses ad hoc.
+
+FIT NOTES (pour le relecteur, pas pour la lettre)
+Tres bon recouvrement : GHG Protocol, empreinte carbone produit (ISO 14067),
+structuration et automatisation de donnees ESG, Power BI, gestion de donnees
+fournisseurs, reporting et KPI. Ecarts : pas d'ACV complete formelle, pas
+d'experience Archimedes, pas de Product Stewardship au sens strict, et le
+poste est un CDD a Puteaux.

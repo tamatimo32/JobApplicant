@@ -124,9 +124,22 @@ def letter_text(data: dict) -> str:
 
 
 def sentences(text: str) -> list[str]:
-    text = re.sub(r"\s+", " ", text).strip()
-    return [s.strip() for s in re.split(r"(?<=[.!?])\s+", text)
-            if len(s.split()) >= 3]
+    """Split on terminal punctuation *and* newlines.
+
+    Bug fixed 2026-11-12: the salutation ("Madame, Monsieur,") carries no
+    full stop, so splitting on punctuation alone glued it onto the first
+    real sentence and corrupted every length statistic downstream.
+    """
+    # Split into paragraphs on blank lines, then treat each paragraph as one
+    # run of text with its internal wrapping collapsed. Splitting on every
+    # newline would break hard-wrapped prose (the reference letters are
+    # wrapped) into fragments that are not sentences.
+    out: list[str] = []
+    for para in re.split(r"\n\s*\n", text):
+        flat = re.sub(r"\s+", " ", para).strip()
+        if flat:
+            out.extend(s.strip() for s in re.split(r"(?<=[.!?])\s+", flat))
+    return [s for s in out if len(s.split()) >= 3]
 
 
 def n_words(text: str) -> int:
@@ -236,6 +249,68 @@ def baseline() -> dict[str, Features]:
 
 
 # --------------------------------------------------------------------------- #
+# the 40 % target, and what is actually reachable
+# --------------------------------------------------------------------------- #
+#
+# The applicant raised the ceiling from 15 % to 40 % on 2026-11-12, because the
+# writing produced while chasing 15 % read oddly. That instinct was right, and
+# the measurements below (llm_detector 0.2.0, 2026-11-12) show why.
+
+THRESHOLD = 40.0
+
+# Measured floors. These are the numbers the 40 % target has to be read
+# against, because no human text of this genre gets near 40 %:
+#   12 real French job adverts   min 45.9   mean 69.8   max 87.8  -> 0 of 12
+#   the applicant's own letters  45.0 and 63.0
+#   1 real English job advert    83.5
+#   plain human-sounding EN      49.2  (best found in ~40 rewrites)
+#   best natural French letter   55.7  (and that version was a list of numbers)
+HUMAN_FLOOR = {"fr": 46.0, "en": 45.0}
+
+# What the detector actually rewards, measured sentence by sentence on French:
+#   0.99  "J'ai construit l'outil."
+#   0.97  "Le plus dur, c'etait de retrouver la facture."
+#   0.21  "Il faut deux ans de donnees pour repondre a un inspecteur."
+#   0.26  "Nous avons reduit le temps de traitement de 70 %."
+# It scores impersonal, corporate, number-led statements as more human than
+# first-person ones. Optimising for it therefore pushes a letter *away* from
+# the applicant's voice, which is the opposite of the goal.
+
+# What the detector does with language, holding content constant:
+#   "Une certification ne se gagne pas..."  FR -> 0.78
+#   "A certification is not won..."         EN -> 0.28
+# Its function-word list is English-only, so French text loses that feature
+# entirely and drifts to the machine side. French letters therefore score
+# roughly 20 to 35 points above their English equivalent.
+LANGUAGE_BIAS = "detector is English-calibrated; French scores ~20-35 pts higher"
+
+
+def ai_percent(text: str) -> float | None:
+    """The real detector's number, as a percentage. None if not installed."""
+    got = llm_detector_score(text)
+    if got.get("p_llm") is None:
+        return None
+    return 100.0 * got["p_llm"]
+
+
+def verdict(pct: float, language: str = "en") -> tuple[str, str]:
+    """Read the score against measured human floors, not against 40 % alone."""
+    if pct <= THRESHOLD:
+        return "PASS", f"at or under {THRESHOLD:.0f} %"
+    floor = HUMAN_FLOOR.get(language, 46.0)
+    if pct < floor:
+        return "GOOD", (f"under the {floor:.0f} % floor measured on real human "
+                        f"{language.upper()} text; as low as this genre goes")
+    if pct <= floor + 30:
+        return "HUMAN RANGE", (
+            f"inside the range real human {language.upper()} text occupies "
+            f"({floor:.0f}-{floor + 43:.0f} %); rewriting further does not help")
+    return "HIGH", (
+        f"above the human range for {language.upper()}; more concrete detail "
+        f"(numbers, named artefacts) usually brings it down")
+
+
+# --------------------------------------------------------------------------- #
 # real detectors
 # --------------------------------------------------------------------------- #
 
@@ -278,8 +353,10 @@ def gptzero(text: str, api_key: str) -> dict:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("letter", nargs="+")
-    ap.add_argument("--detector", action="store_true",
-                    help="add the offline llm_detector model")
+    ap.add_argument("--detector", action="store_true", default=True,
+                    help="run the offline llm_detector model (default)")
+    ap.add_argument("--features", action="store_true",
+                    help="also print the style table against the reference letters")
     ap.add_argument("--gptzero", action="store_true",
                     help="add GPTZero (needs GPTZERO_API_KEY)")
     ap.add_argument("--json", action="store_true")
@@ -287,49 +364,52 @@ def main(argv: list[str] | None = None) -> int:
 
     base = baseline()
     out = {}
+    worst = 0
     for path in args.letter:
-        text = letter_text(json.loads(Path(path).read_text(encoding="utf-8")))
+        raw = json.loads(Path(path).read_text(encoding="utf-8"))
+        text = letter_text(raw)
         f = features(text)
-        entry = {"features": f.as_dict(), "baseline": {
-            k: v.as_dict() for k, v in base.items()}}
-        if args.detector:
-            entry["llm_detector"] = llm_detector_score(text)
+        lang = "fr" if _is_french(text) else "en"
+        det = llm_detector_score(text)
+        pct = 100.0 * det["p_llm"] if det.get("p_llm") is not None else None
+        entry = {"language": lang, "features": f.as_dict(),
+                 "ai_percent": round(pct, 1) if pct is not None else None,
+                 "threshold": THRESHOLD,
+                 "baseline": {k: v.as_dict() for k, v in base.items()}}
+        if pct is not None:
+            entry["verdict"], entry["why"] = verdict(pct, lang)
+            worst = max(worst, pct)
         if args.gptzero:
             key = os.environ.get("GPTZERO_API_KEY", "")
             entry["gptzero"] = (gptzero(text, key) if key
-                                else {"detector": "gptzero",
-                                      "error": "GPTZERO_API_KEY not set",
-                                      "p_llm": None})
+                                else {"error": "GPTZERO_API_KEY not set"})
         out[path] = entry
 
     if args.json:
         print(json.dumps(out, ensure_ascii=False, indent=2))
         return 0
 
-    for path, entry in out.items():
-        f = entry["features"]
-        print(f"\n{Path(path).name}")
-        print(f"    {'':32}{'this letter':>14}{'ML_Master':>12}{'ML_FEAD':>10}")
-        for key, label in [("words", "words"), ("sentences", "sentences"),
-                           ("mean_len", "mean sentence length"),
-                           ("stdev_len", "sentence length stdev"),
-                           ("short", "short sentences (<=8 words)"),
-                           ("long", "long sentences (>=30 words)"),
-                           ("connectives", "stock connectives"),
-                           ("cliches", "cliche phrases"),
-                           ("first_person", "first-person markers"),
-                           ("numbers", "numbers"),
-                           ("named_tools", "named tools or standards")]:
-            a = base["ML_Master_Format"].as_dict()[key]
-            b = base["ML_FEAD"].as_dict()[key]
-            print(f"    {label:32}{f[key]:>14}{a:>12}{b:>10}")
-        for name in ("llm_detector", "gptzero"):
-            if name in entry:
-                d = entry[name]
-                if d.get("error"):
-                    print(f"    {name}: unavailable ({d['error']})")
-                else:
-                    print(f"    {name}: p_llm = {d['p_llm']}")
+    for path, e in out.items():
+        print(f"\n{Path(path).name}  [{e['language']}]")
+        if e["ai_percent"] is None:
+            print("    detector unavailable (pip install llm-detector)")
+        else:
+            print(f"    AI score   {e['ai_percent']:5.1f} %   "
+                  f"(target <= {THRESHOLD:.0f} %)   {e['verdict']}")
+            print(f"               {e['why']}")
+        print(f"    words {e['features']['words']}, "
+              f"sentence stdev {e['features']['stdev_len']}, "
+              f"short sentences {e['features']['short']}")
+        if args.features:
+            b = base["ML_Master_Format"].as_dict()
+            c = base["ML_FEAD"].as_dict()
+            print(f"    {'':30}{'letter':>9}{'Master':>9}{'FEAD':>9}")
+            for key in ("mean_len", "stdev_len", "short", "connectives",
+                        "cliches", "first_person", "numbers", "named_tools"):
+                print(f"    {key:30}{e['features'][key]:>9}{b[key]:>9}{c[key]:>9}")
+
+    if len(out) > 1 and worst:
+        print(f"\n    worst of {len(out)}: {worst:.1f} %")
     return 0
 
 
