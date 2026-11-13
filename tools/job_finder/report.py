@@ -40,10 +40,13 @@ def _band_counts(rows: list[dict]) -> dict[str, int]:
 def render(db_path: Path, out_path: Path, *, run_id: int | None = None,
            title: str = "Ranked opportunities",
            include_excluded: bool = False, top_n: int = C.TOP_N_FOR_HIGHLIGHTS,
-           limit: int = 400) -> Path:
+           limit: int = 400, hide_dead: bool = False) -> Path:
     store = Store(db_path)
     rows = store.ranked(limit=limit, include_excluded=include_excluded,
                         new_since_run=run_id)
+    if hide_dead:
+        # a dead link is a closed vacancy; keep it in the database, out of view
+        rows = [r for r in rows if (r.get("link_status") or "") != "gone"]
     excluded_rows = store.ranked(limit=200, include_excluded=True,
                                  new_since_run=run_id)
     excluded_rows = [r for r in excluded_rows if r["excluded"]]
@@ -52,11 +55,22 @@ def render(db_path: Path, out_path: Path, *, run_id: int | None = None,
     highlights = [r for r in rows if not r["excluded"]][:top_n]
     bands = _band_counts(rows + excluded_rows)
 
+    # If every visible posting is a fixture or a committed snapshot, this page
+    # is a demonstration and its links are not real vacancies. Say so, loudly,
+    # at the top and on every card. This exists because a demo once shipped a
+    # fabricated URL that a reader reasonably clicked.
+    demo = bool(rows) and all(
+        (r.get("discovered_via") or "crawl") in {"fixture", "snapshot"}
+        for r in rows)
+    fictional = sum(1 for r in rows
+                    if (r.get("discovered_via") or "") in {"fixture", "snapshot"})
+
     health: list[dict] = []
     if run_id:
         health = store.source_health(run_id)
 
     body = [
+        _demo_banner(demo, fictional, len(rows)),
         _header(title, rows, stats, bands, run_id),
         _highlight_strip(highlights),
         _filters(rows),
@@ -92,6 +106,24 @@ def render(db_path: Path, out_path: Path, *, run_id: int | None = None,
 # sections
 # --------------------------------------------------------------------------- #
 
+def _demo_banner(demo: bool, fictional: int, total: int) -> str:
+    """A banner that cannot be missed when the data is not real."""
+    if not demo and not fictional:
+        return ""
+    if demo:
+        text = (f"<b>Captured page, not a live crawl.</b> These {total} postings "
+                "come from pages saved into this repo, so vacancies may have "
+                "closed since. Run <code>jobfinder crawl</code> for current "
+                "ones, or <code>jobfinder verify</code> to check the links.")
+    else:
+        text = (f"<b>{fictional} of {total} postings are invented demo data</b> "
+                "and are marked as such. Their links are not real vacancies.")
+    return f'''
+<div class="banner" role="alert">
+  <div class="wrap">{text}</div>
+</div>'''
+
+
 def _header(title, rows, stats, bands, run_id) -> str:
     generated = datetime.now().strftime("%d %B %Y, %H:%M")
     new = sum(1 for r in rows if r.get("is_new"))
@@ -121,14 +153,24 @@ def _header(title, rows, stats, bands, run_id) -> str:
 def _highlight_strip(highlights) -> str:
     if not highlights:
         return ""
-    cards = "".join(f"""
-    <a class="hi" href="{esc(r['url'])}" target="_blank" rel="noopener">
+    def one(r: dict) -> str:
+        via = r.get("discovered_via") or "crawl"
+        fictional = via == "fixture"
+        tag = "div" if fictional else "a"
+        attrs = ("" if fictional
+                 else f'href="{esc(r["url"])}" target="_blank" rel="noopener"')
+        note = (" · inventoried demo data" if fictional
+                else " · captured page" if via == "snapshot" else "")
+        return f'''
+    <{tag} class="hi{" hi-demo" if fictional else ""}" {attrs}>
       <span class="hi-score">{r['total']}</span>
       <span class="hi-body">
         <span class="hi-title">{esc(r['title'])}</span>
-        <span class="hi-meta">{esc(r['employer'])} · {esc(r['country'])}</span>
+        <span class="hi-meta">{esc(r['employer'])} · {esc(r['country'])}{note}</span>
       </span>
-    </a>""" for r in highlights[:6])
+    </{tag}>'''
+
+    cards = "".join(one(r) for r in highlights[:6])
     return f"""
 <section class="wrap highlights">
   <h2>Start here</h2>
@@ -169,13 +211,30 @@ def _card(r: dict) -> str:
         meta.append(esc(r["salary"]))
 
     badge = ""
+    via = r.get("discovered_via") or "crawl"
+    if via == "fixture":
+        badge += '<span class="badge demo">Demo data · invented posting</span>'
+    elif via == "snapshot":
+        badge += ('<span class="badge demo">Demo data · real posting, '
+                  'captured page</span>')
+    elif via == "import":
+        badge += '<span class="badge soft">Imported from a saved page</span>'
+
+    link_badge = ""
+    status = r.get("link_status") or ""
+    if status == "gone":
+        link_badge = '<span class="badge off">Link is dead (404)</span>'
+    elif status == "redirect":
+        link_badge = '<span class="badge soft">Link redirects</span>'
+
     if r.get("is_new"):
-        badge = '<span class="badge new">New</span>'
+        badge += '<span class="badge new">New</span>'
     if r.get("excluded"):
         badge += '<span class="badge off">Excluded · %s</span>' % esc(
             r.get("exclude_reason", ""))
     if r.get("adapter") == "single":
         badge += '<span class="badge soft">Title read from page heading</span>'
+    badge += link_badge
 
     bars = _bars(r, matched)
 
@@ -186,7 +245,7 @@ def _card(r: dict) -> str:
          data-text="{esc((r.get('title','') + ' ' + (r.get('employer') or '') + ' ' + kw).lower())}">
   <div class="score"><b>{r.get('total', 0)}</b><span>/100</span></div>
   <div class="body">
-    <h3><a href="{esc(r.get('url'))}" target="_blank" rel="noopener">{esc(r.get('title'))}</a></h3>
+    <h3>{_title_html(r)}</h3>
     <p class="meta">{' · '.join(meta)}</p>
     <p class="kw">{esc(kw)}</p>
     <p class="verdict">{esc(BAND_TEXT.get(r.get('band'), ''))}{badge}</p>
@@ -196,6 +255,22 @@ def _card(r: dict) -> str:
     </details>
   </div>
 </article>"""
+
+
+def _title_html(r: dict) -> str:
+    """The title, as a link unless the URL was never real, or is now dead.
+
+    A snapshot keeps its link: it points at a page that existed. A fixture does
+    not, because nobody has ever seen that URL.
+    """
+    title = esc(r.get("title"))
+    via = r.get("discovered_via") or "crawl"
+    if via == "fixture" or not r.get("url"):
+        return title
+    if (r.get("link_status") or "") == "gone":
+        return title
+    return (f'<a href="{esc(r["url"])}" target="_blank" rel="noopener">'
+            f'{title}</a>')
 
 
 def _bars(r, matched) -> str:
@@ -431,6 +506,12 @@ tr.bad td{background:#c2453f0a}
 footer{padding:30px 20px 60px;font-size:12px;color:var(--ink-soft)}
 code{background:#00000008;padding:1px 5px;border-radius:4px;font-size:.92em}
 .hide{display:none !important}
+
+.banner{background:#7a2c17;color:#fff;padding:12px 0;font-size:14px;line-height:1.45}
+.banner code{background:#ffffff26;color:#fff}
+.banner b{letter-spacing:.01em}
+.badge.demo{background:#7a2c1714;border-color:#7a2c1755;color:#7a2c17;font-weight:600}
+.hi.hi-demo{background:#fdf6f4;border-style:dashed}
 
 @media (max-width:760px){
   .hero{padding:28px 0 22px}

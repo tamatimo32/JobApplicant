@@ -244,7 +244,7 @@ class AdapterTest(unittest.TestCase):
         self.assertEqual(postings[0].posted, date(2026, 11, 1))
 
     def test_eurobrussels_cards(self):
-        path = DEMO / "job_board-BE-eurobrussels.html"
+        path = DEMO / "eurobrussels-environment.html"
         ctx = Context(Source("job_board-BE-eurobrussels", "EuroBrussels",
                              "job_board", "BE", "https://www.eurobrussels.com",
                              "https://www.eurobrussels.com/jobs/environment",
@@ -319,6 +319,207 @@ class ImporterTest(unittest.TestCase):
                                  "company-BE-sustenuto-formerly-betterbusiness")
 
 
+class QueryTest(unittest.TestCase):
+    """Saved searches: the registry says which sites, a query says which search."""
+
+    def test_the_shipped_queries_load(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        self.assertTrue(qs)
+        for q in qs:
+            self.assertTrue(q.url.startswith("https://"), q.id)
+            self.assertTrue(q.country, f"{q.id} needs a country")
+            self.assertTrue(q.sector, f"{q.id} needs a sector")
+
+    def test_a_query_becomes_a_source(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        src = qs[0].as_source()
+        self.assertEqual(src.listing_url, src.url)
+        self.assertEqual(src.access, "open")
+        self.assertEqual(src.category, "job_board")
+        self.assertTrue(src.id.startswith("query-") or src.id == qs[0].id)
+
+    def test_selection_by_id_board_and_label(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        one = Q.select(qs, ["eurobrussels-energy"])
+        self.assertEqual(len(one), 1)
+        by_board = Q.select(qs, ["EuroBrussels"])
+        self.assertEqual(len(by_board), len(qs))
+        by_label = Q.select(qs, ["intern"])
+        self.assertGreaterEqual(len(by_label), 1)
+
+    def test_unknown_query_is_an_error_not_a_silent_empty_run(self):
+        from job_finder import queries as Q
+        qs = Q.load(ROOT / "data" / "job_finder" / "queries.json")
+        with self.assertRaises(SystemExit):
+            Q.select(qs, ["no-such-query"])
+
+
+class CaptureFidelityTest(unittest.TestCase):
+    """Every committed snapshot must be captured, never composed.
+
+    The manifest is the receipt: it records the URL and capture date of each
+    file, and this test checks the files and the manifest still agree.
+    """
+
+    def setUp(self):
+        import json
+        self.manifest = json.loads(
+            (DEMO / "manifest.json").read_text(encoding="utf-8"))
+
+    def test_every_snapshot_is_in_the_manifest(self):
+        on_disk = {p.name for p in DEMO.glob("*.html")}
+        listed = set(self.manifest["files"])
+        self.assertEqual(on_disk, listed,
+                         "a captured page without a manifest entry, or the "
+                         "reverse: where did this file come from?")
+
+    def test_every_manifest_entry_records_provenance(self):
+        for name, meta in self.manifest["files"].items():
+            with self.subTest(name=name):
+                self.assertTrue(meta["url"].startswith("https://"))
+                self.assertIn("captured", self.manifest)
+                self.assertGreater(meta["postings"], 0)
+
+    def test_snapshots_carry_real_job_ids_and_nothing_invented(self):
+        """Each file must hold as many distinct ids as the manifest claims."""
+        import re
+        for name, meta in self.manifest["files"].items():
+            with self.subTest(name=name):
+                text = (DEMO / name).read_text(encoding="utf-8")
+                ids = set(re.findall(r"job_display/(\d+)", text))
+                self.assertEqual(len(ids), meta["postings"])
+
+    def test_the_fabricated_sustenuto_fixture_is_gone(self):
+        """It must not come back. This is the URL a reader clicked."""
+        for path in DEMO.glob("*.html"):
+            text = path.read_text(encoding="utf-8").lower()
+            self.assertNotIn("sustainability-analyst-brussels", text)
+            self.assertNotIn("quantis.com/careers", text)
+
+
+class ProvenanceTest(unittest.TestCase):
+    """A demonstration must never be able to pass itself off as live data.
+
+    This is the regression test for the bug that shipped a fabricated URL to
+    the top of a report: a hand-written fixture was scored, rendered, and read
+    as a real vacancy.
+    """
+
+    def _report(self, via_values):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        db = Path(tmp.name) / "t.db"
+        store = Store(db)
+        run = store.start_run("t")
+        index = KeywordIndex(CORE)
+        source = Source("s", "Board", "job_board", "BE", "https://x", "",
+                        "en", "env_consulting", "sme", "open", "high", 1,
+                        "yes", "")
+        for i, via in enumerate(via_values):
+            p = a_posting(title=f"Junior Carbon Analyst {i}", url=f"https://x/{i}")
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            p.discovered_via = via
+            store.upsert(p, run)
+            store.save_score(p.fingerprint, score(p, source, index,
+                                                  date(2026, 11, 12)))
+        store.finish_run(run, 1, len(via_values), len(via_values))
+        out = report.render(db, Path(tmp.name) / "r.html", run_id=run)
+        return out.read_text()
+
+    def test_a_snapshot_report_is_bannered_and_keeps_real_links(self):
+        """A snapshot is historical, not invented: the URLs did exist."""
+        html = self._report(["snapshot", "snapshot"])
+        self.assertIn("not a live crawl", html)
+        self.assertIn("captured page", html.lower())
+        # the anchor survives, because the page really was there
+        self.assertEqual(html.count("<h3><a href="), 2)
+
+    def test_a_fixture_report_is_bannered_and_never_linked(self):
+        """The regression test. A hand-written URL must never be clickable."""
+        html = self._report(["fixture", "fixture"])
+        self.assertIn("invented", html.lower())
+        self.assertIn("invented posting", html)
+        self.assertEqual(html.count("<h3><a href="), 0)
+
+    def test_live_postings_are_linked_and_not_bannered(self):
+        html = self._report(["crawl", "crawl"])
+        self.assertNotIn("not a live crawl", html)
+        self.assertNotIn("invented", html.lower())
+        self.assertIn("<h3><a href=", html)
+
+    def test_a_mixed_report_warns_about_the_demo_rows(self):
+        html = self._report(["crawl", "fixture"])
+        self.assertIn("invented demo data", html.lower())
+        # the real one stays clickable, the invented one does not
+        self.assertEqual(html.count("<h3><a href="), 1)
+
+    def test_default_provenance_is_crawl(self):
+        self.assertEqual(a_posting().discovered_via, "crawl")
+
+
+class InactiveTest(unittest.TestCase):
+    """A posting the last crawl did not see is closed, and must fall out."""
+
+    def test_inactive_postings_are_hidden_by_default(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "t.db")
+            run = store.start_run("r")
+            p = a_posting()
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            store.upsert(p, run)
+            store.save_score(p.fingerprint, score(p, None, KeywordIndex(CORE),
+                                                  date(2026, 11, 12)))
+            store.finish_run(run, 1, 1, 1)
+            self.assertEqual(len(store.ranked()), 1)
+
+            # a later run marks it gone
+            run2 = store.start_run("r2")
+            store.finish_run(run2, 0, 0, 0)
+            store.con.execute("UPDATE postings SET active=0")
+            store.con.commit()
+
+            self.assertEqual(len(store.ranked()), 0)
+            self.assertEqual(len(store.ranked(include_inactive=True)), 1)
+
+
+class LinkCheckTest(unittest.TestCase):
+    def test_link_status_round_trip(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            store = Store(Path(tmp) / "t.db")
+            run = store.start_run("r")
+            p = a_posting()
+            p.fingerprint = fingerprint(p.title, p.employer, p.country)
+            store.upsert(p, run)
+            self.assertEqual(len(store.needing_link_check()), 1)
+
+            store.mark_link(p.fingerprint, "gone")
+            self.assertEqual(store.link_summary()["gone"], 1)
+            self.assertEqual(len(store.needing_link_check()), 0)
+
+    def test_a_dead_link_can_be_hidden_from_the_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            db = Path(tmp) / "t.db"
+            store = Store(db)
+            run = store.start_run("r")
+            for i, status in enumerate(["ok", "gone"]):
+                p = a_posting(title=f"Analyst {i}", url=f"https://x/{i}")
+                p.fingerprint = fingerprint(p.title, p.employer, p.country)
+                store.upsert(p, run)
+                store.save_score(p.fingerprint, score(p, None, KeywordIndex(CORE),
+                                                      date(2026, 11, 12)))
+                store.mark_link(p.fingerprint, status)
+            store.finish_run(run, 1, 2, 2)
+
+            both = report.render(db, Path(tmp) / "a.html", run_id=run)
+            self.assertEqual(both.read_text().count('class="card '), 2)
+            one = report.render(db, Path(tmp) / "b.html", run_id=run,
+                                hide_dead=True)
+            self.assertEqual(one.read_text().count('class="card '), 1)
+
+
 class ReportTest(unittest.TestCase):
     def test_report_is_self_contained(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -348,3 +549,117 @@ class ReportTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class DemoCommandTest(unittest.TestCase):
+    """The documented `demo` command must work with no arguments.
+
+    Bug (2026-11-13): `python3 tools/jobfinder.py demo` printed
+    "No sources matched that selection." The demo matched registry ids
+    ("job_board-BE-eurobrussels") against snapshot filenames
+    ("eurobrussels-energy"), two namespaces that never overlap. It now
+    pairs through the manifest, and falls back to building sources from
+    the saved queries that produced each capture.
+    """
+
+    def _run(self, *argv):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+
+        return jobfinder.main(list(argv))
+
+    def test_bare_demo_selects_every_capture(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+        from job_finder import queries as Q
+
+        sources = [q.as_source() for q in Q.load(jobfinder.DEFAULT_QUERIES)]
+        picked = jobfinder._demo_sources(sources)
+        self.assertTrue(picked, "manifest pairing found no captures")
+        self.assertEqual(len(picked), 4)
+
+    def test_demo_pairs_on_manifest_not_names(self):
+        sys.path.insert(0, str(ROOT / "tools"))
+        import jobfinder
+        from job_finder.model import Source
+
+        bogus = Source(
+            id="job_board-BE-eurobrussels", name="EuroBrussels",
+            category="job_board", country="BE",
+            url="https://www.eurobrussels.com",
+            listing_url="https://www.eurobrussels.com/jobs/environment",
+            language="en", sector="public", size="sme", access="open",
+            fit="high", priority=1, verified="", notes="")
+        # The old prefix rule would have matched nothing; the manifest does
+        # not know this id either, so the result must be empty, not a crash.
+        self.assertEqual(jobfinder._demo_sources([bogus]), [])
+
+    def test_demo_run_end_to_end(self):
+        import tempfile
+        from pathlib import Path as P
+
+        with tempfile.TemporaryDirectory() as tmp:
+            db = P(tmp) / "demo.db"
+            # --db is a global option and must precede the subcommand
+            self.assertEqual(self._run("--db", str(db), "demo"), 0)
+            self.assertTrue(db.exists(), "demo did not write to --db")
+
+
+class HomepageIsNotAVacancyTest(unittest.TestCase):
+    """A company homepage must not become a "posting" named after its tagline.
+
+    Bug (2026-11-13): the applicant reported that the report listed company
+    names instead of job titles. SinglePostingAdapter matched any page with
+    200+ characters of text, which is every homepage, so a registry crawl
+    produced one fake posting per company titled with its marketing strapline.
+    """
+
+    def _ctx(self, url="https://www.example.be"):
+        from datetime import date
+        return Context(
+            source=Source(
+                id="company-BE-example", name="Example", category="company",
+                country="BE", url=url, listing_url="", language="nl",
+                sector="env_consulting", size="large", access="open",
+                fit="high", priority=1, verified="", notes=""),
+            base_url=url, language="nl", today=date(2026, 11, 13))
+
+    HOMEPAGE = """
+    <html><head><title>Aquafin | Water zuiveren voor een betere wereld</title>
+    </head><body>
+    <nav><a href="/nl/over-ons">Over ons</a><a href="/nl/diensten">Diensten</a>
+    <a href="/nl/contact">Contact</a></nav>
+    <h1>Welkom bij Aquafin</h1>
+    <p>Wij zuiveren het afvalwater van meer dan 6 miljoen Vlamingen en dragen
+    zo bij aan een gezonde leefomgeving. Onze 1.900 medewerkers werken dagelijks
+    aan innovatieve oplossingen voor waterzuivering, klimaatadaptatie en
+    circulaire economie. Ontdek onze projecten, onze aanpak en de kansen die
+    wij bieden. Wij investeren in onderzoek en in duurzame technologie.</p>
+    </body></html>"""
+
+    VACANCY = """
+    <html><head><title>Milieudeskundige waterzuivering - Aquafin</title></head>
+    <body><h1>Milieudeskundige waterzuivering</h1>
+    <p>Wij zoeken een milieudeskundige voor onze waterzuiveringsinstallaties in
+    Vlaanderen. Je volgt de milieuvergunningen op, analyseert meetgegevens en
+    rapporteert aan de overheid. Voltijds contract van onbepaalde duur.</p>
+    <p>Solliciteer via onze website. Vereist: master milieuwetenschappen.</p>
+    </body></html>"""
+
+    def test_homepage_produces_no_posting(self):
+        postings, adapter = extract_postings(self.HOMEPAGE, self._ctx())
+        self.assertEqual(postings, [],
+                         "a homepage must never become a posting")
+        self.assertEqual(adapter, "no-adapter")
+
+    def test_real_vacancy_still_parses(self):
+        postings, adapter = extract_postings(self.VACANCY, self._ctx())
+        self.assertEqual(adapter, "single")
+        self.assertEqual(len(postings), 1)
+        self.assertIn("Milieudeskundige", postings[0].title)
+
+    def test_title_never_equals_employer_name(self):
+        """The reported symptom: titles that were company names."""
+        postings, _ = extract_postings(self.HOMEPAGE, self._ctx())
+        for p in postings:
+            self.assertNotEqual(fold(p.title), fold(p.employer))

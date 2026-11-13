@@ -159,6 +159,46 @@ class Fetcher:
                             error=f"{type(e).__name__}: {e}")
 
 
+    # ------------------------------------------------------------ link check
+    def check(self, url: str) -> str:
+        """Is this URL still there? Returns ok / redirect / gone / error.
+
+        A HEAD request, which is cheap and does not download the page. Some
+        servers reject HEAD, so a 405 or 501 is retried as a GET with the body
+        thrown away. "gone" means 404 or 410: closed, not wrong.
+        """
+        if any(bad in url.lower() for bad in C.NEVER_FETCH):
+            return "error"
+        if not url.lower().startswith("http"):
+            return "error"
+
+        def _once(method: str) -> Response:
+            req = urllib.request.Request(url, method=method, headers={
+                "User-Agent": C.USER_AGENT,
+                "Accept": "text/html,*/*;q=0.8",
+            })
+            try:
+                with urllib.request.urlopen(req, timeout=C.REQUEST_TIMEOUT) as r:
+                    return Response(url=r.geturl(), status=r.status, text="")
+            except urllib.error.HTTPError as e:
+                return Response(url=url, status=e.code, text="",
+                                error=f"HTTP {e.code}")
+            except Exception as e:                              # noqa: BLE001
+                return Response(url=url, status=0, text="",
+                                error=f"{type(e).__name__}")
+
+        resp = _once("HEAD")
+        if resp.status in (405, 501):
+            resp = _once("GET")
+        if resp.status in (200, 203, 204, 206):
+            return "ok"
+        if resp.status in (301, 302, 303, 307, 308):
+            return "redirect"
+        if resp.status in (404, 410):
+            return "gone"
+        return "error"
+
+
 # --------------------------------------------------------------------------- #
 # snapshot writer, used for the offline demo
 # --------------------------------------------------------------------------- #

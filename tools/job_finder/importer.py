@@ -117,6 +117,7 @@ def import_dir(folder: Path, sources: list[Source], keywords: list[Keyword],
             # is scored as if it were abroad, so inherit the source's
             if not p.country:
                 p.country = source.country
+            p.discovered_via = "import"
 
         for p in postings:
             if not p.title:

@@ -65,11 +65,20 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         snapshot = None
         if snapshot_dir:
             exact = Path(snapshot_dir) / f"{source.id}.html"
-            # build_job_sources_csv slugifies ids; a renamed row still matches
-            # its snapshot by prefix, which keeps the demo stable
-            snapshot = exact if exact.exists() else next(
-                (q for q in sorted(Path(snapshot_dir).glob("*.html"))
-                 if source.id.startswith(q.stem)), None)
+            # A query's synthetic id is "query-<id>"; its capture is named
+            # after the query. Fall back to a prefix match so a renamed
+            # registry row still finds its page.
+            plain = source.id.removeprefix("query-")
+            candidates = [f"{plain}.html", f"{source.id}.html"]
+            for name in candidates:
+                if (Path(snapshot_dir) / name).exists():
+                    snapshot = Path(snapshot_dir) / name
+                    break
+            if snapshot is None:
+                snapshot = next(
+                    (q for q in sorted(Path(snapshot_dir).glob("*.html"))
+                     if plain.startswith(q.stem) or q.stem.startswith(plain)),
+                    None)
         if snapshot is not None:
             from .fetch import Response
             resp = Response(url=url, status=200,
@@ -95,11 +104,15 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         ctx = Context(source=source, base_url=resp.url or url, today=today,
                       language=lang)
         postings, adapter = extract_postings(resp.text, ctx)
+        # remember whether these came from a committed snapshot or the live
+        # site, so the report can never present a snapshot as a real vacancy
+        via = "snapshot" if snapshot is not None else "crawl"
 
         kept_here = 0
         for p in postings:
             if not p.country:
                 p.country = source.country
+            p.discovered_via = via
             p.fingerprint = fingerprint(p.title, p.employer, p.country)
             if p.fingerprint in seen:
                 continue
@@ -120,8 +133,20 @@ def crawl(sources: list[Source], keywords: list[Keyword], store: Store,
         store.log_source(run_id, source.id, source.name, url, resp.status, "",
                          len(postings), adapter, ms)
         if verbose:
-            print(f"        {len(postings)} postings via {adapter}"
-                  f"{'  [cached]' if resp.from_cache else ''}")
+            if postings:
+                print(f"        {len(postings)} postings via {adapter}"
+                      f"{'  [cached]' if resp.from_cache else ''}")
+            else:
+                # Say why a page produced nothing. "no-adapter" now usually
+                # means the page looked like a homepage rather than a
+                # vacancy list, which is the normal outcome for a company
+                # whose careers link was never captured in the registry.
+                reason = {
+                    "no-adapter": "no vacancy list or posting found on the page",
+                    "empty": "page had no readable text (JavaScript-only?)",
+                    "error": "could not parse the HTML",
+                }.get(adapter, f"adapter {adapter}")
+                print(f"        ! {reason}{'  [cached]' if resp.from_cache else ''}")
 
     # anything not seen this run is no longer advertised
     store.con.execute(

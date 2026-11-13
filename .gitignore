@@ -16,5 +16,9 @@ google_drive/
 data/job_finder/opportunities.db
 data/job_finder/live.db
 data/job_finder/demo.db
+data/job_finder/queries.db
 data/job_finder/cache/
 out/opportunities.html
+
+# Rendered application PDFs are delivered through Google Drive, not git.
+applications/**/*.pdf

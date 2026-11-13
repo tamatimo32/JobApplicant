@@ -1,0 +1,60 @@
+{
+  "_readme": [
+    "A query is one saved search: a listing URL plus the context needed to",
+    "score what comes back. The registry says which sites exist; a query says",
+    "which search on that site to run.",
+    "",
+    "Run some:  python3 tools/jobfinder.py crawl --query energy --query early-career",
+    "List them: python3 tools/jobfinder.py queries",
+    "",
+    "Add one by copying a block. 'country' and 'language' are what the postings",
+    "inherit when the page itself does not say; 'sector' feeds the employer",
+    "component of the score."
+  ],
+  "queries": [
+    {
+      "id": "eurobrussels-environment",
+      "board": "EuroBrussels",
+      "label": "Environment jobs",
+      "url": "https://www.eurobrussels.com/jobs/environment",
+      "country": "BE",
+      "language": "en",
+      "sector": "public_body",
+      "why": "the widest green filter on the board",
+      "source_id": "eurobrussels-environment"
+    },
+    {
+      "id": "eurobrussels-energy",
+      "board": "EuroBrussels",
+      "label": "Energy jobs",
+      "url": "https://www.eurobrussels.com/jobs/energy",
+      "country": "BE",
+      "language": "en",
+      "sector": "energy",
+      "why": "clean energy, renewables, efficiency and Fit for 55 files",
+      "source_id": "eurobrussels-energy"
+    },
+    {
+      "id": "eurobrussels-internships",
+      "board": "EuroBrussels",
+      "label": "Internships",
+      "url": "https://www.eurobrussels.com/jobs/internship",
+      "country": "BE",
+      "language": "en",
+      "sector": "public_body",
+      "why": "entry-level and trainee roles, the band this CV can actually win",
+      "source_id": "eurobrussels-internships"
+    },
+    {
+      "id": "eurobrussels-early-career",
+      "board": "EuroBrussels",
+      "label": "0-2 years experience",
+      "url": "https://www.eurobrussels.com/jobs/0_-_2_years_experience",
+      "country": "BE",
+      "language": "en",
+      "sector": "public_body",
+      "why": "the board's own junior filter, which cuts the senior noise",
+      "source_id": "eurobrussels-early-career"
+    }
+  ]
+}

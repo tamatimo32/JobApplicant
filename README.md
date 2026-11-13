@@ -44,16 +44,56 @@ If `render_cv.py` raises `LayoutOverflow`, the content does not fit on one page.
 
 ---
 
-## The job finder, three commands
+## The job finder
 
 The registry says where to look; the finder reads it, crawls, scores every
 posting out of 100, and writes one HTML page with the best ones first.
 
 ```bash
-python3 tools/jobfinder.py demo                        # offline, 26 postings
+python3 tools/jobfinder.py demo                        # offline, 42 postings
 python3 tools/jobfinder.py report --run 1 --open
 python3 tools/jobfinder.py crawl --countries BE,LU     # the real thing
+python3 tools/jobfinder.py crawl --query energy --query internships
+python3 tools/jobfinder.py verify                      # are the links still alive?
 ```
+
+### Running it from PyCharm
+
+The script fixes `sys.path` itself, so it runs from any working directory.
+Two ways to set it up:
+
+**Run configuration (recommended).** Run > Edit Configurations > `+` > Python,
+then:
+
+| Field | Value |
+| --- | --- |
+| Script path | `tools/jobfinder.py` |
+| Parameters | `demo` |
+| Working directory | the repository root |
+| Python interpreter | any 3.10+; **no packages to install** |
+
+To see the report, add a second configuration with Parameters
+`report --run 1 --open`, or just right-click `out/opportunities.html`.
+
+**PyCharm terminal.** Nothing to activate:
+
+```bash
+python3 tools/jobfinder.py demo
+python3 tools/jobfinder.py report --run 1 --open
+```
+
+**One trap.** `--db` is a *global* option, so it must come **before** the
+subcommand:
+
+```bash
+python3 tools/jobfinder.py --db data/job_finder/queries.db report --run 1   # correct
+python3 tools/jobfinder.py report --run 1 --db data/job_finder/queries.db   # error
+```
+
+A **query** is one saved search: a listing URL plus the country, language and
+sector its postings inherit. They live in `data/job_finder/queries.json`, so
+"the energy page" and "the 0-2 years page" are two queries on one board rather
+than two registry rows that must be kept in step.
 
 Standard library only, no install, no API key. Scores are additive and the
 arithmetic for each posting is printed in the report, so a wrong ranking is
@@ -62,6 +102,45 @@ formula in `docs/SCORING.md`.
 
 Two things it will not do: scrape LinkedIn or Indeed (their terms forbid it),
 and decide for you. It ranks; you read the top twelve.
+
+### If the report lists companies instead of jobs
+
+That was a real bug, fixed 2026-11-13. `SinglePostingAdapter` used to accept
+any page with 200+ characters of text, which is every company homepage, so a
+registry crawl produced one fake "posting" per company titled with its
+marketing strapline. The adapter now requires a vacancy signal in the title or
+near the top of the body (job, vacature, offre, sollicit, career, internship,
+CDD…), and rejects `Brand | strapline` titles.
+
+If you still see it:
+
+```bash
+python3 tools/jobfinder.py crawl --countries BE --limit 5   # watch the output
+```
+
+Each source now prints either `N postings via <adapter>` or a reason such as
+`! no vacancy list found on the page`. A company homepage is a normal cause:
+the registry holds the site root, not a careers URL. Prefer the saved searches
+(`--query`) or a source whose `listing_url` points at the careers page.
+
+Two honesty features worth knowing. Postings from the demo snapshots are
+labelled **Demo data · captured page** (they are real, just historical), and a
+hand-written fixture would be labelled **invented** and never made clickable.
+`verify` marks postings whose URL has gone 404, and a dead link stops being
+clickable so a filled vacancy cannot keep looking open.
+
+### Never invent a posting
+
+If you add demo data, it must be **captured, not composed**. Save the page,
+record its URL and date in `data/job_finder/demo/manifest.json`, and let the
+adapter read it. A hand-written fixture is allowed only for a unit test, and
+must be labelled `discovered_via="fixture"` so the report refuses to link it.
+
+This is not hypothetical. A composed fixture once produced
+`sustenuto.com/careers/sustainability-analyst-brussels`, a polished, plausible
+URL for a vacancy that never existed. It scored 99 and sat at the top of a
+report, and a reader clicked it and got a 404. The rule that came out of it:
+**if nobody fetched it, the report must not present it as real.**
 
 ---
 
@@ -552,11 +631,12 @@ scale them beyond 13.8 pt.
 - [ ] The title fits: it must end before x = 575, otherwise `LayoutOverflow`.
 - [ ] The letter is 220 to 300 words and four paragraphs (see "Length: keep it
       short"); a long letter is the commonest way these go wrong.
+- [ ] Register is professional, not chatty: medium sentences (mean 18-22 words,
+      almost none over 30), no rhetorical questions, no performed honesty, no
+      invented numbers. See `STYLE.md` §3.
 - [ ] No AI tells: "passionné par", "fort de mon expérience", "je suis convaincu
       que", or three-item lists in every sentence.
 - [ ] The letter and the CV tell the same story with the same job titles.
-
----
 
 ## Legal / privacy notes
 

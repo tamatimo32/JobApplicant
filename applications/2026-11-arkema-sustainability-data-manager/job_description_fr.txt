@@ -1,0 +1,61 @@
+Sustainability Data Manager, Arkema
+Source : https://jobs.arkema.com/job/Puteaux-La-D%C3%A9fense-Sustainability-Data-Manager-%C3%8Ele/1435701533/
+Relevé le 2026-11-13, texte complet cette fois (le site Arkema avait bloqué
+l'accès le 12/11, l'offre avait été reconstituée depuis un rehost ; ce fichier
+remplace cette reconstitution).
+Puteaux La Défense, Île-de-France. CDD 18 mois. Catégorie Santé / Environnement
+/ Sécurité. Publié le 7 nov. 2026.
+
+Le poste est rattaché à Adhesive Solutions (Bostik). L'annonce ne demande pas
+de lettre de motivation ; candidature via jobs.arkema.com.
+
+DÉTAILS DE LA MISSION
+Support sustainability data management and product portfolio assessments for
+Adhesive Solutions on an 18-month fixed-term contract, ensuring reliable data
+for regulatory, environmental, and business needs. Regular interaction with
+multiple internal functions to collect, validate, and consolidate
+sustainability data. The role also improves efficiency, scalability and
+reliability by identifying process simplification, standardization and
+automation opportunities.
+
+Customer support (25 %)
+- Prepare data and documentation for customer CSR requests, respond to
+  customer online questionnaires with Corporate Sustainable Development and
+  BU CSR teams
+- Optimize generation, availability and retention of standardized LCA documents
+- Track activity on sustainability data requests (workflows, document access,
+  follow-up)
+- Contribute to standardizing and automating recurring customer requests
+
+Portfolio Sustainability Assessment (PSA) (50 %)
+- Support regulatory evaluations with PSRA and BU CSR leaders
+- Record and maintain PSA in the Archimedes tool, including quarterly sales
+  data updates within segmentations
+- Flag regulatory risks and improvement opportunities in product portfolios
+- Perform assessments and simulations for new R&D products
+- Improve and automate data exploitation and maintenance
+
+Sustainability data excellence & automation (25 %)
+- Improve data quality, tools, processes and automation
+- Contribute to internal reporting, dashboards and KPI monitoring
+- Support supplier information data management: identify and follow up
+  missing sustainability documents with PSRA and Procurement
+- Support ad hoc analyses
+- Implement digital solutions, standardize processes, improve accessibility
+  and traceability
+
+PROFIL RECHERCHÉ
+- Master en sciences de l'environnement, génie chimique, chimie, science des
+  matériaux ou domaine technique connexe
+- Première expérience professionnelle ou solide bagage académique en Product
+  Stewardship et/ou méthodologies PCF (Product Carbon Footprint)
+- Gérer, analyser et restituer de gros volumes de données, plusieurs priorités
+  en parallèle
+- Bon relationnel, efficacité en organisation matricielle
+- Communication écrite et orale claire
+
+FIT NOTES (pour le relecteur, pas pour la lettre)
+Bon recouvrement sur le PCF : ISO 14067, GHG Protocol, outil Power BI
+d'empreinte carbone produit, automatisation, données fournisseurs, reporting
+et KPI. Écarts : pas d'ACV complète, pas d'Archimedes, pas de Product
+Stewardship au sens strict, pas de chimie. CDD 18 mois à Puteaux.

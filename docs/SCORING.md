@@ -45,16 +45,27 @@ says "sustainability" is still a sustainability analyst.
 capped at 5 points (15% of 35). "Environment" appearing in a marketing job is
 not a signal.
 
-Worked example, from the demo:
+Worked example, from the demo (`jobfinder explain "Communications & Policy"`):
 
 ```
-+23.5  sustainability analyst   (weight 3, in title)
-+ 7.2  double materiality       (weight 3)
-+ 3.9  GHG Protocol             (weight 3)
-+ 2.2  EcoVadis                 (weight 3)
-+ 1.2  Power BI                 (weight 3)
-+ 0.7  B Corp                   (weight 3)
-        raw 38.9, capped at 35
++4.5   internship               (weight 1, in title)
+       raw subtotal 4.5, capped at 5.25
+```
+
+That is a posting with no core or likely keyword at all: "internship" is an
+adjacent term, so the whole component is capped at 15% of 35. It still scores
+57 overall, because the seniority, location, language and freshness components
+are things it genuinely gets right. That is the intended shape: a well-located
+internship with nothing to do with environmental engineering lands in band C,
+visible but clearly behind real matches.
+
+A posting with several core keywords accumulates much faster. Each of the
+following is a weight-3 term, so the first is worth 13, the next 7.2, then
+3.9, 2.2, 1.2 and 0.7, reaching the 35 cap in six matches:
+
+```
+sustainability analyst (in title) · double materiality · GHG Protocol ·
+EcoVadis · Power BI · B Corp
 ```
 
 ## 2. Seniority fit, 20 points

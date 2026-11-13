@@ -73,32 +73,51 @@ d'adviseur durabilité".
 
 ---
 
-## 3. Keep the human register
+## 3. Professional register, medium sentences
 
-The applicant explicitly liked the tone produced so far and asked for it to be
-kept. That means:
+**Revised 2026-11-13.** The applicant read the letters produced in the month
+before and said the results were "deceiving": they needed to be *less cringy*,
+*more professional*, and written in *medium sentences*. That instruction
+supersedes the earlier "human register, read it aloud like a conversation"
+guidance, which had drifted into a chatty, over-familiar tone.
 
+What that means now:
+
+- **Third register, not first-person anecdote.** "I am writing to apply for…"
+  is acceptable. An opening that performs personality ("A permit is only worth
+  the evidence behind it") is not.
+- **Medium sentences.** Aim for a mean of 18 to 22 words, with almost nothing
+  above 30. Split a sentence rather than stringing three clauses with commas
+  and a relative pronoun. Vary the length, but inside that band.
+- **Measured, not chummy.** Avoid asides, rhetorical questions, sentence
+  fragments used for effect, and phrases like "that is the bit I enjoy".
+- **No performed honesty.** State a limit once, factually ("I have not
+  conducted a risk assessment on a vessel"), then move on. Do not dramatise
+  the gap or apologise twice for it.
+- **Formal connectives are allowed** in this register: "Par ailleurs",
+  "En revanche", "In addition", "I would welcome". The earlier ban was written
+  for a conversational voice and no longer applies.
 - first person, plain words, no corporate gloss;
-- one opinion or small admission is welcome ("un chiffre ne suffit pas");
-- sentence lengths should vary. Some short. Some longer, provided they stay
-  readable;
 - concrete nouns and numbers beat adjectives. "ISO 14067" is worth more than
   "solide expertise";
 
-Avoid the tells:
+Still avoid:
 
 - "passionné par", "je suis convaincu que", "fort de mon expérience de",
   "dans un monde en constante évolution";
 - English: "I am passionate about", "leverage", "seamless", "delve",
-  "in today's fast-paced world", "I am thrilled to";
+  "in today's fast-paced world", "I am thrilled to", "proven track record";
 - three-item lists in every sentence. One is fine, in one place;
 - starting consecutive sentences with the same word, especially "Je";
-- closing with "n'hésitez pas à me contacter". The applicant's own letters end
-  by inviting a conversation and, unusually, by welcoming feedback even on
-  rejection. Keep that move, it reads as confident rather than desperate.
+- **invented specifics.** Numbers, dates and quantities must come from
+  `experience_master.json`. A single fabricated figure discredits the letter.
 
-A useful test before delivering: read one paragraph out loud. If it could not
-have been said by a person in a conversation, rewrite it.
+Close with a normal professional sentence: availability, thanks, willingness
+to discuss. The "happy to hear feedback even if rejected" move from the older
+letters reads as needy in this register and is retired.
+
+A useful test before delivering: read one paragraph and ask whether a
+competent professional would be embarrassed to sign it. If yes, rewrite.
 
 ---
 

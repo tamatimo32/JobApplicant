@@ -1,0 +1,20 @@
+{
+  "typography": "fr",
+  "name": "THOMAS CHACRA",
+  "tagline": "Bioingénieur en environnement, empreinte carbone produit et données ESG",
+  "place": "Bruxelles, Belgique",
+  "phone": "+32 485 31 52 76",
+  "email": "thomaschacra@gmail.com",
+  "date": "13/11/2026",
+  "addressee": "À l'attention de l'équipe recrutement, Arkema, Puteaux.",
+  "subject": "Objet : Candidature au poste de Sustainability Data Manager (71300), Thomas Chacra",
+  "salutation": "Madame, Monsieur,",
+  "paragraphs": [
+    "Je souhaite présenter ma candidature au poste de Sustainability Data Manager rattaché à Adhesive Solutions. Ce qui retient mon attention dans cette fonction, c'est l'exigence de fiabilité qui la sous-tend. Une empreinte carbone produit n'a de valeur que si l'on peut retrouver la donnée qui l'a produite et l'hypothèse qui la justifie, plusieurs années plus tard. C'est ce travail de structuration et de traçabilité que j'ai cherché à mener dans mes expériences précédentes.",
+    "Mon expérience porte sur l'empreinte carbone produit et les données ESG. J'ai développé un outil Power BI d'empreinte carbone conforme à l'ISO 14067, puis appliqué ses hypothèses pour étayer chaque estimation. J'ai également calculé des empreintes selon le GHG Protocol et automatisé des outils Excel et Power BI destinés au reporting récurrent. Par ailleurs, j'ai travaillé sur des jeux de données fournisseurs dans le cadre d'exercices de notation extra-financière. J'ai aussi participé à la digitalisation d'une matrice de double matérialité CSRD et assuré le contrôle et la validation de données environnementales. Sur une analyse de certification, l'automatisation a ramené le temps de traitement à 30 % du temps initial.",
+    "Je n'ai pas utilisé l'outil Archimedes et je n'ai pas conduit d'analyse de cycle de vie complète. Ce sont les deux compétences que ce poste me permettrait d'acquérir, et je préfère les identifier clairement. Je suis en revanche habitué aux organisations matricielles et à la coordination de plusieurs interlocuteurs internes. Je travaille indifféremment en français et en anglais, et je suis disponible à Puteaux pour un contrat de 18 mois.",
+    "Je reste à votre disposition pour un entretien et vous remercie de l'attention portée à ma candidature."
+  ],
+  "closing": "Cordialement,",
+  "signature": "Thomas Chacra"
+}
